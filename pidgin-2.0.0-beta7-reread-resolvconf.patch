@@ -1,0 +1,45 @@
+http://sourceforge.net/tracker/index.php?func=detail&aid=1604261&group_id=235&atid=300235
+If the network connection on a machine is changed while gaim is running, it
+won't pick up the changes unless NetworkManager support is enabled. This
+makes it always re-read the DNS info before a server connect.
+
+This implemention is considered to be disliked because it re-reads the config files a few times
+upon every connection.  There appears however to be no work underway to fix it properly.  This 
+behavior is at least harmless while fixing the bug, so we will keep this patch for now.
+
+diff -urN pidgin-2.0.0beta7devel.orig/libpurple/connection.c pidgin-2.0.0beta7devel/libpurple/connection.c
+--- pidgin-2.0.0beta7devel.orig/libpurple/connection.c	2007-03-20 01:59:41.000000000 -0400
++++ pidgin-2.0.0beta7devel/libpurple/connection.c	2007-04-16 13:54:40.000000000 -0400
+@@ -37,6 +37,10 @@
+ #include "signals.h"
+ #include "util.h"
+ 
++#include <netinet/in.h>
++#include <arpa/nameser.h>
++#include <resolv.h>
++
+ static GList *connections = NULL;
+ static GList *connections_connecting = NULL;
+ static PurpleConnectionUiOps *connection_ui_ops = NULL;
+@@ -139,6 +143,9 @@
+ 
+ 	purple_signal_emit(purple_connections_get_handle(), "signing-on", gc);
+ 
++	/* Re-read resolv.conf and friends in case DNS servers have changed */
++	res_init();
++
+ 	if (regist)
+ 	{
+ 		purple_debug_info("connection", "Registering.  gc = %p\n", gc);
+diff -urN pidgin-2.0.0beta7devel.orig/libpurple/network.c pidgin-2.0.0beta7devel/libpurple/network.c
+--- pidgin-2.0.0beta7devel.orig/libpurple/network.c	2007-04-01 11:51:46.000000000 -0400
++++ pidgin-2.0.0beta7devel/libpurple/network.c	2007-04-16 13:55:08.000000000 -0400
+@@ -612,8 +612,6 @@
+ 	switch(current)
+ 	{
+ 	case LIBNM_ACTIVE_NETWORK_CONNECTION:
+-		/* Call res_init in case DNS servers have changed */
+-		res_init();
+ 		if (ui_ops != NULL && ui_ops->network_connected != NULL)
+ 			ui_ops->network_connected();
+ 		prev = current;

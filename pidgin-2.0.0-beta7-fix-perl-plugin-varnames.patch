@@ -1,0 +1,163 @@
+diff -urN pidgin-2.0.0beta7devel.orig/pidgin/plugins/perl/common/GtkDialogs.xs pidgin-2.0.0beta7devel/pidgin/plugins/perl/common/GtkDialogs.xs
+--- pidgin-2.0.0beta7devel.orig/pidgin/plugins/perl/common/GtkDialogs.xs	2007-03-20 01:59:41.000000000 -0400
++++ pidgin-2.0.0beta7devel/pidgin/plugins/perl/common/GtkDialogs.xs	2007-04-16 14:49:39.000000000 -0400
+@@ -1,52 +1,52 @@
+ #include "gtkmodule.h"
+ 
+-MODULE = Pidgin::Dialogs  PACKAGE = Pidgin::Dialogs  PREFIX = pidgindialogs_
++MODULE = Pidgin::Dialogs  PACKAGE = Pidgin::Dialogs  PREFIX = pidgin_dialogs_
+ PROTOTYPES: ENABLE
+ 
+ void
+-pidgindialogs_destroy_all()
++pidgin_dialogs_destroy_all()
+ 
+ void
+-pidgindialogs_about()
++pidgin_dialogs_about()
+ 
+ void
+-pidgindialogs_im()
++pidgin_dialogs_im()
+ 
+ void
+-pidgindialogs_im_with_user(account, username)
++pidgin_dialogs_im_with_user(account, username)
+ 	Purple::Account account
+ 	const char * username
+ 
+ void
+-pidgindialogs_info()
++pidgin_dialogs_info()
+ 
+ void
+-pidgindialogs_log()
++pidgin_dialogs_log()
+ 
+ void
+-pidgindialogs_alias_contact(contact)
++pidgin_dialogs_alias_contact(contact)
+ 	Purple::BuddyList::Contact contact
+ 
+ void
+-pidgindialogs_alias_buddy(buddy)
++pidgin_dialogs_alias_buddy(buddy)
+ 	Purple::BuddyList::Buddy buddy
+ 
+ void
+-pidgindialogs_alias_chat(chat)
++pidgin_dialogs_alias_chat(chat)
+ 	Purple::BuddyList::Chat chat
+ 
+ void
+-pidgindialogs_remove_buddy(buddy)
++pidgin_dialogs_remove_buddy(buddy)
+ 	Purple::BuddyList::Buddy buddy
+ 
+ void
+-pidgindialogs_remove_group(group)
++pidgin_dialogs_remove_group(group)
+ 	Purple::BuddyList::Group group
+ 
+ void
+-pidgindialogs_remove_chat(chat)
++pidgin_dialogs_remove_chat(chat)
+ 	Purple::BuddyList::Chat chat
+ 
+ void
+-pidgindialogs_remove_contact(contact)
++pidgin_dialogs_remove_contact(contact)
+ 	Purple::BuddyList::Contact contact
+diff -urN pidgin-2.0.0beta7devel.orig/pidgin/plugins/perl/common/GtkFt.xs pidgin-2.0.0beta7devel/pidgin/plugins/perl/common/GtkFt.xs
+--- pidgin-2.0.0beta7devel.orig/pidgin/plugins/perl/common/GtkFt.xs	2007-03-20 01:59:41.000000000 -0400
++++ pidgin-2.0.0beta7devel/pidgin/plugins/perl/common/GtkFt.xs	2007-04-16 14:49:59.000000000 -0400
+@@ -10,41 +10,41 @@
+ Pidgin::Xfer::Dialog
+ pidgin_get_xfer_dialog()
+ 
+-MODULE = Pidgin::Xfer  PACKAGE = Pidgin::Xfer::Dialog  PREFIX = pidginxfer_dialog_
++MODULE = Pidgin::Xfer  PACKAGE = Pidgin::Xfer::Dialog  PREFIX = pidgin_xfer_dialog_
+ PROTOTYPES: ENABLE
+ 
+ Pidgin::Xfer::Dialog
+-pidginxfer_dialog_new(class)
++pidgin_xfer_dialog_new(class)
+     C_ARGS: /* void */
+ 
+ void
+-pidginxfer_dialog_destroy(dialog)
++pidgin_xfer_dialog_destroy(dialog)
+ 	Pidgin::Xfer::Dialog dialog
+ 
+ void
+-pidginxfer_dialog_show(dialog = NULL)
++pidgin_xfer_dialog_show(dialog = NULL)
+ 	Pidgin::Xfer::Dialog dialog
+ 
+ void
+-pidginxfer_dialog_hide(dialog)
++pidgin_xfer_dialog_hide(dialog)
+ 	Pidgin::Xfer::Dialog dialog
+ 
+ void
+-pidginxfer_dialog_add_xfer(dialog, xfer)
++pidgin_xfer_dialog_add_xfer(dialog, xfer)
+ 	Pidgin::Xfer::Dialog dialog
+ 	Purple::Xfer xfer
+ 
+ void
+-pidginxfer_dialog_remove_xfer(dialog, xfer)
++pidgin_xfer_dialog_remove_xfer(dialog, xfer)
+ 	Pidgin::Xfer::Dialog dialog
+ 	Purple::Xfer xfer
+ 
+ void
+-pidginxfer_dialog_cancel_xfer(dialog, xfer)
++pidgin_xfer_dialog_cancel_xfer(dialog, xfer)
+ 	Pidgin::Xfer::Dialog dialog
+ 	Purple::Xfer xfer
+ 
+ void
+-pidginxfer_dialog_update_xfer(dialog, xfer)
++pidgin_xfer_dialog_update_xfer(dialog, xfer)
+ 	Pidgin::Xfer::Dialog dialog
+ 	Purple::Xfer xfer
+diff -urN pidgin-2.0.0beta7devel.orig/pidgin/plugins/perl/common/GtkThemes.xs pidgin-2.0.0beta7devel/pidgin/plugins/perl/common/GtkThemes.xs
+--- pidgin-2.0.0beta7devel.orig/pidgin/plugins/perl/common/GtkThemes.xs	2007-03-20 01:59:41.000000000 -0400
++++ pidgin-2.0.0beta7devel/pidgin/plugins/perl/common/GtkThemes.xs	2007-04-16 14:50:39.000000000 -0400
+@@ -1,28 +1,28 @@
+ #include "gtkmodule.h"
+ 
+-MODULE = Pidgin::Themes  PACKAGE = Pidgin::Themes  PREFIX = pidginthemes_
++MODULE = Pidgin::Themes  PACKAGE = Pidgin::Themes  PREFIX = pidgin_themes_
+ PROTOTYPES: ENABLE
+ 
+ void
+-pidginthemes_init()
++pidgin_themes_init()
+ 
+ gboolean
+-pidginthemes_smileys_disabled()
++pidgin_themes_smileys_disabled()
+ 
+ void
+-pidginthemes_smiley_theme_probe()
++pidgin_themes_smiley_theme_probe()
+ 
+ void
+-pidginthemes_load_smiley_theme(file, load)
++pidgin_themes_load_smiley_theme(file, load)
+ 	const char * file
+ 	gboolean load
+ 
+ void
+-pidginthemes_get_proto_smileys(id)
++pidgin_themes_get_proto_smileys(id)
+ 	const char * id
+ PREINIT:
+ 	GSList *l;
+ PPCODE:
+-	for (l = pidginthemes_get_proto_smileys(id); l != NULL; l = l->next) {
++	for (l = pidgin_themes_get_proto_smileys(id); l != NULL; l = l->next) {
+ 		XPUSHs(sv_2mortal(purple_perl_bless_object(l->data, "Pidgin::IMHtml::Smiley")));
+ 	}
