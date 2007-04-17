@@ -173,6 +173,7 @@ providers.
 Summary: Development headers and libraries for pidgin
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: pkgconfig
 Obsoletes: gaim-devel
 Provides:  gaim-devel
 
@@ -352,6 +353,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Apr 17 2007 Warren Togami <wtogami@redhat.com> 
+- -devel req pkgconfig (#222488)
+
 * Mon Apr 16 2007 Warren Togami <wtogami@redhat.com> - 2:2.0.0-0.33.beta7devel
 - pidgin-2.0.0 snapshot prior to beta7
 - rename gaim to pidgin/purple/finch in various places of spec (not complete)
