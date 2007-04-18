@@ -33,7 +33,7 @@
 
 Name:		pidgin
 Version:	2.0.0
-Release:	0.33.%{betaver}%{?dist}
+Release:	0.34.%{betaver}%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -43,9 +43,6 @@ Epoch:		2
 Obsoletes:      gaim
 Provides:       gaim
 ExcludeArch:    s390 s390x
-
-# meanwhile plugin is now provided by the main package
-Obsoletes:      gaim-meanwhile
 
 ## Fedora pidgin defaults - Please Regenerate for Each Major Release
 # 1) run gaim as new user 2) edit preferences 3) close 4) copy .gaim/prefs.xml
@@ -88,9 +85,6 @@ BuildRequires:  gettext
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
 BuildRequires:  ncurses-devel
-
-# Bug #212817 Jabber needs cyrus-sasl plugins for authentication
-Requires: cyrus-sasl-plain, cyrus-sasl-md5
 
 # krb5 needed for Zephyr (FC1+)
 %if %{krb_integration}
@@ -155,31 +149,90 @@ BuildRequires:	meanwhile-devel
 
 
 %description
-Gaim allows you to talk to anyone using a variety of messaging 
-protocols, including AIM (Oscar and TOC), ICQ, IRC, Yahoo!, 
-MSN Messenger, Jabber, Gadu-Gadu, Napster, and Zephyr.  These 
-protocols are implemented using a modular, easy to use design.  
-To use a protocol, just add an account using the account editor.
+Pidgin allows you to talk to anyone using a variety of messaging
+protocols including AIM, MSN, Yahoo!, Jabber, Bonjour, Gadu-Gadu,
+ICQ, IRC, Novell Groupwise, QQ, Lotus Sametime, SILC, Simple and
+Zephyr.  These protocols are implemented using a modular, easy to
+use design.  To use a protocol, just add an account using the
+account editor.
 
-Gaim supports many common features of other clients, as well as many 
-unique features, such as perl scripting and C plugins.
+Pidgin supports many common features of other clients, as well as many
+unique features, such as perl scripting, TCL scripting and C plugins.
 
-Gaim is NOT affiliated with or endorsed by America Online, Inc., 
-Microsoft Corporation, or Yahoo! Inc. or other messaging service 
-providers.
+Pidgin is not affiliated with or endorsed by America Online, Inc.,
+Microsoft Corporation, Yahoo! Inc., or ICQ Inc.
 
 
 %package devel
 Summary: Development headers and libraries for pidgin
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: libpurple-devel = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
 Obsoletes: gaim-devel
 Provides:  gaim-devel
 
 %description devel
-This package contains the files necessary to develop or compile code
-that depends on pidgin.
+The pidgin-devel package contains the header files, developer
+documentation, and libraries required for development of Pidgin scripts
+and plugins.
+
+
+%package -n libpurple
+Summary:    libpurple library for IM clients like Pidgin and Finch
+Group:      Applications/Internet
+%if %{meanwhile_integration}
+Obsoletes:  gaim-meanwhile
+%endif
+Requires:   glib2 >= %{glib_ver}
+# Bug #212817 Jabber needs cyrus-sasl plugins for authentication
+Requires: cyrus-sasl-plain, cyrus-sasl-md5
+
+
+%description -n libpurple
+libpurple contains the core IM support for IM clients such as Pidgin
+and Finch.
+
+libpurple supports a variety of messaging protocols including AIM, MSN,
+Yahoo!, Jabber, Bonjour, Gadu-Gadu, ICQ, IRC, Novell Groupwise, QQ,
+Lotus Sametime, SILC, Simple and Zephyr.
+
+
+%package -n libpurple-devel
+Summary:    Development headers, documentation, and libraries for libpurple
+Group:      Applications/Internet
+Requires:   libpurple = %{epoch}:%{version}-%{release}
+Requires:   pkgconfig
+
+%description -n libpurple-devel
+The libpurple-devel package contains the header files, developer
+documentation, and libraries required for development of libpurple based
+instant messaging clients or plugins for any libpurple based client.
+
+
+%package -n finch
+Summary:    A text-based user interface for Pidgin
+Group:      Applications/Internet
+Requires:   glib2 >= %{glib_ver}
+
+%description -n finch
+A text-based user interface for using libpurple.  This can be run from a
+standard text console or from a terminal within X Windows.  It
+uses ncurses and our homegrown gnt library for drawing windows
+and text.
+
+
+%package -n finch-devel
+Summary:    Headers etc. for finch stuffs
+Group:      Applications/Internet
+Requires:   finch = %{epoch}:%{version}-%{release}
+Requires:   libpurple-devel = %{epoch}:%{version}-%{release}
+Requires:   pkgconfig
+
+%description -n finch-devel
+The finch-devel package contains the header files, developer
+documentation, and libraries required for development of Finch scripts
+and plugins.
 
 
 
@@ -267,6 +320,8 @@ rm -f `find $RPM_BUILD_ROOT -name "*.la" -o -name "*.a"`
 rm -f $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
 # remove relnot.so plugin since it is unusable for our package
 rm -f $RPM_BUILD_ROOT%{_libdir}/pidgin/relnot.so
+# remove dummy nullclient
+rm -f $RPM_BUILD_ROOT%{_bindir}/nullclient
 # install Fedora pidgin default prefs.xml
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/purple/
 install -m 644 prefs.xml $RPM_BUILD_ROOT%{_sysconfdir}/purple/prefs.xml
@@ -285,9 +340,9 @@ chmod -R u+w $RPM_BUILD_ROOT/*
 # symlink /usr/bin/gaim to new pidgin name
 ln -sf %{_bindir}/pidgin $RPM_BUILD_ROOT%{_bindir}/gaim
 
-%post 
-/sbin/ldconfig -n %{_libdir}/pidgin
-/sbin/ldconfig -n %{_libdir}/finch
+%post -n libpurple -p /sbin/ldconfig
+
+%post -n finch -p /sbin/ldconfig
 
 %if %{mono_integration}
 # Mono apps need mono_exec_t. Since pidgin doesn't call /usr/bin/mono to run its
@@ -302,9 +357,9 @@ ln -sf %{_bindir}/pidgin $RPM_BUILD_ROOT%{_bindir}/gaim
 /usr/bin/chcon -t mono_exec_t /usr/bin/pidgin 
 %endif
 
-%postun
-/sbin/ldconfig -n %{_libdir}/pidgin
-/sbin/ldconfig -n %{_libdir}/finch
+%postun -n libpurple -p /sbin/ldconfig
+
+%postun -n finch -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -312,47 +367,77 @@ rm -rf $RPM_BUILD_ROOT
 %files -f pidgin.lang
 %defattr(-,root,root,-)
 %doc NEWS COPYING AUTHORS doc/FAQ README ChangeLog doc/PERL-HOWTO.dox
-%{_bindir}/*
+%{_bindir}/pidgin
+%{_bindir}/gaim
 %{_libdir}/pidgin/
-%{_libdir}/finch/
-%{_libdir}/libpurple/
-%{_libdir}/libpurple.so.*
-%{_libdir}/libgnt.so.*
-%{_mandir}/man1/*
-%{_mandir}/man3/*
-%{_datadir}/aclocal/purple.m4
+%{_mandir}/man1/pidgin.*
+%{_mandir}/man3/Purple::GtkUI.*
 %{_datadir}/applications/pidgin.desktop
 %{_datadir}/pixmaps/pidgin/
-%{_datadir}/pixmaps/purple/
 %{_datadir}/pixmaps/pidgin.svg
 %{_datadir}/sounds/pidgin/
-%{_sysconfdir}/purple/
-%{_sysconfdir}/gconf/schemas/purple.schemas
 %if %{perl_integration}
-%{perl_vendorarch}/Purple*
-%{perl_vendorarch}/auto/Purple/
-%endif
-%if %{dbus_integration}
-%{_libdir}/libpurple-client.so.*
-#%{_datadir}/dbus-1/services/pidgin.service
+%{perl_vendorarch}/Purple/*
+%{perl_vendorarch}/auto/Purple/GtkUI*
 %endif
 
 %files devel
 %defattr(-,root,root,-)
-%{_includedir}/libpurple/
 %{_includedir}/pidgin/
-%{_includedir}/finch/
-%{_includedir}/gnt/
-%{_libdir}/libpurple.so
-%{_libdir}/libgnt.so
-%{_libdir}/pkgconfig/purple.pc
 %{_libdir}/pkgconfig/pidgin.pc
-%{_libdir}/pkgconfig/gnt.pc
+
+%files -f pidgin.lang -n libpurple
+%{_libdir}/libpurple/
+%{_libdir}/libpurple.so.*
+%{_mandir}/man3/Purple.*
+%{_datadir}/pixmaps/purple/
+%{_sysconfdir}/purple/
+%{_sysconfdir}/gconf/schemas/purple.schemas
+%if %{perl_integration}
+%{perl_vendorarch}/Purple.pm
+%dir %{perl_vendorarch}/auto/Purple
+%{perl_vendorarch}/auto/Purple/Purple.so
+%{perl_vendorarch}/auto/Purple/autosplit.ix
+%endif
+%if %{dbus_integration}
+%{_bindir}/purple-client-example
+%{_bindir}/purple-remote
+%{_bindir}/purple-send
+%{_bindir}/purple-send-async
+%{_bindir}/purple-url-handler
+%{_libdir}/libpurple-client.so.*
+#%{_datadir}/dbus-1/services/pidgin.service
+%doc libpurple/purple-notifications-example
+%endif
+
+%files -n libpurple-devel
+%{_datadir}/aclocal/purple.m4
+%{_libdir}/libpurple.so
+%{_includedir}/libpurple/
+%{_libdir}/pkgconfig/purple.pc
 %if %{dbus_integration}
 %{_libdir}/libpurple-client.so
 %endif
 
+%files -f pidgin.lang -n finch
+%{_bindir}/finch
+%{_libdir}/finch/
+%{_libdir}/libgnt.so.*
+%{_mandir}/man1/finch.*
+
+%files -n finch-devel
+%{_includedir}/finch/
+%{_includedir}/gnt/
+%{_libdir}/libgnt.so
+%{_libdir}/pkgconfig/gnt.pc
+
+
 %changelog
+* Wed Apr 18 2007 Stu Tomlinson <stu@nosnilmot.com> - 2:2.0.0-0.34.beta7devel
+- Split into pidgin, finch & libpurple, along with corresponding -devel RPMs
+- Remove ldconfig for plugin directories
+- Fix non-UTF8 %%changelog
+
 * Tue Apr 17 2007 Warren Togami <wtogami@redhat.com> 
 - -devel req pkgconfig (#222488)
 
@@ -922,7 +1007,7 @@ rm -rf $RPM_BUILD_ROOT
 - 0.58
 - remove applet
 
-* Fri Mar 22 2002 Trond Eivind Glomsrød <teg@redhat.com> 0.53-1
+* Fri Mar 22 2002 Trond Eivind GlomsrÃ¸d <teg@redhat.com> 0.53-1
 - Langify
 
 * Wed Mar 13 2002 Christopher Blizzard <blizzard@redhat.com>
@@ -946,7 +1031,7 @@ rm -rf $RPM_BUILD_ROOT
 * Sun Jun 24 2001 Elliot Lee <sopwith@redhat.com>
 - Bump release + rebuild.
 
-* Thu Feb 15 2001 Trond Eivind Glomsrød <teg@redhat.com>
+* Thu Feb 15 2001 Trond Eivind GlomsrÃ¸d <teg@redhat.com>
 - make it compile
 
 * Sun Feb 11 2001 Tim Powers <timp@redhat.com>
