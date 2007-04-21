@@ -23,23 +23,17 @@
 # OPTION: Meanwhile integration (F7+)
 %define meanwhile_integration	1
 
-# OPTION: Mono integration (FC5+, broken)
-%define mono_integration	0
-# OPTION: Howl integration (seems broken)
-%define howl_integration	0
-
 # Prerelease define
 %define betaver	beta7devel
 
 Name:		pidgin
 Version:	2.0.0
-Release:	0.34.%{betaver}%{?dist}
+Release:	0.35.%{betaver}%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
 #Source0:	http://download.sourceforge.net/gaim/gaim-%{version}%{betaver}.tar.bz2
 Source0:	pidgin-%{version}%{betaver}.tar.gz
-Epoch:		2
 Obsoletes:      gaim
 Provides:       gaim
 ExcludeArch:    s390 s390x
@@ -85,6 +79,8 @@ BuildRequires:  gettext
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
 BuildRequires:  ncurses-devel
+BuildRequires:  tcl-devel
+BuildRequires:  tk-devel
 
 # krb5 needed for Zephyr (FC1+)
 %if %{krb_integration}
@@ -133,16 +129,7 @@ BuildRequires:  libXScrnSaver-devel
 %if %{dbus_glib_splt}
 BuildRequires:  dbus-glib-devel >= 0.70
 %endif
-
-# Mono integration (FC5+, broken)
-%if %{mono_integration}
-BuildRequires:	mono-devel
-%endif
-# Howl integration (seems to be broken)
-%if %{howl_integration}
-BuildRequires:	avahi-devel
-%endif
-# Meanwhile integration (not shipped in core)
+# Meanwhile integration (F7+)
 %if %{meanwhile_integration}
 BuildRequires:	meanwhile-devel
 %endif
@@ -269,14 +256,6 @@ SWITCHES=""
 %else
 	SWITCHES="$SWITCHES --disable-perl"
 %endif
-%if %{howl_integration}
-	SWITCHES="$SWITCHES --with-howl-includes=/usr/include/avahi-compat-howl/"
-%endif
-%if %{mono_integration}
-	SWITCHES="$SWITCHES --enable-mono"
-%else
-	SWITCHES="$SWITCHES --disable-mono"
-%endif
 %if %{dbus_integration}
 	SWITCHES="$SWITCHES --enable-dbus"
 %else
@@ -295,12 +274,9 @@ SWITCHES=""
 export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
 export CFLAGS="$RPM_OPT_FLAGS"
 
-# disable tcl and tk because nobody uses it
 # gnutls is buggy so use mozilla-nss on all distributions
-%configure --disable-tcl --disable-tk --enable-gnutls=no --enable-nss=yes \
-           --enable-cyrus-sasl $SWITCHES
+%configure --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl $SWITCHES
 
-# NOTE: smp_mflags breaks the mono plugin?
 make %{?_smp_mflags}
 
 
@@ -343,19 +319,6 @@ ln -sf %{_bindir}/pidgin $RPM_BUILD_ROOT%{_bindir}/gaim
 %post -n libpurple -p /sbin/ldconfig
 
 %post -n finch -p /sbin/ldconfig
-
-%if %{mono_integration}
-# Mono apps need mono_exec_t. Since pidgin doesn't call /usr/bin/mono to run its
-# mono bits, the existing selinux policy misses this.
-# XXX: This command fails on non-selinux systems with a non-zero return code.
-# Changing the selinux context here would also cause rpm -V and TPS failure.
-# XXX: pidgin's mono support is broken, making this useless to enable anyway
-# https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=196877
-# There is also concern that we don't want pidgin to run with this security context
-# due to its historical security track record.  For now we are disaling mono
-# temporarily until we decide a long term solution.
-/usr/bin/chcon -t mono_exec_t /usr/bin/pidgin 
-%endif
 
 %postun -n libpurple -p /sbin/ldconfig
 
@@ -433,6 +396,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 21 2007 Warren Togami <wtogami@redhat.com> - 2.0.0-0.35.beta7devel
+- upstream insists that we remove the Epoch
+  rawhide users might need to use --oldpackage once to upgrade
+- upstream insists that we enable the tcl/tk bindings
+- remove mono and howl cruft
+
 * Wed Apr 18 2007 Stu Tomlinson <stu@nosnilmot.com> - 2:2.0.0-0.34.beta7devel
 - Split into pidgin, finch & libpurple, along with corresponding -devel RPMs
 - Remove ldconfig for plugin directories
