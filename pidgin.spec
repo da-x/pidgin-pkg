@@ -79,8 +79,6 @@ BuildRequires:  gettext
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
 BuildRequires:  ncurses-devel
-BuildRequires:  tcl-devel
-BuildRequires:  tk-devel
 
 # krb5 needed for Zephyr (FC1+)
 %if %{krb_integration}
@@ -275,7 +273,9 @@ export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
 export CFLAGS="$RPM_OPT_FLAGS"
 
 # gnutls is buggy so use mozilla-nss on all distributions
-%configure --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl $SWITCHES
+# disable tcl and tk (at least until we split them out)
+%configure --disable-tcl --disable-tk \
+           --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl $SWITCHES
 
 make %{?_smp_mflags}
 
@@ -399,7 +399,6 @@ rm -rf $RPM_BUILD_ROOT
 * Sat Apr 21 2007 Warren Togami <wtogami@redhat.com> - 2.0.0-0.35.beta7devel
 - upstream insists that we remove the Epoch
   rawhide users might need to use --oldpackage once to upgrade
-- upstream insists that we enable the tcl/tk bindings
 - remove mono and howl cruft
 
 * Wed Apr 18 2007 Stu Tomlinson <stu@nosnilmot.com> - 2:2.0.0-0.34.beta7devel
