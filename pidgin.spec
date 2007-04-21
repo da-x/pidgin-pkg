@@ -153,8 +153,8 @@ Microsoft Corporation, Yahoo! Inc., or ICQ Inc.
 %package devel
 Summary: Development headers and libraries for pidgin
 Group: Development/Libraries
-Requires: %{name} = %{epoch}:%{version}-%{release}
-Requires: libpurple-devel = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{version}-%{release}
+Requires: libpurple-devel = %{version}-%{release}
 Requires: pkgconfig
 Obsoletes: gaim-devel
 Provides:  gaim-devel
@@ -188,7 +188,7 @@ Lotus Sametime, SILC, Simple and Zephyr.
 %package -n libpurple-devel
 Summary:    Development headers, documentation, and libraries for libpurple
 Group:      Applications/Internet
-Requires:   libpurple = %{epoch}:%{version}-%{release}
+Requires:   libpurple = %{version}-%{release}
 Requires:   pkgconfig
 
 %description -n libpurple-devel
@@ -212,8 +212,8 @@ and text.
 %package -n finch-devel
 Summary:    Headers etc. for finch stuffs
 Group:      Applications/Internet
-Requires:   finch = %{epoch}:%{version}-%{release}
-Requires:   libpurple-devel = %{epoch}:%{version}-%{release}
+Requires:   finch = %{version}-%{release}
+Requires:   libpurple-devel = %{version}-%{release}
 Requires:   pkgconfig
 
 %description -n finch-devel
