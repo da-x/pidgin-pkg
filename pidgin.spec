@@ -33,7 +33,7 @@ License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
 #Source0:	http://download.sourceforge.net/gaim/gaim-%{version}%{betaver}.tar.bz2
-Source0:	pidgin-%{version}%{betaver}.tar.gz
+Source0:	pidgin-%{version}%{betaver}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
