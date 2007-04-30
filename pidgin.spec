@@ -24,18 +24,18 @@
 %define meanwhile_integration	1
 
 # Prerelease define
-%define betaver	beta7devel
+%define betaver	beta7
 
 Name:		pidgin
 Version:	2.0.0
-Release:	0.35.%{betaver}%{?dist}
+Release:	0.36.%{betaver}%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
 #Source0:	http://download.sourceforge.net/gaim/gaim-%{version}%{betaver}.tar.bz2
 Source0:	pidgin-%{version}%{betaver}.tar.gz
-Obsoletes:      gaim
-Provides:       gaim
+Obsoletes:      gaim < 999:1
+Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
 
 ## Fedora pidgin defaults - Please Regenerate for Each Major Release
@@ -57,7 +57,6 @@ Source1:	gaim-fedora-prefs.xml
 
 ## Patches 100+: To be Included in Future Upstream
 Patch113: pidgin-2.0.0-beta7-reread-resolvconf.patch
-Patch114: pidgin-2.0.0-beta7-fix-perl-plugin-varnames.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -227,7 +226,6 @@ and plugins.
 
 ## Patches 100+: To be Included in Future Upstream
 %patch113 -p1
-%patch114 -p1
 
 # Relabel internal version for support purposes
 sed -i "s/%{version}%{betaver}/%{version}-%{release}/g" configure
@@ -329,19 +327,20 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f pidgin.lang
 %defattr(-,root,root,-)
-%doc NEWS COPYING AUTHORS doc/FAQ README ChangeLog doc/PERL-HOWTO.dox
+%doc NEWS COPYING AUTHORS README ChangeLog doc/PERL-HOWTO.dox
 %{_bindir}/pidgin
 %{_bindir}/gaim
 %{_libdir}/pidgin/
 %{_mandir}/man1/pidgin.*
-%{_mandir}/man3/Purple::GtkUI.*
+%{_mandir}/man3/Pidgin*
 %{_datadir}/applications/pidgin.desktop
 %{_datadir}/pixmaps/pidgin/
-%{_datadir}/pixmaps/pidgin.svg
+%{_datadir}/icons/hicolor/
 %{_datadir}/sounds/pidgin/
 %if %{perl_integration}
-%{perl_vendorarch}/Purple/*
-%{perl_vendorarch}/auto/Purple/GtkUI*
+%{perl_vendorarch}/Pidgin.pm
+%dir %{perl_vendorarch}/auto/Pidgin/
+%{perl_vendorarch}/auto/Pidgin/Pidgin.so
 %endif
 
 %files devel
@@ -350,15 +349,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/pidgin.pc
 
 %files -f pidgin.lang -n libpurple
-%{_libdir}/libpurple/
+%{_libdir}/purple-2/
 %{_libdir}/libpurple.so.*
-%{_mandir}/man3/Purple.*
+%{_mandir}/man3/Purple*
 %{_datadir}/pixmaps/purple/
 %{_sysconfdir}/purple/
 %{_sysconfdir}/gconf/schemas/purple.schemas
 %if %{perl_integration}
 %{perl_vendorarch}/Purple.pm
-%dir %{perl_vendorarch}/auto/Purple
+%dir %{perl_vendorarch}/auto/Purple/
 %{perl_vendorarch}/auto/Purple/Purple.so
 %{perl_vendorarch}/auto/Purple/autosplit.ix
 %endif
@@ -396,6 +395,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Apr 30 2007 Warren Togami <wtogami@redhat.com> - 2.0.0-0.36.beta7
+- pidgin-2.0.0beta7, bug fixes and pref migration handling
+
 * Sat Apr 21 2007 Warren Togami <wtogami@redhat.com> - 2.0.0-0.35.beta7devel
 - upstream insists that we remove the Epoch
   rawhide users might need to use --oldpackage once to upgrade
