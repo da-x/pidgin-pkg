@@ -314,9 +314,17 @@ chmod -R u+w $RPM_BUILD_ROOT/*
 # symlink /usr/bin/gaim to new pidgin name
 ln -sf %{_bindir}/pidgin $RPM_BUILD_ROOT%{_bindir}/gaim
 
+%post
+touch --no-create %{_datadir}/icons/hicolor || :
+%{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+
 %post -n libpurple -p /sbin/ldconfig
 
 %post -n finch -p /sbin/ldconfig
+
+%postun
+touch --no-create %{_datadir}/icons/hicolor || :
+%{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
 
 %postun -n libpurple -p /sbin/ldconfig
 
@@ -395,6 +403,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 1 2007 Stu Tomlinson <stu@nosnilmot.com>
+- Update Gtk icon cache when installing or uninstalling (#238621)
+
 * Mon Apr 30 2007 Warren Togami <wtogami@redhat.com> - 2.0.0-0.36.beta7
 - pidgin-2.0.0beta7, bug fixes and pref migration handling
 
