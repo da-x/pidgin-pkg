@@ -343,7 +343,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/Pidgin*
 %{_datadir}/applications/pidgin.desktop
 %{_datadir}/pixmaps/pidgin/
-%{_datadir}/icons/hicolor/
+%{_datadir}/icons/hicolor/*/apps/pidgin.*
 %{_datadir}/sounds/pidgin/
 %if %{perl_integration}
 %{perl_vendorarch}/Pidgin.pm
@@ -405,6 +405,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue May 1 2007 Stu Tomlinson <stu@nosnilmot.com>
 - Update Gtk icon cache when installing or uninstalling (#238621)
+- Don't own all directories we put icons in
 
 * Mon Apr 30 2007 Warren Togami <wtogami@redhat.com> - 2.0.0-0.36.beta7
 - pidgin-2.0.0beta7, bug fixes and pref migration handling
