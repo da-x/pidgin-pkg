@@ -23,24 +23,19 @@
 # OPTION: Meanwhile integration (F7+)
 %define meanwhile_integration	1
 
-# Prerelease define
-%define betaver	beta7
-
 Name:		pidgin
 Version:	2.0.0
-Release:	0.36.%{betaver}%{?dist}
+Release:	1%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
-#Source0:	http://download.sourceforge.net/gaim/gaim-%{version}%{betaver}.tar.bz2
-Source0:	pidgin-%{version}%{betaver}.tar.bz2
+Source0:	http://download.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
 
 ## Fedora pidgin defaults - Please Regenerate for Each Major Release
-# 1) run gaim as new user 2) edit preferences 3) close 4) copy .gaim/prefs.xml
-# - enable System Tray Icon
+# 1) run pidgin as new user 2) edit preferences 3) close 4) copy .purple/prefs.xml
 # - enable ExtPlacement plugin
 # - enable History plugin
 # - enable Message Notification plugin
@@ -50,7 +45,7 @@ ExcludeArch:    s390 s390x
 # - enable Logging (in HTML)
 # - Browser "GNOME Default"
 # - Smiley Theme "Default"
-Source1:	gaim-fedora-prefs.xml
+Source1:	purple-fedora-prefs.xml
 
 
 ## Patches 0-99: Fedora specific or upstream wont accept
@@ -67,6 +62,10 @@ Summary:	A Gtk+ based multiprotocol instant messaging client
 %define glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
 BuildRequires:	glib2-devel
 Requires:       glib2 >= %{glib_ver}
+
+Requires(pre):  GConf2
+Requires(post): GConf2
+Requires(preun): GConf2
 
 # Basic Library Requirements
 BuildRequires:  autoconf
@@ -221,14 +220,14 @@ and plugins.
 
 
 %prep
-%setup -q -n pidgin-%{version}%{betaver}
+%setup -q
 ## Patches 0-99: Fedora specific or upstream wont accept
 
 ## Patches 100+: To be Included in Future Upstream
 %patch113 -p1
 
 # Relabel internal version for support purposes
-sed -i "s/%{version}%{betaver}/%{version}-%{release}/g" configure
+sed -i "s/%{version}/%{version}-%{release}/g" configure
 chmod 755 configure
 
 # If not using gnome-open, then default to htmlview 
@@ -273,7 +272,8 @@ export CFLAGS="$RPM_OPT_FLAGS"
 # gnutls is buggy so use mozilla-nss on all distributions
 # disable tcl and tk (at least until we split them out)
 %configure --disable-tcl --disable-tk \
-           --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl $SWITCHES
+           --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl \
+           --disable-schemas-install $SWITCHES
 
 make %{?_smp_mflags}
 
@@ -314,13 +314,33 @@ chmod -R u+w $RPM_BUILD_ROOT/*
 # symlink /usr/bin/gaim to new pidgin name
 ln -sf %{_bindir}/pidgin $RPM_BUILD_ROOT%{_bindir}/gaim
 
+%pre
+if [ "$1" -gt 1 ]; then
+    export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+    gconftool-2 --makefile-uninstall-rule \
+                %{_sysconfdir}/gconf/schemas/purple.schemas >/dev/null || :
+    killall -HUP gconfd-2 || :
+fi
+
 %post
 touch --no-create %{_datadir}/icons/hicolor || :
 %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+gconftool-2 --makefile-install-rule \
+            %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
+killall -HUP gconfd-2 || :
 
 %post -n libpurple -p /sbin/ldconfig
 
 %post -n finch -p /sbin/ldconfig
+
+%preun
+if [ "$1" -eq 0 ]; then
+    export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+    gconftool-2 --makefile-uninstall-rule \
+                %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
+    killall -HUP gconfd-2 || :
+fi
 
 %postun
 touch --no-create %{_datadir}/icons/hicolor || :
@@ -345,6 +365,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pixmaps/pidgin/
 %{_datadir}/icons/hicolor/*/apps/pidgin.*
 %{_datadir}/sounds/pidgin/
+%{_sysconfdir}/gconf/schemas/purple.schemas
 %if %{perl_integration}
 %{perl_vendorarch}/Pidgin.pm
 %dir %{perl_vendorarch}/auto/Pidgin/
@@ -362,7 +383,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/Purple*
 %{_datadir}/pixmaps/purple/
 %{_sysconfdir}/purple/
-%{_sysconfdir}/gconf/schemas/purple.schemas
 %if %{perl_integration}
 %{perl_vendorarch}/Purple.pm
 %dir %{perl_vendorarch}/auto/Purple/
@@ -403,6 +423,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 4 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.0-1
+- 2.0.0
+- Add scriptlets to install & uninstall GConf schemas
+- Move schema file from libpurple to Pidgin to avoid GConf
+  dependencies in libpurple
+- rename gaim-fedora-prefs.xml to purple-fedora-prefs.xml
+
 * Tue May 1 2007 Stu Tomlinson <stu@nosnilmot.com>
 - Update Gtk icon cache when installing or uninstalling (#238621)
 - Don't own all directories we put icons in
