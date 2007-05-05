@@ -22,10 +22,12 @@
 %define dbus_glib_splt		1
 # OPTION: Meanwhile integration (F7+)
 %define meanwhile_integration	1
+# OPTION: Perl devel separated out (F7+)
+%define perl_devel_separated    1
 
 Name:		pidgin
 Version:	2.0.0
-Release:	1%{?dist}
+Release:	1.1%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -128,6 +130,10 @@ BuildRequires:  dbus-glib-devel >= 0.70
 # Meanwhile integration (F7+)
 %if %{meanwhile_integration}
 BuildRequires:	meanwhile-devel
+%endif
+# Perl devel separated out (F7+)
+%if %{perl_devel_separated}
+BuildRequires:  perl-devel
 %endif
 
 
@@ -423,6 +429,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May 5 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.0-1.1
+- Add perl-devel to BuildRequires
+
 * Fri May 4 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.0-1
 - 2.0.0
 - Add scriptlets to install & uninstall GConf schemas
