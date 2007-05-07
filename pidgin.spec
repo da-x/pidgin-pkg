@@ -27,7 +27,7 @@
 
 Name:		pidgin
 Version:	2.0.0
-Release:	1.1%{?dist}
+Release:	2%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -325,7 +325,7 @@ if [ "$1" -gt 1 ]; then
     export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
     gconftool-2 --makefile-uninstall-rule \
                 %{_sysconfdir}/gconf/schemas/purple.schemas >/dev/null || :
-    killall -HUP gconfd-2 || :
+    killall -HUP gconfd-2 &> /dev/null || :
 fi
 
 %post
@@ -334,7 +334,7 @@ touch --no-create %{_datadir}/icons/hicolor || :
 export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
 gconftool-2 --makefile-install-rule \
             %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
-killall -HUP gconfd-2 || :
+killall -HUP gconfd-2 &> /dev/null || :
 
 %post -n libpurple -p /sbin/ldconfig
 
@@ -345,7 +345,7 @@ if [ "$1" -eq 0 ]; then
     export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
     gconftool-2 --makefile-uninstall-rule \
                 %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
-    killall -HUP gconfd-2 || :
+    killall -HUP gconfd-2 &> /dev/null || :
 fi
 
 %postun
@@ -429,6 +429,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun May 6 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.0-2
+- Silence errors when gconfd-2 is not running
+
 * Sat May 5 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.0-1.1
 - Add perl-devel to BuildRequires
 
