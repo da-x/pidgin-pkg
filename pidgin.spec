@@ -1,5 +1,7 @@
 # OPTION: perl integration (FC1+)
-%define perl_integration	1
+# set to 1 for FC1-FC6, perl included in main packages
+# set to 2 for F7+, perl provided by subpackages
+%define perl_integration	2
 # OPTION: krb5 for Zephyr protocol (FC1+)
 %define krb_integration		1
 # OPTION: gtkspell integration (FC1+)
@@ -24,10 +26,12 @@
 %define meanwhile_integration	1
 # OPTION: Perl devel separated out (F7+)
 %define perl_devel_separated    1
+# OPTION: Tcl/Tk integration (F7+)
+%define tcl_integration         1
 
 Name:		pidgin
 Version:	2.0.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -135,6 +139,11 @@ BuildRequires:	meanwhile-devel
 %if %{perl_devel_separated}
 BuildRequires:  perl-devel
 %endif
+# Tcl integration (FC7+)
+%if %{tcl_integration}
+BuildRequires: tcl-devel
+BuildRequires: tk-devel
+%endif
 
 
 %description
@@ -166,6 +175,18 @@ The pidgin-devel package contains the header files, developer
 documentation, and libraries required for development of Pidgin scripts
 and plugins.
 
+%if %{perl_integration} == 2
+%package perl
+Summary:    Perl scripting support for Pidgin
+Group:      Applications/Internet
+Requires:   libpurple = %{version}-%{release}
+Requires:   libpurple-perl = %{version}-%{release}
+
+%description perl
+Perl plugin loader for Pidgin. This package will allow you to write or
+use Pidgin plugins written in the Perl programming language.
+%endif
+
 
 %package -n libpurple
 Summary:    libpurple library for IM clients like Pidgin and Finch
@@ -176,7 +197,6 @@ Obsoletes:  gaim-meanwhile
 Requires:   glib2 >= %{glib_ver}
 # Bug #212817 Jabber needs cyrus-sasl plugins for authentication
 Requires: cyrus-sasl-plain, cyrus-sasl-md5
-
 
 %description -n libpurple
 libpurple contains the core IM support for IM clients such as Pidgin
@@ -197,6 +217,29 @@ Requires:   pkgconfig
 The libpurple-devel package contains the header files, developer
 documentation, and libraries required for development of libpurple based
 instant messaging clients or plugins for any libpurple based client.
+
+%if %{perl_integration} == 2
+%package -n libpurple-perl
+Summary:    Perl scripting support for libpurple
+Group:      Applications/Internet
+Requires:   libpurple = %{version}-%{release}
+
+%description -n libpurple-perl
+Perl plugin loader for libpurple. This package will allow you to write or
+use libpurple plugins written in the Perl programming language.
+%endif
+
+
+%if %{tcl_integration}
+%package -n libpurple-tcl
+Summary:    Tcl scripting support for libpurple
+Group:      Applications/Internet
+Requires:   libpurple = %{version}-%{release}
+
+%description -n libpurple-tcl
+Tcl plugin loader for libpurple. This package will allow you to write or
+use libpurple plugins written in the Tcl programming language.
+%endif
 
 
 %package -n finch
@@ -270,15 +313,18 @@ SWITCHES=""
 %else
 	SWITCHES="$SWITCHES --disable-gstreamer"
 %endif
+%if %{tcl_integration}
+       SWITCHES="$SWITCHES --enable-tcl --enable-tk"
+%else
+       SWITCHES="$SWITCHES --disable-tcl --disable-tk"
+%endif
 
 # FC5+ automatic -fstack-protector-all switch
 export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
 export CFLAGS="$RPM_OPT_FLAGS"
 
 # gnutls is buggy so use mozilla-nss on all distributions
-# disable tcl and tk (at least until we split them out)
-%configure --disable-tcl --disable-tk \
-           --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl \
+%configure --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl \
            --disable-schemas-install $SWITCHES
 
 make %{?_smp_mflags}
@@ -372,7 +418,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/apps/pidgin.*
 %{_datadir}/sounds/pidgin/
 %{_sysconfdir}/gconf/schemas/purple.schemas
-%if %{perl_integration}
+%if %{perl_integration} == 1
+%{perl_vendorarch}/Pidgin.pm
+%dir %{perl_vendorarch}/auto/Pidgin/
+%{perl_vendorarch}/auto/Pidgin/Pidgin.so
+%endif
+
+%if %{perl_integration} == 2
+%files perl
+%defattr(-,root,root,-)
 %{perl_vendorarch}/Pidgin.pm
 %dir %{perl_vendorarch}/auto/Pidgin/
 %{perl_vendorarch}/auto/Pidgin/Pidgin.so
@@ -389,12 +443,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man3/Purple*
 %{_datadir}/pixmaps/purple/
 %{_sysconfdir}/purple/
-%if %{perl_integration}
-%{perl_vendorarch}/Purple.pm
-%dir %{perl_vendorarch}/auto/Purple/
-%{perl_vendorarch}/auto/Purple/Purple.so
-%{perl_vendorarch}/auto/Purple/autosplit.ix
-%endif
 %if %{dbus_integration}
 %{_bindir}/purple-client-example
 %{_bindir}/purple-remote
@@ -405,6 +453,19 @@ rm -rf $RPM_BUILD_ROOT
 #%{_datadir}/dbus-1/services/pidgin.service
 %doc libpurple/purple-notifications-example
 %endif
+%if %{tcl_integration}
+%exclude %{_libdir}/purple-2/tcl.so
+%endif
+%if %{perl_integration} == 2
+%exclude %{_libdir}/purple-2/perl.so
+%else
+%if %{perl_integration} == 1
+%{perl_vendorarch}/Purple.pm
+%dir %{perl_vendorarch}/auto/Purple/
+%{perl_vendorarch}/auto/Purple/Purple.so
+%{perl_vendorarch}/auto/Purple/autosplit.ix
+%endif
+%endif
 
 %files -n libpurple-devel
 %{_datadir}/aclocal/purple.m4
@@ -413,6 +474,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/purple.pc
 %if %{dbus_integration}
 %{_libdir}/libpurple-client.so
+%endif
+
+%if %{perl_integration} == 2
+%files -n libpurple-perl
+%exclude %{_libdir}/purple-2/perl.so
+%{perl_vendorarch}/Purple.pm
+%dir %{perl_vendorarch}/auto/Purple/
+%{perl_vendorarch}/auto/Purple/Purple.so
+%{perl_vendorarch}/auto/Purple/autosplit.ix
+%endif
+
+%if %{tcl_integration}
+%files -n libpurple-tcl
+%{_libdir}/purple-2/tcl.so
 %endif
 
 %files -f pidgin.lang -n finch
@@ -429,6 +504,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 9 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.0-3
+- Split out Perl plugin support into subpackages
+- Add Tcl plugin support in a subpackage
+
 * Sun May 6 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.0-2
 - Silence errors when gconfd-2 is not running
 
