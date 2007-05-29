@@ -26,8 +26,8 @@
 %define perl_devel_separated    1
 
 Name:		pidgin
-Version:	2.0.0
-Release:	3%{?dist}
+Version:	2.0.1
+Release:	1%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -475,6 +475,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 28 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-1
+- 2.0.1
+
 * Wed May 9 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.0-3
 - Split out Perl plugin support into subpackages
 - Add Tcl plugin support in a subpackage
