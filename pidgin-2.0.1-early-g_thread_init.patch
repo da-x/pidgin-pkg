@@ -1,0 +1,26 @@
+-----------------------------------------------------------------
+Revision: c2025c2fd1fcbae580c830d05a4945eaa5192bd9
+Ancestor: 3ac5981b26be545a8c546e09b6689c2359fad1bb
+Author: seanegan@pidgin.im
+Date: 2007-05-31T18:28:05
+Branch: im.pidgin.pidgin
+
+Modified files:
+        pidgin/gtkmain.c
+
+ChangeLog: 
+
+disapproval of revision '3ac5981b26be545a8c546e09b6689c2359fad1bb'
+============================================================
+--- pidgin/gtkmain.c	1c97b5231a67719acc6961daa403dd9c610d0dc5
++++ pidgin/gtkmain.c	7f38e60c398ef61579c4256a14ae2071037bdef1
+@@ -473,6 +473,9 @@ int main(int argc, char *argv[])
+ #else
+ 	debug_enabled = FALSE;
+ #endif
++
++	/* This is the first Glib function call. Make sure to initialize GThread bfeore then */
++	g_thread_init(NULL);
+ 	
+ #ifdef ENABLE_NLS
+ 	bindtextdomain(PACKAGE, LOCALEDIR);

@@ -1,0 +1,28 @@
+-----------------------------------------------------------------
+Revision: 211671c8fe491b3dad82b2990c1ffc8e20de8ec4
+Ancestor: 371fb91ec4fdb33fa482efe55111fe58d8758c3b
+Author: elb@pidgin.im
+Date: 2007-05-26T16:05:47
+Branch: im.pidgin.pidgin
+
+Modified files:
+        libpurple/purple-remote
+
+ChangeLog: 
+
+A conditional in purple_remote was missing a trailing colon.
+
+Fixes #1300
+
+============================================================
+--- libpurple/purple-remote	5be48713f1232a7e6f80df7af3a1b3478af5faf0
++++ libpurple/purple-remote	3d893ee565001dfffefae1f2d2c28d167530a14a
+@@ -94,7 +94,7 @@ def execute(uri):
+ def execute(uri):
+     match = re.match(urlregexp, uri)
+     protocol = match.group(2)
+-    if protocol == "xmpp"
++    if protocol == "xmpp":
+         protocol = "jabber"
+     if protocol == "aim" or protocol == "icq":
+         protocol = "oscar"
