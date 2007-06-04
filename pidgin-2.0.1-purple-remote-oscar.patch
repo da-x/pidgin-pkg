@@ -1,0 +1,39 @@
+-----------------------------------------------------------------
+Revision: a0ccd8708935303973ab94ba534dabdc72002039
+Ancestor: b9db139bf548b0ec1e2265131772e2eb763cfa5a
+Author: markdoliner@pidgin.im
+Date: 2007-06-04T05:56:16
+Branch: im.pidgin.pidgin
+
+Modified files:
+        libpurple/purple-remote
+
+ChangeLog: 
+
+Fix http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=240589
+
+"If you run "gaim-remote aim:goim?screenname=whatever" then it throws an
+exception because it looks for a "prpl-oscar" account, but apparently I am
+signed in with a "prpl-aim" account."
+
+============================================================
+--- libpurple/purple-remote	3d893ee565001dfffefae1f2d2c28d167530a14a
++++ libpurple/purple-remote	da0715a989b96d9f4840c7ab2917bccb76112413
+@@ -31,7 +31,7 @@ def show_help():
+         return result
+             
+ def show_help():
+-    print """This program uses DBus to communicate with purple.
++    print """This program uses D-Bus to communicate with purple.
+ 
+ Usage:
+ 
+@@ -96,8 +96,6 @@ def execute(uri):
+     protocol = match.group(2)
+     if protocol == "xmpp":
+         protocol = "jabber"
+-    if protocol == "aim" or protocol == "icq":
+-        protocol = "oscar"
+     if protocol is not None:
+         protocol = "prpl-" + protocol
+     command = match.group(5)

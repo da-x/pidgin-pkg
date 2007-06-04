@@ -27,7 +27,7 @@
 
 Name:		pidgin
 Version:	2.0.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -55,6 +55,7 @@ Source1:	purple-fedora-prefs.xml
 ## Patches 100+: To be Included in Future Upstream
 Patch100: pidgin-2.0.1-early-g_thread_init.patch
 Patch101: pidgin-2.0.1-purple-remote-syntax.patch
+Patch102: pidgin-2.0.1-purple-remote-oscar.patch
 Patch113: pidgin-2.0.0-beta7-reread-resolvconf.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
@@ -268,6 +269,7 @@ and plugins.
 ## Patches 100+: To be Included in Future Upstream
 %patch100 -p0
 %patch101 -p0
+%patch102 -p0
 %patch113 -p1
 
 # Relabel internal version for support purposes
@@ -479,6 +481,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 4 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-3
+- Fix purple-remote for AIM & ICQ accounts (#240589)
+
 * Fri May 31 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-2
 - Call g_thread_init early (#241883)
 - Fix purple-remote syntax error (#241905)
