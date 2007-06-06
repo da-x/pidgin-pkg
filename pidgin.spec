@@ -27,7 +27,7 @@
 
 Name:		pidgin
 Version:	2.0.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -490,7 +490,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Jun 5 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-3
+* Tue Jun 5 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-4
 - Fix purple-remote for AIM & ICQ accounts (#240589)
 - Add missing Requires to -devel packages
 - Add missing BuildRequires for libxml2-devel
