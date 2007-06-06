@@ -84,6 +84,7 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  ncurses-devel
 BuildRequires:  tcl-devel
 BuildRequires:  tk-devel
+BuildRequires:  libxml2-devel
 
 # krb5 needed for Zephyr (FC1+)
 %if %{krb_integration}
@@ -163,6 +164,7 @@ Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 Requires: libpurple-devel = %{version}-%{release}
 Requires: pkgconfig
+Requires: gtk2-devel
 Obsoletes: gaim-devel
 Provides:  gaim-devel
 
@@ -208,6 +210,12 @@ Summary:    Development headers, documentation, and libraries for libpurple
 Group:      Applications/Internet
 Requires:   libpurple = %{version}-%{release}
 Requires:   pkgconfig
+%if %{dbus_integration}
+Requires:   dbus-devel >= 0.60
+%endif
+%if %{dbus_glib_splt}
+Requires:   dbus-glib-devel >= 0.70
+%endif
 
 %description -n libpurple-devel
 The libpurple-devel package contains the header files, developer
@@ -254,6 +262,7 @@ Group:      Applications/Internet
 Requires:   finch = %{version}-%{release}
 Requires:   libpurple-devel = %{version}-%{release}
 Requires:   pkgconfig
+Requires:   ncurses-devel
 
 %description -n finch-devel
 The finch-devel package contains the header files, developer
@@ -481,8 +490,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Jun 4 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-3
+* Tue Jun 5 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-3
 - Fix purple-remote for AIM & ICQ accounts (#240589)
+- Add missing Requires to -devel packages
+- Add missing BuildRequires for libxml2-devel
 
 * Fri May 31 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-2
 - Call g_thread_init early (#241883)
