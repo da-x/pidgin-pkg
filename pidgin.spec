@@ -20,6 +20,8 @@
 %define modular_x               1
 # OPTION: dbus-glib split (FC6+)
 %define dbus_glib_splt		1
+# OPTION: Bonjour support (FC6+)
+%define bonjour_support		1
 # OPTION: Meanwhile integration (F7+)
 %define meanwhile_integration	1
 # OPTION: Perl devel separated out (F7+)
@@ -27,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.0.1
-Release:	4%{?dist}
+Release:	5%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -56,6 +58,7 @@ Source1:	purple-fedora-prefs.xml
 Patch100: pidgin-2.0.1-early-g_thread_init.patch
 Patch101: pidgin-2.0.1-purple-remote-syntax.patch
 Patch102: pidgin-2.0.1-purple-remote-oscar.patch
+Patch103: pidgin-2.0.1-gevolution-fix.patch
 Patch113: pidgin-2.0.0-beta7-reread-resolvconf.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
@@ -132,6 +135,9 @@ BuildRequires:  libXScrnSaver-devel
 # DBus GLIB Split (FC6+)
 %if %{dbus_glib_splt}
 BuildRequires:  dbus-glib-devel >= 0.70
+%endif
+%if %{bonjour_support}
+BuildRequires:	avahi-compat-howl-devel
 %endif
 # Meanwhile integration (F7+)
 %if %{meanwhile_integration}
@@ -279,6 +285,7 @@ and plugins.
 %patch100 -p0
 %patch101 -p0
 %patch102 -p0
+%patch103 -p0
 %patch113 -p1
 
 # Relabel internal version for support purposes
@@ -490,6 +497,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 6 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-5
+- Enable Bonjour support (#242949)
+- Fix building against latest evolution-data-server
+
 * Tue Jun 5 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-4
 - Fix purple-remote for AIM & ICQ accounts (#240589)
 - Add missing Requires to -devel packages
