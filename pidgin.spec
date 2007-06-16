@@ -28,8 +28,8 @@
 %define perl_devel_separated    1
 
 Name:		pidgin
-Version:	2.0.1
-Release:	5%{?dist}
+Version:	2.0.2
+Release:	1%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -55,10 +55,6 @@ Source1:	purple-fedora-prefs.xml
 ## Patches 0-99: Fedora specific or upstream wont accept
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.0.1-early-g_thread_init.patch
-Patch101: pidgin-2.0.1-purple-remote-syntax.patch
-Patch102: pidgin-2.0.1-purple-remote-oscar.patch
-Patch103: pidgin-2.0.1-gevolution-fix.patch
 Patch113: pidgin-2.0.0-beta7-reread-resolvconf.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
@@ -282,10 +278,6 @@ and plugins.
 ## Patches 0-99: Fedora specific or upstream wont accept
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0
-%patch101 -p0
-%patch102 -p0
-%patch103 -p0
 %patch113 -p1
 
 # Relabel internal version for support purposes
@@ -497,6 +489,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 15 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.2-1
+- 2.0.2
+
 * Wed Jun 6 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-5
 - Enable Bonjour support (#242949)
 - Fix building against latest evolution-data-server
