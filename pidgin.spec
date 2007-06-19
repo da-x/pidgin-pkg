@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.0.2
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -169,8 +169,6 @@ Requires: pkgconfig
 Requires: gtk2-devel
 Obsoletes: gaim-devel
 Provides:  gaim-devel
-Obsoletes: gaim < 999:1
-Provides:  gaim = 999:1
 
 
 %description devel
@@ -194,6 +192,8 @@ use Pidgin plugins written in the Perl programming language.
 %package -n libpurple
 Summary:    libpurple library for IM clients like Pidgin and Finch
 Group:      Applications/Internet
+# Ensure elimination of gaim.i386 on x86_64
+Obsoletes: gaim < 999:1
 %if %{meanwhile_integration}
 Obsoletes:  gaim-meanwhile
 %endif
@@ -492,8 +492,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Jun 19 2007 Warren Togami <wtogami@redhat.com> - 2.0.2-2
-- pidgin-devel obsoletes/provides gaim
+* Tue Jun 19 2007 Warren Togami <wtogami@redhat.com> - 2.0.2-3
+- libpurple obsoletes and provides gaim
   This smoothens multilib the upgrade path.
 
 * Fri Jun 15 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.2-1
