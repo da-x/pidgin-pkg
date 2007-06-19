@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.0.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -169,6 +169,9 @@ Requires: pkgconfig
 Requires: gtk2-devel
 Obsoletes: gaim-devel
 Provides:  gaim-devel
+Obsoletes: gaim < 999:1
+Provides:  gaim = 999:1
+
 
 %description devel
 The pidgin-devel package contains the header files, developer
@@ -489,6 +492,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 19 2007 Warren Togami <wtogami@redhat.com> - 2.0.2-2
+- pidgin-devel obsoletes/provides gaim
+  This smoothens multilib the upgrade path.
+
 * Fri Jun 15 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.2-1
 - 2.0.2
 
