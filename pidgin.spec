@@ -22,7 +22,7 @@
 %define dbus_glib_splt		1
 # OPTION: Bonjour support (FC6+)
 %define bonjour_support		1
-# OPTION: Meanwhile integration (F7+)
+# OPTION: Meanwhile integration (F6+)
 %define meanwhile_integration	1
 # OPTION: Perl devel separated out (F7+)
 %define perl_devel_separated    1
