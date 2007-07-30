@@ -28,8 +28,8 @@
 %define perl_devel_separated    1
 
 Name:		pidgin
-Version:	2.0.2
-Release:	3%{?dist}
+Version:	2.1.0
+Release:	1%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -409,7 +409,7 @@ touch --no-create %{_datadir}/icons/hicolor || :
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files -f pidgin.lang
+%files
 %defattr(-,root,root,-)
 %doc NEWS COPYING AUTHORS README ChangeLog doc/PERL-HOWTO.dox
 %{_bindir}/pidgin
@@ -478,9 +478,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libpurple-tcl
 %{_libdir}/purple-2/tcl.so
 
-%files -f pidgin.lang -n finch
+%files -n finch
 %{_bindir}/finch
 %{_libdir}/finch/
+%{_libdir}/gnt/
 %{_libdir}/libgnt.so.*
 %{_mandir}/man1/finch.*
 
@@ -492,6 +493,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 30 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.1.0-1
+- 2.1.0
+- Only include translations in libpurple instead of duplicating them in
+  packages that depend on libpurple anyway
+
 * Tue Jun 19 2007 Warren Togami <wtogami@redhat.com> - 2.0.2-3
 - libpurple obsoletes and provides gaim
   This smoothens multilib the upgrade path.
