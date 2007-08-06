@@ -66,6 +66,8 @@ Summary:	A Gtk+ based multiprotocol instant messaging client
 %define glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
 BuildRequires:	glib2-devel
 Requires:       glib2 >= %{glib_ver}
+# Require exact libpurple
+Requires:       libpurple = %{version}-%{release}
 
 Requires(pre):  GConf2
 Requires(post): GConf2
@@ -493,6 +495,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 6 2007 Warren Togami <wtogami@redhat.com>
+- require exact version of libpurple (#250720)
+
 * Mon Jul 30 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.1.0-1
 - 2.1.0
 - Only include translations in libpurple instead of duplicating them in
