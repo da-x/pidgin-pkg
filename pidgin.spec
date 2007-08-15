@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.1.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:	GPL
 Group:		Applications/Internet
 URL:		http://pidgin.im/
@@ -56,6 +56,9 @@ Source1:	purple-fedora-prefs.xml
 
 ## Patches 100+: To be Included in Future Upstream
 Patch113: pidgin-2.0.0-beta7-reread-resolvconf.patch
+Patch115: pidgin-2.1.0-gmail-notification-crash.patch
+Patch117: pidgin-2.1.0-drag-and-drop-mouse-click-group-header.patch
+Patch118: pidgin-2.1.0-jabber-confirm-authentication-unencrypted-crash.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -284,6 +287,9 @@ and plugins.
 
 ## Patches 100+: To be Included in Future Upstream
 %patch113 -p1
+%patch115 -p0
+%patch117 -p0
+%patch118 -p0
 
 # Relabel internal version for support purposes
 sed -i "s/%{version}/%{version}-%{release}/g" configure
@@ -495,6 +501,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 15 2007 Warren Togami <wtogami@redhat.com> - 2.1.0-2
+- Upstream fix backports
+  115: gmail-notification-crash #2323
+  117: drag-and-drop-mouse-click-group-header #2333
+  118: jabber-confirm-authentication-unencrypted-crash #2493
+
 * Mon Aug 6 2007 Warren Togami <wtogami@redhat.com>
 - require exact version of libpurple (#250720)
 

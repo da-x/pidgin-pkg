@@ -1,0 +1,24 @@
+-----------------------------------------------------------------
+Revision: 5618acb52bfd86c8ae9982aacffa80cbeffac9dc
+Ancestor: ba067178bb873c4a4ce6c3434d4c5cd6cf087483
+Author: seanegan@pidgin.im
+Date: 2007-07-30T18:02:03
+Branch: im.pidgin.pidgin
+
+Modified files:
+        pidgin/gtkcellrendererexpander.c
+
+ChangeLog: 
+
+Let drag-and-drop get mouse clicks on group headers. Fixes #2333
+
+============================================================
+--- pidgin/gtkcellrendererexpander.c	5b8b56220f5e94b903370926d9d77d81a3570ca8
++++ pidgin/gtkcellrendererexpander.c	07a9e98cc50d5228a0fa9fee56b25f214aeb420d
+@@ -285,5 +285,5 @@ static gboolean pidgin_cell_renderer_exp
+ 	else
+ 		gtk_tree_view_expand_row(GTK_TREE_VIEW(widget),path,FALSE);
+ 	gtk_tree_path_free(path);
+-	return TRUE;
++	return FALSE;
+ }

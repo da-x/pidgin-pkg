@@ -1,0 +1,26 @@
+-----------------------------------------------------------------
+Revision: 1df2323d7e95b0cd94b5d253abffd806e9b68494
+Ancestor: 5198e3d502cf72292ea563edd164a36d333835ee
+Author: datallah@pidgin.im
+Date: 2007-08-10T13:28:12
+Branch: im.pidgin.pidgin
+
+Modified files:
+        libpurple/protocols/jabber/auth.c
+
+ChangeLog: 
+
+Fix null pointer deref when confirming authentication over unencrypted connection. Fixes #2493.
+
+============================================================
+--- libpurple/protocols/jabber/auth.c	b92b524c8526cca9006c1e7258895603c6264c1e
++++ libpurple/protocols/jabber/auth.c	c31c23a9578378726861ff31d5f0f926ba5500b9
+@@ -296,7 +296,7 @@ static void jabber_auth_start_cyrus(Jabb
+ 					purple_request_yes_no(js->gc, _("Plaintext Authentication"),
+ 							_("Plaintext Authentication"),
+ 							msg,
+-							2, js->gc->account, NULL, NULL, NULL,
++							2, js->gc->account, NULL, NULL, js->gc->account,
+ 							allow_cyrus_plaintext_auth,
+ 							disallow_plaintext_auth);
+ 					g_free(msg);
