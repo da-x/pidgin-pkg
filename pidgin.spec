@@ -421,7 +421,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/pidgin.desktop
 %{_datadir}/pixmaps/pidgin/
 %{_datadir}/icons/hicolor/*/apps/pidgin.*
-%{_datadir}/sounds/pidgin/
+%{_datadir}/sounds/purple/
 %{_sysconfdir}/gconf/schemas/purple.schemas
 
 %if %{perl_integration}
