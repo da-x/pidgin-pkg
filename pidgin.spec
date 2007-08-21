@@ -30,7 +30,7 @@
 Name:		pidgin
 Version:	2.1.1
 Release:	1%{?dist}
-License:	GPL
+License:	GPLv2+
 Group:		Applications/Internet
 URL:		http://pidgin.im/
 Source0:	http://download.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
