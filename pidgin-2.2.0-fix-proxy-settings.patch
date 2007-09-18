@@ -1,0 +1,52 @@
+-----------------------------------------------------------------
+Revision: 6be36979d022284283217c2a32f2b812740cbbf3
+Ancestor: 81e26f1e56d65a68394405ff0727feba9206ff6f
+Author: datallah@pidgin.im
+Date: 2007-09-14T17:55:05
+Branch: im.pidgin.pidgin
+
+Modified files:
+        libpurple/proxy.c pidgin/gtkprefs.c
+
+ChangeLog: 
+
+Fix proxy settings to be loaded correctly when libpurple is initialized.  This was broken because it relied on the prefs being loaded after proxy initialization so that the pref callbacks would be triggered and I changed the prefs loading to happen right at the beginning to fix other issues. Fixes #3092.
+
+============================================================
+--- libpurple/proxy.c	fa08e3c184837ae16e5f4bb65aaec0ab56096c93
++++ libpurple/proxy.c	395c4f16647a81960a1ac1430df4ae9fe64d05df
+@@ -400,7 +400,7 @@ socket_ready_cb(gpointer data, gint sour
+  	 */
+ 	if (!PURPLE_PROXY_CONNECT_DATA_IS_VALID(connect_data))
+ 		return;
+-	
++
+ 	purple_debug_info("proxy", "Connected to %s:%d.\n",
+ 					connect_data->host, connect_data->port);
+ 
+@@ -1992,6 +1992,13 @@ purple_proxy_init(void)
+ 		proxy_pref_cb, NULL);
+ 	purple_prefs_connect_callback(handle, "/purple/proxy/password",
+ 		proxy_pref_cb, NULL);
++
++	/* Load the initial proxy settings */
++	proxy_pref_cb("/purple/proxy/type", PURPLE_PREF_STRING, purple_prefs_get_string("/purple/proxy/type"), NULL);
++	proxy_pref_cb("/purple/proxy/host", PURPLE_PREF_STRING, purple_prefs_get_string("/purple/proxy/host"), NULL);
++	proxy_pref_cb("/purple/proxy/port", PURPLE_PREF_STRING, GINT_TO_POINTER(purple_prefs_get_int("/purple/proxy/port")), NULL);
++	proxy_pref_cb("/purple/proxy/username", PURPLE_PREF_STRING, purple_prefs_get_string("/purple/proxy/username"), NULL);
++	proxy_pref_cb("/purple/proxy/password", PURPLE_PREF_STRING, purple_prefs_get_string("/purple/proxy/password"), NULL);
+ }
+ 
+ void
+============================================================
+--- pidgin/gtkprefs.c	fee039ede95c6ae3460bcf222f60305eb0bd2671
++++ pidgin/gtkprefs.c	5a7f1837f163b8d345b590d1509604d30e3c6c1c
+@@ -1093,7 +1093,7 @@ proxy_changed_cb(const char *name, Purpl
+ 	const char *proxy = value;
+ 
+ 	if (strcmp(proxy, "none") && strcmp(proxy, "envvar"))
+-	        gtk_widget_show_all(frame);
++		gtk_widget_show_all(frame);
+ 	else
+ 		gtk_widget_hide(frame);
+ }

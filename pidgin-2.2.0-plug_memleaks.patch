@@ -1,0 +1,273 @@
+-----------------------------------------------------------------
+Revision: db4583bc475b46b7cb9baa38229f12473d331870
+Ancestor: 73d2587302ffbbe62f6b7f3e745508c0687813ba
+Author: sadrul@pidgin.im
+Date: 2007-09-15T18:27:01
+Branch: im.pidgin.pidgin
+
+Modified files:
+        libpurple/protocols/jabber/adhoccommands.c
+        libpurple/protocols/jabber/buddy.c
+        libpurple/protocols/jabber/jabber.c
+        libpurple/protocols/jabber/message.c
+        libpurple/protocols/jabber/presence.c
+        libpurple/protocols/jabber/usernick.c
+        libpurple/protocols/jabber/usertune.c
+
+ChangeLog: 
+
+Plug some memory leaks.
+
+============================================================
+--- libpurple/protocols/jabber/adhoccommands.c	d0b52a470cdc4c95503037ba92f51f87e61bdd10
++++ libpurple/protocols/jabber/adhoccommands.c	1f8c9a282612f146d5e43e994629da3817e88f48
+@@ -151,8 +151,11 @@ static void jabber_adhoc_parse(JabberStr
+ 		/* display result */
+ 		xmlnode *note = xmlnode_get_child(command,"note");
+ 		
+-		if(note)
+-			purple_notify_info(NULL, xmlnode_get_attrib(packet, "from"), xmlnode_get_data(note), NULL);
++		if(note) {
++			char *data = xmlnode_get_data(note);
++			purple_notify_info(NULL, xmlnode_get_attrib(packet, "from"), data, NULL);
++			g_free(data);
++		}
+ 		
+ 		if(xdata)
+ 			jabber_x_data_request(js, xdata, (jabber_x_data_cb)do_adhoc_ignoreme, NULL);
+============================================================
+--- libpurple/protocols/jabber/buddy.c	6fee8dda0f8e37a98fab4a18606447fa29792fd5
++++ libpurple/protocols/jabber/buddy.c	490b348e2662e107a450a4e9b08db1437c260d03
+@@ -1455,10 +1455,13 @@ static void do_buddy_avatar_update_data(
+ 		return;
+ 	
+ 	img = purple_base64_decode(b64data, &size);
+-	if(!img)
++	if(!img) {
++		g_free(b64data);
+ 		return;
++	}
+ 	
+ 	purple_buddy_icons_set_for_user(purple_connection_get_account(js->gc), from, img, size, checksum);
++	g_free(b64data);
+ }
+ 
+ void jabber_buddy_avatar_update_metadata(JabberStream *js, const char *from, xmlnode *items) {
+============================================================
+--- libpurple/protocols/jabber/jabber.c	8211a80fdca963e6b51e9a4a9d5b096225a57711
++++ libpurple/protocols/jabber/jabber.c	121e708c2e28ec3ff0da92cbf9e82a89f8d1a3b1
+@@ -813,7 +813,7 @@ jabber_register_cancel_cb(JabberRegister
+ 		if(account->registration_cb)
+ 			(account->registration_cb)(account, FALSE, account->registration_cb_user_data);
+ 		jabber_connection_schedule_close(cbdata->js);
+-}
++	}
+ 	g_free(cbdata->who);
+ 	g_free(cbdata);
+ }
+@@ -882,12 +882,12 @@ void jabber_register_parse(JabberStream 
+ 				if((href = xmlnode_get_data(url))) {
+ 					purple_notify_uri(NULL, href);
+ 					g_free(href);
+-				if(js->registration) {
+-					js->gc->wants_to_die = TRUE;
+-					if(account->registration_cb) /* succeeded, but we have no login info */
+-						(account->registration_cb)(account, TRUE, account->registration_cb_user_data);
+-					jabber_connection_schedule_close(js);
+-				}
++					if(js->registration) {
++						js->gc->wants_to_die = TRUE;
++						if(account->registration_cb) /* succeeded, but we have no login info */
++							(account->registration_cb)(account, TRUE, account->registration_cb_user_data);
++						jabber_connection_schedule_close(js);
++					}
+ 					return;
+ 				}
+ 			}
+@@ -987,14 +987,14 @@ void jabber_register_parse(JabberStream 
+ 		purple_request_field_group_add_field(group, field);
+ 	}
+ 
+-		if((y = xmlnode_get_child(query, "instructions")))
+-			instructions = xmlnode_get_data(y);
++	if((y = xmlnode_get_child(query, "instructions")))
++		instructions = xmlnode_get_data(y);
+ 	else if(registered)
+ 		instructions = g_strdup(_("Please fill out the information below "
+ 					"to change your account registration."));
+-		else
+-			instructions = g_strdup(_("Please fill out the information below "
+-						"to register your new account."));
++	else
++		instructions = g_strdup(_("Please fill out the information below "
++					"to register your new account."));
+ 
+ 	cbdata = g_new0(JabberRegisterCBData, 1);
+ 	cbdata->js = js;
+@@ -1019,8 +1019,8 @@ void jabber_register_parse(JabberStream 
+ 		g_free(title);
+ 	}
+ 
+-		g_free(instructions);
+-	}
++	g_free(instructions);
++}
+ 
+ void jabber_register_start(JabberStream *js)
+ {
+============================================================
+--- libpurple/protocols/jabber/message.c	309b575a8bd728be0fb2b41edf1362c2911b8367
++++ libpurple/protocols/jabber/message.c	2484754364477f8cacff4778fa87396b81924175
+@@ -324,7 +324,7 @@ void jabber_message_parse(JabberStream *
+ 	if(type) {
+ 		if(!strcmp(type, "normal"))
+ 			jm->type = JABBER_MESSAGE_NORMAL;
+-	else if(!strcmp(type, "chat"))
++		else if(!strcmp(type, "chat"))
+ 			jm->type = JABBER_MESSAGE_CHAT;
+ 		else if(!strcmp(type, "groupchat"))
+ 			jm->type = JABBER_MESSAGE_GROUPCHAT;
+============================================================
+--- libpurple/protocols/jabber/presence.c	64aa78ce207c12bf4c35e137cfa344ba6b0e9926
++++ libpurple/protocols/jabber/presence.c	2b25212d8c6b6df2aeef8dd484660bff573c3511
+@@ -192,16 +192,11 @@ void jabber_presence_send(PurpleAccount 
+ 		jabber_tune_set(js->gc, &tuneinfo);
+ 		
+ 		/* update old values */
+-		if(js->old_artist)
+-			g_free(js->old_artist);
+-		if(js->old_title)
+-			g_free(js->old_title);
+-		if(js->old_source)
+-			g_free(js->old_source);
+-		if(js->old_uri)
+-			g_free(js->old_uri);
+-		if(js->old_track)
+-			g_free(js->old_track);
++		g_free(js->old_artist);
++		g_free(js->old_title);
++		g_free(js->old_source);
++		g_free(js->old_uri);
++		g_free(js->old_track);
+ 		js->old_artist = g_strdup(artist);
+ 		js->old_title = g_strdup(title);
+ 		js->old_source = g_strdup(source);
+============================================================
+--- libpurple/protocols/jabber/usernick.c	5817ece1551b32a06a815751ec2d0c6e73fce836
++++ libpurple/protocols/jabber/usernick.c	e0e09357277521664d7f14ecf84033d6e84aa564
+@@ -33,7 +33,7 @@ static void jabber_nick_cb(JabberStream 
+ 	xmlnode *item = xmlnode_get_child(items, "item");
+ 	JabberBuddy *buddy = jabber_buddy_find(js, from, FALSE);
+ 	xmlnode *nick;
+-	const char *nickname = NULL;
++	char *nickname = NULL;
+ 	
+ 	/* ignore the tune of people not on our buddy list */
+ 	if (!buddy || !item)
+@@ -43,8 +43,8 @@ static void jabber_nick_cb(JabberStream 
+ 	if (!nick)
+ 		return;
+ 	nickname = xmlnode_get_data(nick);
+-
+ 	serv_got_alias(js->gc, from, nickname);
++	g_free(nickname);
+ }
+ 
+ static void do_nick_set(JabberStream *js, const char *nick) {
+@@ -64,7 +64,7 @@ static void do_nick_got_own_nick_cb(Jabb
+ }
+ 
+ static void do_nick_got_own_nick_cb(JabberStream *js, const char *from, xmlnode *items) {
+-	const char *oldnickname = NULL;
++	char *oldnickname = NULL;
+ 	xmlnode *item = xmlnode_get_child(items,"item");
+ 	
+ 	if(item) {
+@@ -77,6 +77,7 @@ static void do_nick_got_own_nick_cb(Jabb
+ 		_("This information is visible to all contacts on your contact list, so choose something appropriate."),
+ 		oldnickname, FALSE, FALSE, NULL, _("Set"), PURPLE_CALLBACK(do_nick_set), _("Cancel"), NULL,
+ 		purple_connection_get_account(js->gc), NULL, NULL, js);
++	g_free(oldnickname);
+ }
+ 
+ static void do_nick_set_nick(PurplePluginAction *action) {
+============================================================
+--- libpurple/protocols/jabber/usertune.c	cdfd425e9ed68eae4aee8d95addd93c093833093
++++ libpurple/protocols/jabber/usertune.c	a20360876437c9c69c30dd9bf3b78c192d47cc79
+@@ -41,48 +41,61 @@ static void jabber_tune_cb(JabberStream 
+ 	if (!buddy || !item)
+ 		return;
+ 	
+-	tuneinfodata.artist = "";
+-	tuneinfodata.title = "";
+-	tuneinfodata.album = "";
+-	tuneinfodata.track = "";
++	tuneinfodata.artist = NULL;
++	tuneinfodata.title = NULL;
++	tuneinfodata.album = NULL;
++	tuneinfodata.track = NULL;
+ 	tuneinfodata.time = -1;
+-	tuneinfodata.url = "";
+-	
++	tuneinfodata.url = NULL;
++
+ 	tune = xmlnode_get_child_with_namespace(item, "tune", "http://jabber.org/protocol/tune");
+ 	if (!tune)
+ 		return;
++	resource = jabber_buddy_find_resource(buddy, NULL);
++	if(!resource)
++		return; /* huh? */
+ 	for (tuneinfo = tune->child; tuneinfo; tuneinfo = tuneinfo->next) {
+ 		if (tuneinfo->type == XMLNODE_TYPE_TAG) {
+ 			if (!strcmp(tuneinfo->name, "artist")) {
+-				if (tuneinfodata.artist[0] == '\0') /* only pick the first one */
++				if (tuneinfodata.artist == NULL) /* only pick the first one */
+ 					tuneinfodata.artist = xmlnode_get_data(tuneinfo);
+ 			} else if (!strcmp(tuneinfo->name, "length")) {
+ 				if (tuneinfodata.time == -1) {
+ 					char *length = xmlnode_get_data(tuneinfo);
+ 					if (length)
+ 						tuneinfodata.time = strtol(length, NULL, 10);
++					g_free(length);
+ 				}
+ 			} else if (!strcmp(tuneinfo->name, "source")) {
+-				if (tuneinfodata.album[0] == '\0') /* only pick the first one */
++				if (tuneinfodata.album == NULL) /* only pick the first one */
+ 					tuneinfodata.album = xmlnode_get_data(tuneinfo);
+ 			} else if (!strcmp(tuneinfo->name, "title")) {
+-				if (tuneinfodata.title[0] == '\0') /* only pick the first one */
++				if (tuneinfodata.title == NULL) /* only pick the first one */
+ 					tuneinfodata.title = xmlnode_get_data(tuneinfo);
+ 			} else if (!strcmp(tuneinfo->name, "track")) {
+-				if (tuneinfodata.track[0] == '\0') /* only pick the first one */
++				if (tuneinfodata.track == NULL) /* only pick the first one */
+ 					tuneinfodata.track = xmlnode_get_data(tuneinfo);
+ 			} else if (!strcmp(tuneinfo->name, "uri")) {
+-				if (tuneinfodata.url[0] == '\0') /* only pick the first one */
++				if (tuneinfodata.url == NULL) /* only pick the first one */
+ 					tuneinfodata.url = xmlnode_get_data(tuneinfo);
+ 			}
+ 		}
+ 	}
+-	resource = jabber_buddy_find_resource(buddy, NULL);
+-	if(!resource)
+-		return; /* huh? */
+ 	status_id = jabber_buddy_state_get_status_id(resource->state);
+ 
+-	purple_prpl_got_user_status(js->gc->account, from, status_id, PURPLE_TUNE_ARTIST, tuneinfodata.artist, PURPLE_TUNE_TITLE, tuneinfodata.title, PURPLE_TUNE_ALBUM, tuneinfodata.album, PURPLE_TUNE_TRACK, tuneinfodata.track, PURPLE_TUNE_TIME, tuneinfodata.time, PURPLE_TUNE_URL, tuneinfodata.url, NULL);
++	purple_prpl_got_user_status(js->gc->account, from, status_id,
++			PURPLE_TUNE_ARTIST, tuneinfodata.artist,
++			PURPLE_TUNE_TITLE, tuneinfodata.title,
++			PURPLE_TUNE_ALBUM, tuneinfodata.album,
++			PURPLE_TUNE_TRACK, tuneinfodata.track,
++			PURPLE_TUNE_TIME, tuneinfodata.time,
++			PURPLE_TUNE_URL, tuneinfodata.url, NULL);
++
++	g_free(tuneinfodata.artist);
++	g_free(tuneinfodata.title);
++	g_free(tuneinfodata.album);
++	g_free(tuneinfodata.track);
++	g_free(tuneinfodata.url);
+ }
+ 
+ void jabber_tune_init(void) {
