@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.2.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -142,7 +142,7 @@ BuildRequires:  libXScrnSaver-devel
 BuildRequires:  dbus-glib-devel >= 0.70
 %endif
 %if %{bonjour_support}
-BuildRequires:	avahi-compat-howl-devel
+BuildRequires:	avahi-devel
 %endif
 # Meanwhile integration (F7+)
 %if %{meanwhile_integration}
@@ -507,6 +507,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 29 2007 Michel Salim <michel.sylvan@gmail.com> - 2.2.0-3
+- Build against avahi proper instead of its HOWL compatibility layer
+
 * Tue Sep 18 2007 Warren Togami <wtogami@redhat.com> - 2.2.0-2
 - License clarification
 - Backport patches to fix memory leaks
