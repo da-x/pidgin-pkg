@@ -284,13 +284,9 @@ and plugins.
 %prep
 %setup -q
 ## Patches 0-99: Fedora specific or upstream wont accept
+%patch0 -p1
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0
-%patch101 -p0
-%patch102 -p0
-%patch103 -p0
-%patch113 -p1
 
 # Relabel internal version for support purposes
 sed -i "s/%{version}/%{version}-%{release}/g" configure
