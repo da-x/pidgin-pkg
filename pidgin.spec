@@ -28,8 +28,8 @@
 %define perl_devel_separated    1
 
 Name:		pidgin
-Version:	2.2.0
-Release:	3%{?dist}
+Version:	2.2.1
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -56,13 +56,9 @@ Source1:	purple-fedora-prefs.xml
 
 
 ## Patches 0-99: Fedora specific or upstream wont accept
+Patch0: pidgin-2.0.0-beta7-reread-resolvconf.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100:         pidgin-2.2.0-plug_memleaks.patch 
-Patch101:         pidgin-2.2.0-fix-proxy-settings.patch
-Patch102:         pidgin-2.2.0-fix-status-scores.patch
-Patch103:         pidgin-2.2.0-plug-more-memleaks.patch
-Patch113: pidgin-2.0.0-beta7-reread-resolvconf.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -507,6 +503,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Oct 1 2007 Warren Togami <wtogami@redhat.com> - 2.2.1-1
+- 2.2.1 with many bug fixes and CVE-2007-4996 DOS fix
+
 * Sat Sep 29 2007 Michel Salim <michel.sylvan@gmail.com> - 2.2.0-3
 - Build against avahi proper instead of its HOWL compatibility layer
 
