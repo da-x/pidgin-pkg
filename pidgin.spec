@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.2.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -138,7 +138,7 @@ BuildRequires:  libXScrnSaver-devel
 BuildRequires:  dbus-glib-devel >= 0.70
 %endif
 %if %{bonjour_support}
-BuildRequires:	avahi-devel
+BuildRequires:	avahi-glib-devel
 %endif
 # Meanwhile integration (F7+)
 %if %{meanwhile_integration}
@@ -499,6 +499,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 7 2007 Michel Salim <michel.sylvan@gmail.com> - 2.2.1-2
+- BR on avahi-glib-devel to supply complete set of Avahi headers
+
 * Mon Oct 1 2007 Warren Togami <wtogami@redhat.com> - 2.2.1-1
 - 2.2.1 with many bug fixes and CVE-2007-4996 DOS fix
 
