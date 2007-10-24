@@ -28,8 +28,8 @@
 %define perl_devel_separated    1
 
 Name:		pidgin
-Version:	2.2.1
-Release:	2%{?dist}
+Version:	2.2.2
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -499,6 +499,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 24 2007 Warren Togami <wtogami@redhat.com> - 2.2.2-1
+- 2.2.2 CVE-2007-4999
+
 * Sun Oct 7 2007 Michel Salim <michel.sylvan@gmail.com> - 2.2.1-2
 - BR on avahi-glib-devel to supply complete set of Avahi headers
 
