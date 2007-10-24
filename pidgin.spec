@@ -496,6 +496,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gnt/
 %{_libdir}/libgnt.so
 %{_libdir}/pkgconfig/gnt.pc
+%{_libdir}/pkgconfig/finch.pc
 
 
 %changelog
