@@ -289,7 +289,8 @@ and plugins.
 ## Patches 100+: To be Included in Future Upstream
 
 # Relabel internal version for support purposes
-sed -i "s/%{version}/%{version}-%{release}/g" configure
+# http://developer.pidgin.im/ticket/3681 Upstream request to make this into a configure switch
+sed -i "s/VERSION=%{version}/VERSION=%{version}-%{release}/g" configure
 chmod 755 configure
 
 # If not using gnome-open, then default to htmlview 
