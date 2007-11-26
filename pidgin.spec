@@ -28,7 +28,7 @@
 %define perl_devel_separated    1
 
 Name:		pidgin
-Version:	2.2.2
+Version:	2.3.0
 Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -288,11 +288,6 @@ and plugins.
 
 ## Patches 100+: To be Included in Future Upstream
 
-# Relabel internal version for support purposes
-# http://developer.pidgin.im/ticket/3681 Upstream request to make this into a configure switch
-sed -i "s/VERSION=%{version}/VERSION=%{version}-%{release}/g" configure
-chmod 755 configure
-
 # If not using gnome-open, then default to htmlview 
 cp %{SOURCE1} prefs.xml
 if [ "%{gnome_open_integration}" == "0" ]; then
@@ -302,7 +297,7 @@ fi
 
 
 %build
-SWITCHES=""
+SWITCHES="--with-extraversion=%{release}"
 %if %{krb_integration}
 	SWITCHES="$SWITCHES --with-krb4"
 %endif
@@ -501,6 +496,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 26 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.3.0-1
+- 2.3.0
+
 * Wed Oct 24 2007 Warren Togami <wtogami@redhat.com> - 2.2.2-1
 - 2.2.2 CVE-2007-4999
 
