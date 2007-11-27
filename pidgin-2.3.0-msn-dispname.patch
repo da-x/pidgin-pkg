@@ -1,0 +1,53 @@
+-----------------------------------------------------------------
+Revision: b576470ab9bee5e0b1c48de1e78e3e6234254cdb
+Ancestor: c55dabf731ea4d3fcb287e43b157062eb2d425fa
+Author: nosnilmot@pidgin.im
+Date: 2007-11-26T22:22:04
+Branch: im.pidgin.pidgin
+
+Modified files:
+        libpurple/protocols/msnp9/notification.c
+
+ChangeLog: 
+
+Don't update our local display name when we get a response from the server
+when we store buddies' friendly names on the server. Fixes #4062.
+
+For other people who encounter this issue with Pidgin 2.3.0 I suggest you
+set an Alias for your account, your own friendly name is *not* being set to
+random things - this is a purely local display issue.
+
+============================================================
+--- libpurple/protocols/msnp9/notification.c	dd690580185c00b68db4240fd22732b5e3770c36
++++ libpurple/protocols/msnp9/notification.c	83db9e1346bfbee5a95f55cfe10508d78fdac196
+@@ -780,14 +780,27 @@ rea_cmd(MsnCmdProc *cmdproc, MsnCommand 
+ static void
+ rea_cmd(MsnCmdProc *cmdproc, MsnCommand *cmd)
+ {
+-	/* TODO: This might be for us too */
+-
+ 	MsnSession *session;
++	PurpleAccount *account;
+ 	PurpleConnection *gc;
+ 	const char *friendly;
++	char *username;
+ 
+ 	session = cmdproc->session;
+-	gc = session->account->gc;
++	account = session->account;
++	username = g_strdup(purple_normalize(account,
++						purple_account_get_username(account)));
++
++	/* Only set display name if our *own* friendly name changed! */
++	if (strcmp(username, purple_normalize(account, cmd->params[2])))
++	{
++		g_free(username);
++		return;
++	}
++
++	g_free(username);
++
++	gc = account->gc;
+ 	friendly = purple_url_decode(cmd->params[3]);
+ 
+ 	purple_connection_set_display_name(gc, friendly);
