@@ -28,8 +28,8 @@
 %define perl_devel_separated    1
 
 Name:		pidgin
-Version:	2.3.0
-Release:	2%{?dist}
+Version:	2.3.1
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -59,7 +59,6 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-2.0.0-beta7-reread-resolvconf.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.3.0-msn-dispname.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -288,7 +287,6 @@ and plugins.
 %patch0 -p1
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0
 
 # If not using gnome-open, then default to htmlview 
 cp %{SOURCE1} prefs.xml
@@ -498,6 +496,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 07 2007 Stu Tomlinson <stu@nosnilmot.com> 2.3.1-1
+- 2.3.1 Many bugfixes
+
 * Tue Nov 27 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.3.0-1
 - Fix MSN local display name bug
 
