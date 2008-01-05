@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.3.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -496,6 +496,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jan 04 2008 Jason L Tibbitts III <tibbs@math.uh.edu> - 2.3.1-2
+- Bump to rebuild against new tcl.
+
 * Fri Dec 07 2007 Stu Tomlinson <stu@nosnilmot.com> 2.3.1-1
 - 2.3.1 Many bugfixes
 
