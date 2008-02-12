@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.3.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -441,7 +441,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libpurple.so.*
 %{_datadir}/pixmaps/purple/
 %{_datadir}/sounds/purple/
-%{_datadir}/purple/ca-certs/
+%{_datadir}/purple
 %{_sysconfdir}/purple/
 %if %{dbus_integration}
 %{_bindir}/purple-client-example
@@ -496,6 +496,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 11 2008 Stu Tomlinson <stu@nosnilmot.com> 2.3.1-3
+- %%{_datadir}/purple should be owned by libpurple (#427807)
+- Rebuild for gcc 4.3
+
 * Fri Jan 04 2008 Jason L Tibbitts III <tibbs@math.uh.edu> - 2.3.1-2
 - Bump to rebuild against new tcl.
 
