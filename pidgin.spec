@@ -28,8 +28,8 @@
 %define perl_devel_separated    1
 
 Name:		pidgin
-Version:	2.3.1
-Release:	3%{?dist}
+Version:	2.4.0
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -496,6 +496,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 29 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.0-1
+- 2.4.0
+
 * Mon Feb 11 2008 Stu Tomlinson <stu@nosnilmot.com> 2.3.1-3
 - %%{_datadir}/purple should be owned by libpurple (#427807)
 - Rebuild for gcc 4.3
