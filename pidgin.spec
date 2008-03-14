@@ -4,8 +4,6 @@
 %define krb_integration		1
 # OPTION: gtkspell integration (FC1+)
 %define gtkspell_integration	1
-# OPTION: Preferred Applications with gnome-open (FC1+)
-%define gnome_open_integration	1
 # OPTION: Evolution 1.5+ integration (FC3+)
 %define evolution_integration	1
 # OPTION: SILC integration (FC3+)
@@ -29,14 +27,14 @@
 
 Name:		pidgin
 Version:	2.4.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
 # MIT - Zephyr prpl
 Group:		Applications/Internet
 URL:		http://pidgin.im/
-Source0:	http://download.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
+Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
@@ -98,12 +96,8 @@ BuildRequires:	krb5-devel
 %if %{gtkspell_integration}
 BuildRequires:	gtkspell-devel, aspell-devel
 %endif
-# Preferred Applications (FC1+)
-%if %{gnome_open_integration}
-Requires:	libgnome
-%else
-Requires:	htmlview
-%endif
+# Preferred Applications (FC6+)
+Requires:	xdg-utils
 # Evolution integration (FC3+)
 %if %{evolution_integration}
 BuildRequires:	evolution-data-server-devel
@@ -288,12 +282,8 @@ and plugins.
 
 ## Patches 100+: To be Included in Future Upstream
 
-# If not using gnome-open, then default to htmlview 
+# Our preferences
 cp %{SOURCE1} prefs.xml
-if [ "%{gnome_open_integration}" == "0" ]; then
-	sed -i "s/gnome-open/custom/g" prefs.xml
-	sed -i "s/pref name='command' type='string' value=''/pref name='command' type='string' value='htmlview'/" prefs.xml
-fi
 
 
 %build
@@ -496,6 +486,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 14 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.0-2
+- Fix download URL
+- Use xdg-open instead of gnome-open (#388521, Ville Skyttä)
+
 * Fri Feb 29 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.0-1
 - 2.4.0
 
