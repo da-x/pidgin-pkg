@@ -24,10 +24,12 @@
 %define meanwhile_integration	1
 # OPTION: Perl devel separated out (F7+)
 %define perl_devel_separated    1
+# OPTION: Perl embed separated out (F9+)
+%define perl_embed_separated	1
 
 Name:		pidgin
 Version:	2.4.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -141,6 +143,10 @@ BuildRequires:	meanwhile-devel
 # Perl devel separated out (F7+)
 %if %{perl_devel_separated}
 BuildRequires:  perl-devel
+%endif
+# Perl embed separated out (F9+)
+%if %{perl_embed_separated}
+BuildRequires:  perl(ExtUtils::Embed)
 %endif
 
 
@@ -486,6 +492,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Mar 14 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.0-3
+- BuildRequire perl(ExtUtils::Embed) for perl 5.10
+
 * Fri Mar 14 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.0-2
 - Fix download URL
 - Use xdg-open instead of gnome-open (#388521, Ville Skyttä)
