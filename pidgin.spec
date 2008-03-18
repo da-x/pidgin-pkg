@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.4.0
-Release:	3%{?dist}
+Release:	4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -237,6 +237,7 @@ instant messaging clients or plugins for any libpurple based client.
 Summary:    Perl scripting support for libpurple
 Group:      Applications/Internet
 Requires:   libpurple = %{version}-%{release}
+Requires:   perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 
 %description -n libpurple-perl
 Perl plugin loader for libpurple. This package will allow you to write or
@@ -492,6 +493,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar 18 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.0-4
+- add Requires for versioned perl (libperl.so)
+
 * Fri Mar 14 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.0-3
 - BuildRequire perl(ExtUtils::Embed) for perl 5.10
 
