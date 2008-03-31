@@ -28,8 +28,8 @@
 %define perl_embed_separated	1
 
 Name:		pidgin
-Version:	2.4.0
-Release:	4%{?dist}
+Version:	2.4.1
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -493,6 +493,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 31 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.1-1
+- 2.4.1
+
 * Tue Mar 18 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.4.0-4
 - add Requires for versioned perl (libperl.so)
 
