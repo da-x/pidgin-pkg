@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.4.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -80,7 +80,7 @@ Requires(preun): GConf2
 BuildRequires:  autoconf
 BuildRequires:	startup-notification-devel
 BuildRequires:  cyrus-sasl-devel
-BuildRequires:	mozilla-nss-devel
+BuildRequires:	nss-devel
 BuildRequires:	gtk2-devel
 BuildRequires:  gettext
 BuildRequires:  intltool
@@ -493,6 +493,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 31 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.1-2
+- nss-devel no longer provides mozilla-nss-devel
+
 * Mon Mar 31 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.1-1
 - 2.4.1
 
