@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.4.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -41,8 +41,11 @@ Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
 
-## Fedora pidgin defaults - Please Regenerate for Each Major Release
-# 1) run pidgin as new user 2) edit preferences 3) close 4) copy .purple/prefs.xml
+## Fedora pidgin defaults
+# Only needs regenerating if Pidgin breaks backwards compatibility with prefs.xml
+# 1) uninstall any non-default pidgin or libpurple plugins
+# 2) run pidgin as new user 3) edit preferences 4) close 5) copy .purple/prefs.xml
+# OR 1) edit manually
 # - enable ExtPlacement plugin
 # - enable History plugin
 # - enable Message Notification plugin
@@ -493,6 +496,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 13 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.1-3
+- Rebuild for new evolution-data-server
+- Clean up default prefs.xml
+- Enable nautilus integration plugin by default in prefs.xml (#242289)
+
 * Mon Mar 31 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.1-2
 - nss-devel no longer provides mozilla-nss-devel
 
