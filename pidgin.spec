@@ -28,8 +28,8 @@
 %define perl_embed_separated	1
 
 Name:		pidgin
-Version:	2.4.1
-Release:	3%{?dist}
+Version:	2.4.2
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -59,7 +59,7 @@ Source1:	purple-fedora-prefs.xml
 
 
 ## Patches 0-99: Fedora specific or upstream wont accept
-Patch0: pidgin-2.0.0-beta7-reread-resolvconf.patch
+Patch0: pidgin-2.4.2-reread-resolvconf.patch
 
 ## Patches 100+: To be Included in Future Upstream
 
@@ -288,7 +288,7 @@ and plugins.
 %prep
 %setup -q
 ## Patches 0-99: Fedora specific or upstream wont accept
-%patch0 -p1
+%patch0 -p1 -b .resolv
 
 ## Patches 100+: To be Included in Future Upstream
 
@@ -308,6 +308,11 @@ SWITCHES="--with-extraversion=%{release}"
 	SWITCHES="$SWITCHES --enable-perl"
 %else
 	SWITCHES="$SWITCHES --disable-perl"
+%endif
+%if %{evolution_integration}
+	SWITCHES="$SWITCHES --enable-gevolution"
+%else
+	SWITCHES="$SWITCHES --disable-gevolution"
 %endif
 %if %{dbus_integration}
 	SWITCHES="$SWITCHES --enable-dbus"
@@ -496,6 +501,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat May 17 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.2-1
+- 2.4.2
+
 * Tue May 13 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.1-3
 - Rebuild for new evolution-data-server
 - Clean up default prefs.xml
