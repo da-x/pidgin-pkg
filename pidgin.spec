@@ -24,11 +24,11 @@
 %define meanwhile_integration	1
 # OPTION: Perl devel separated out (F7+)
 %define perl_devel_separated    1
-# OPTION: Perl embed separated out (F9+)
+# OPTION: Perl embed separated out (F8+)
 %define perl_embed_separated	1
 
 Name:		pidgin
-Version:	2.4.2
+Version:	2.4.3
 Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -501,6 +501,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jul 01 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.3-1
+- 2.4.3
+
 * Sat May 17 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.2-1
 - 2.4.2
 
