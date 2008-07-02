@@ -1,0 +1,16 @@
+diff -up pidgin-2.4.3/configure.tcl852 pidgin-2.4.3/configure
+--- pidgin-2.4.3/configure.tcl852	2008-07-01 23:40:19.000000000 -0400
++++ pidgin-2.4.3/configure	2008-07-01 23:41:18.000000000 -0400
+@@ -35070,9 +35070,12 @@ echo $ECHO_N "checking for tclConfig.sh.
+ 	TCLCONFIG=no
+ 	TCLCONFIGDIRS="/usr/lib \
+ 			/usr/lib64 \
++			/usr/lib/tcl8.5 \
+ 			/usr/lib/tcl8.4 \
+ 			/usr/lib/tcl8.3 \
+ 			/usr/lib/tcl8.2 \
++			/usr/lib64/tcl8.5 \
++			/usr/lib64/tcl8.4 \
+ 			/System/Library/Tcl/8.3 \
+ 			/usr/local/lib"
+ 	for dir in $with_tclconfig $TCLCONFIGDIRS; do
