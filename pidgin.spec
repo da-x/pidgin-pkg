@@ -28,8 +28,8 @@
 %define perl_embed_separated	1
 
 Name:		pidgin
-Version:	2.4.3
-Release:	1%{?dist}.1
+Version:	2.5.0
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -62,7 +62,6 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-2.4.2-reread-resolvconf.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.4.3-tcl852.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -292,7 +291,6 @@ and plugins.
 %patch0 -p1 -b .resolv
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p1 -b .tcl852
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -503,6 +501,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 23 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.0-1
+- 2.5.0
+
 * Tue Jul 01 2008 Stu Tomlinson <stu@nosnilmot.com> 2.4.3-1.1
 - Add a patch to build with latest rawhide tcl
 
