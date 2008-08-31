@@ -28,7 +28,7 @@
 %define perl_embed_separated	1
 
 Name:		pidgin
-Version:	2.5.0
+Version:	2.5.1
 Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -444,7 +444,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -f pidgin.lang -n libpurple
 %{_libdir}/purple-2/
 %{_libdir}/libpurple.so.*
-%{_datadir}/pixmaps/purple/
 %{_datadir}/sounds/purple/
 %{_datadir}/purple
 %{_sysconfdir}/purple/
@@ -501,6 +500,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug 31 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.1-1
+- 2.5.1
+
 * Sat Aug 23 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.0-1
 - 2.5.0
 
