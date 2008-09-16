@@ -1,0 +1,29 @@
+-----------------------------------------------------------------
+Revision: 6a2fea9024166e4d473b00a87489c720617e3094
+Ancestor: 99a1dadde07d817852916ae3c150683b6b8c4f81
+Author: qulogic@pidgin.im
+Date: 2008-09-06T02:57:57
+Branch: im.pidgin.pidgin
+
+Modified files:
+        libpurple/protocols/msn/msn.c
+
+ChangeLog: 
+
+We can't have ./configure lying to you, can we?
+
+Fixes #6637.
+
+============================================================
+--- libpurple/protocols/msn/msn.c	5ced63fdc012e5df5bcd46ade1efd81be14e6344
++++ libpurple/protocols/msn/msn.c	04fad6deed88391af6dba93608670cf94724bf97
+@@ -769,6 +769,9 @@ msn_tooltip_text(PurpleBuddy *buddy, Pur
+ 	{
+ 		const char *phone;
+ 
++		purple_notify_user_info_add_pair(user_info, _("Has you"),
++									   ((user->list_op & (1 << MSN_LIST_RL)) ? _("Yes") : _("No")));
++
+ 		purple_notify_user_info_add_pair(user_info, _("Blocked"),
+ 									   ((user->list_op & (1 << MSN_LIST_BL)) ? _("Yes") : _("No")));
+ 

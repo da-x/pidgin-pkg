@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.5.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -63,6 +63,10 @@ Patch0: pidgin-2.4.2-reread-resolvconf.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.5.1-gnomeproxy.patch
+Patch101:       pidgin-2.5.1-buddyicon.patch
+Patch102:       pidgin-2.5.1-msn-hasyou.patch
+Patch103:       pidgin-2.5.1-nss-ssl.patch
+
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -293,6 +297,9 @@ and plugins.
 
 ## Patches 100+: To be Included in Future Upstream
 %patch100 -p0 -b .gnomeproxy
+%patch101 -p0 -b .buddyicon
+%patch102 -p0 -b .hasyou
+%patch103 -p0 -b .nss
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -502,6 +509,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 16 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.1-3
+- Backport fixes from upstream:
+  Add "Has You:" back to MSN tooltips
+  Fix crash during removal of your own buddy icon
+  Fix crash when handling self signed certificate with NSS SSL
+
 * Tue Sep 16 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.1-2
 - Fix a crash with GNOME proxy enabled (#461951)
 
