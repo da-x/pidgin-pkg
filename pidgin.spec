@@ -292,7 +292,7 @@ and plugins.
 %patch0 -p1 -b .resolv
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p1 -b .gnomeproxy
+%patch100 -p0 -b .gnomeproxy
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
