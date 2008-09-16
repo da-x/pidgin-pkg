@@ -29,7 +29,7 @@
 
 Name:		pidgin
 Version:	2.5.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -62,6 +62,7 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-2.4.2-reread-resolvconf.patch
 
 ## Patches 100+: To be Included in Future Upstream
+Patch100:       pidgin-2.5.1-gnomeproxy.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -291,6 +292,7 @@ and plugins.
 %patch0 -p1 -b .resolv
 
 ## Patches 100+: To be Included in Future Upstream
+%patch100 -p1 -b .gnomeproxy
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -500,6 +502,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 16 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.1-2
+- Fix a crash with GNOME proxy enabled (#461951)
+
 * Sun Aug 31 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.1-1
 - 2.5.1
 
