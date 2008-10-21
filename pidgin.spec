@@ -13,9 +13,9 @@
 # OPTION: gstreamer integration (FC5+)
 %define gstreamer_integration	1
 # OPTION: NetworkManager integration (FC5+)
-%define nm_integration	        1
+%define nm_integration		1
 # OPTION: Modular X (FC5+)
-%define modular_x               1
+%define modular_x		1
 # OPTION: dbus-glib split (FC6+)
 %define dbus_glib_splt		1
 # OPTION: Bonjour support (FC6+)
@@ -23,13 +23,15 @@
 # OPTION: Meanwhile integration (F6+)
 %define meanwhile_integration	1
 # OPTION: Perl devel separated out (F7+)
-%define perl_devel_separated    1
+%define perl_devel_separated	1
 # OPTION: Perl embed separated out (F8+)
 %define perl_embed_separated	1
+# OPTION: generate pidgin API documentation (F8+)
+%define api_docs		1
 
 Name:		pidgin
-Version:	2.5.1
-Release:	3%{?dist}
+Version:	2.5.2
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -62,10 +64,6 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-2.4.2-reread-resolvconf.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100:       pidgin-2.5.1-gnomeproxy.patch
-Patch101:       pidgin-2.5.1-buddyicon.patch
-Patch102:       pidgin-2.5.1-msn-hasyou.patch
-Patch103:       pidgin-2.5.1-nss-ssl.patch
 
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
@@ -157,6 +155,9 @@ BuildRequires:  perl-devel
 BuildRequires:  perl(ExtUtils::Embed)
 %endif
 
+%if %{api_docs}
+BuildRequires: doxygen
+%endif
 
 %description
 Pidgin allows you to talk to anyone using a variety of messaging
@@ -181,7 +182,7 @@ Requires: libpurple-devel = %{version}-%{release}
 Requires: pkgconfig
 Requires: gtk2-devel
 Obsoletes: gaim-devel
-Provides:  gaim-devel
+Provides:  gaim-devel = %{version}-%{release}
 
 
 %description devel
@@ -288,7 +289,17 @@ The finch-devel package contains the header files, developer
 documentation, and libraries required for development of Finch scripts
 and plugins.
 
+%if %{api_docs}
+%package -n pidgin-docs
+Summary:    API docs for pidgin and libpurple
+Group:      Applications/Internet
+Requires:   pidgin = %{version}-%{release}
+Provides:   libpurple-docs = %{version}-%{release}
 
+%description -n pidgin-docs
+Doxygen generated API documentation.
+
+%endif
 
 %prep
 %setup -q
@@ -296,10 +307,6 @@ and plugins.
 %patch0 -p1 -b .resolv
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0 -b .gnomeproxy
-%patch101 -p0 -b .buddyicon
-%patch102 -p0 -b .hasyou
-%patch103 -p0 -b .nss
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -348,6 +355,10 @@ export CFLAGS="$RPM_OPT_FLAGS"
 
 make %{?_smp_mflags}
 
+%if %{api_docs}
+make docs
+find doc/html -empty -delete
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -383,7 +394,16 @@ chmod -R u+w $RPM_BUILD_ROOT/*
 %find_lang pidgin
 
 # symlink /usr/bin/gaim to new pidgin name
-ln -sf %{_bindir}/pidgin $RPM_BUILD_ROOT%{_bindir}/gaim
+ln -sf pidgin $RPM_BUILD_ROOT%{_bindir}/gaim
+
+%if %{api_docs}
+rm -rf html
+rm -f doc/html/installdox
+mv doc/html/ html/
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/gtk-doc/html/
+ln -sf ../../doc/pidgin-docs-%{version}/html/ \
+    $RPM_BUILD_ROOT%{_datadir}/gtk-doc/html/pidgin
+%endif
 
 %pre
 if [ "$1" -gt 1 ]; then
@@ -451,6 +471,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/pidgin.pc
 
 %files -f pidgin.lang -n libpurple
+%defattr(-,root,root,-)
 %{_libdir}/purple-2/
 %{_libdir}/libpurple.so.*
 %{_datadir}/sounds/purple/
@@ -472,6 +493,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files -n libpurple-devel
+%defattr(-,root,root,-)
 %{_datadir}/aclocal/purple.m4
 %{_libdir}/libpurple.so
 %{_includedir}/libpurple/
@@ -482,6 +504,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{perl_integration}
 %files -n libpurple-perl
+%defattr(-,root,root,-)
 %{_mandir}/man3/Purple*
 %{_libdir}/purple-2/perl.so
 %{perl_vendorarch}/Purple.pm
@@ -491,9 +514,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %files -n libpurple-tcl
+%defattr(-,root,root,-)
 %{_libdir}/purple-2/tcl.so
 
 %files -n finch
+%defattr(-,root,root,-)
 %{_bindir}/finch
 %{_libdir}/finch/
 %{_libdir}/gnt/
@@ -501,14 +526,25 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/finch.*
 
 %files -n finch-devel
+%defattr(-,root,root,-)
 %{_includedir}/finch/
 %{_includedir}/gnt/
 %{_libdir}/libgnt.so
 %{_libdir}/pkgconfig/gnt.pc
 %{_libdir}/pkgconfig/finch.pc
 
+%if %{api_docs}
+%files -n pidgin-docs
+%defattr(-,root,root,-)
+%doc html
+%{_datadir}/gtk-doc/html/*
+%endif
 
 %changelog
+* Mon Oct 20 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.2-1
+- 2.5.2
+- Generate doxygen API documentation (#466693)
+
 * Tue Sep 16 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.1-3
 - Backport fixes from upstream:
   Add "Has You:" back to MSN tooltips
