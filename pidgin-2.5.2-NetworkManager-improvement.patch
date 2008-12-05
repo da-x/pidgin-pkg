@@ -1,0 +1,116 @@
+http://developer.pidgin.im/viewmtn/revision/info/c4db69fe62c1650d1fb404a8bbb12bf47852f70c
+Improve our NetworkManager support in a couple of ways:
+* We no longer show error minidialogs when the network is not available.
+* We no longer ask NetworkManager (over DBus) for the network state with
+every call to purple_network_is_available(). We now cache the result.
+* Be a little more robust when we're not sure of the connection status.
+Fixes #7323
+
+diff -urN pidgin-2.5.2.orig/libpurple/network.c pidgin-2.5.2/libpurple/network.c
+--- pidgin-2.5.2.orig/libpurple/network.c	2008-11-20 15:32:49.000000000 -0500
++++ pidgin-2.5.2/libpurple/network.c	2008-11-21 13:34:33.000000000 -0500
+@@ -66,6 +66,8 @@
+ static DBusGConnection *nm_conn = NULL;
+ static DBusGProxy *nm_proxy = NULL;
+ static DBusGProxy *dbus_proxy = NULL;
++static NMState nm_state = NM_STATE_UNKNOWN;
++static gboolean have_nm_state = FALSE;
+ 
+ #elif defined _WIN32
+ static int current_network_count;
+@@ -596,13 +598,15 @@
+ purple_network_is_available(void)
+ {
+ #ifdef HAVE_NETWORKMANAGER
+-	NMState state = nm_get_network_state();
+-	if (state == NM_STATE_UNKNOWN)
++	if (!have_nm_state)
+ 	{
+-		purple_debug_warning("network", "NetworkManager not active. Assuming connection exists.\n");
+-		return TRUE;
++		have_nm_state = TRUE;
++		nm_state = nm_get_network_state();
++		if (nm_state == NM_STATE_UNKNOWN)
++			purple_debug_warning("network", "NetworkManager not active. Assuming connection exists.\n");
+ 	}
+-	else if (state == NM_STATE_CONNECTED)
++
++	if (nm_state == NM_STATE_UNKNOWN || nm_state == NM_STATE_CONNECTED)
+ 		return TRUE;
+ 
+ 	return FALSE;
+@@ -618,9 +622,12 @@
+ static void
+ nm_update_state(NMState state)
+ {
+-	static NMState prev = NM_STATE_UNKNOWN;
++	NMState prev = nm_state;
+ 	PurpleConnectionUiOps *ui_ops = purple_connections_get_ui_ops();
+ 
++	have_nm_state = TRUE;
++	nm_state = state;
++
+ 	purple_signal_emit(purple_network_get_handle(), "network-configuration-changed", NULL);
+ 
+ 	switch(state)
+@@ -628,16 +635,14 @@
+ 		case NM_STATE_CONNECTED:
+ 			if (ui_ops != NULL && ui_ops->network_connected != NULL)
+ 				ui_ops->network_connected();
+-			prev = state;
+ 			break;
+ 		case NM_STATE_ASLEEP:
+ 		case NM_STATE_CONNECTING:
+ 		case NM_STATE_DISCONNECTED:
+-			if (prev != NM_STATE_CONNECTED)
++			if (prev != NM_STATE_CONNECTED && prev != NM_STATE_UNKNOWN)
+ 				break;
+ 			if (ui_ops != NULL && ui_ops->network_disconnected != NULL)
+ 				ui_ops->network_disconnected();
+-			prev = state;
+ 			break;
+ 		case NM_STATE_UNKNOWN:
+ 		default:
+@@ -662,7 +667,6 @@
+ 		return NM_STATE_UNKNOWN;
+ 
+ 	if (!dbus_g_proxy_call(nm_proxy, "state", &err, G_TYPE_INVALID, G_TYPE_UINT, &state, G_TYPE_INVALID)) {
+-		/* XXX: Print an error? */
+ 		g_error_free(err);
+ 		return NM_STATE_UNKNOWN;
+ 	}
+diff -urN pidgin-2.5.2.orig/libpurple/prpl.c pidgin-2.5.2/libpurple/prpl.c
+--- pidgin-2.5.2.orig/libpurple/prpl.c	2008-08-06 17:57:06.000000000 -0400
++++ pidgin-2.5.2/libpurple/prpl.c	2008-11-21 13:34:43.000000000 -0500
+@@ -23,6 +23,7 @@
+ #include "internal.h"
+ #include "conversation.h"
+ #include "debug.h"
++#include "network.h"
+ #include "notify.h"
+ #include "prpl.h"
+ #include "request.h"
+@@ -317,7 +318,8 @@
+ 	PurplePluginProtocolInfo *prpl_info;
+ 
+ 	if (purple_status_is_online(new_status) &&
+-		purple_account_is_disconnected(account))
++		purple_account_is_disconnected(account) &&
++		purple_network_is_available())
+ 	{
+ 		purple_account_connect(account);
+ 		return;
+diff -urN pidgin-2.5.2.orig/pidgin/gtkconn.c pidgin-2.5.2/pidgin/gtkconn.c
+--- pidgin-2.5.2.orig/pidgin/gtkconn.c	2008-09-29 20:00:28.000000000 -0400
++++ pidgin-2.5.2/pidgin/gtkconn.c	2008-11-21 13:34:49.000000000 -0500
+@@ -208,9 +208,7 @@
+ 	while (l) {
+ 		PurpleAccount *a = (PurpleAccount*)l->data;
+ 		if (!purple_account_is_disconnected(a)) {
+-			purple_connection_error_reason(purple_account_get_connection(a),
+-			                               PURPLE_CONNECTION_ERROR_NETWORK_ERROR,
+-			                               _("Network disconnected"));
++			purple_account_disconnect(a);
+ 		}
+ 		l = l->next;
+ 	}

@@ -1,0 +1,35 @@
+http://developer.pidgin.im/viewmtn/revision/info/27f7d38af8dba617aba8109d82e27907cd7d8b41
+Trigger url_fetch_connect_cb() asynchronously when the connection fails
+immediately instead of synchronously calling the callback and then returning
+NULL, causing a double free.
+Fixes #7278
+
+diff -urN pidgin-2.5.2.orig/libpurple/util.c pidgin-2.5.2/libpurple/util.c
+--- pidgin-2.5.2.orig/libpurple/util.c	2008-09-23 12:34:05.000000000 -0400
++++ pidgin-2.5.2/libpurple/util.c	2008-11-21 14:42:09.000000000 -0500
+@@ -3979,6 +3979,13 @@
+ 					     callback, user_data);
+ }
+ 
++static gboolean
++url_fetch_connect_failed(gpointer data)
++{
++	url_fetch_connect_cb(data, -1, "");
++	return FALSE;
++}
++
+ PurpleUtilFetchUrlData *
+ purple_util_fetch_url_request_len(const char *url, gboolean full,
+ 		const char *user_agent, gboolean http11,
+@@ -4016,9 +4023,8 @@
+ 
+ 	if (gfud->connect_data == NULL)
+ 	{
+-		purple_util_fetch_url_error(gfud, _("Unable to connect to %s"),
+-				gfud->website.address);
+-		return NULL;
++		/* Trigger the connect_cb asynchronously. */
++		purple_timeout_add(10, url_fetch_connect_failed, gfud);
+ 	}
+ 
+ 	return gfud;
