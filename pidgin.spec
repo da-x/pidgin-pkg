@@ -1,37 +1,68 @@
-# OPTION: perl split into subpackages (FC1+)
-%define perl_integration	1
-# OPTION: krb5 for Zephyr protocol (FC1+)
-%define krb_integration		1
-# OPTION: gtkspell integration (FC1+)
-%define gtkspell_integration	1
-# OPTION: Evolution 1.5+ integration (FC3+)
-%define evolution_integration	1
-# OPTION: SILC integration (FC3+)
-%define silc_integration	1
-# OPTION: dbus integration (FC5+)
+# OVERRIDE RHEL VERSION HERE, RHEL BUILDSYSTEM DOESN'T HAVE DIST TAG
+#%%define rhel 4
+
+# Define Variables that must exist
+%{?!rhel:%define rhel 0}
+%{?!fedora:%define fedora 0}
+
+# Map RHEL to Fedora version
+%if 0%{?rhel} == 4
+%define fedora 3
+%define dist .el4
+%endif
+%if 0%{?rhel} == 5
+%define fedora 6
+%define dist .el5
+%endif
+
+# Define variables to use in conditionals
+%define force_sound_aplay       0
+%define dbus_integration        0
+%define gstreamer_integration	0
+%define nm_integration		0
+%define modular_x		0
+%define dbus_glib_splt		0
+%define bonjour_support		0
+%define meanwhile_integration	0
+%define use_gnome_open          0
+%define perl_devel_separated	0
+%define perl_embed_separated	0
+%define api_docs		0
+
+# RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
+%if 0%{?fedora} < 5
+%define force_sound_aplay       1
+%endif
+# RHEL4+ and FC5+: dbus, gstreamer, NetworkManager, modular X
+%if 0%{?fedora} >= 5
 %define dbus_integration	1
-# OPTION: gstreamer integration (FC5+)
 %define gstreamer_integration	1
-# OPTION: NetworkManager integration (FC5+)
 %define nm_integration		1
-# OPTION: Modular X (FC5+)
 %define modular_x		1
-# OPTION: dbus-glib split (FC6+)
+%endif
+# RHEL4+ and FC6+: dbus-glib split, bonjour, meanwhile
+%if 0%{?fedora} >= 6
 %define dbus_glib_splt		1
-# OPTION: Bonjour support (FC6+)
 %define bonjour_support		1
-# OPTION: Meanwhile integration (F6+)
 %define meanwhile_integration	1
-# OPTION: Perl devel separated out (F7+)
+%endif
+# RHEL4 and RHEL5: Use gnome-open instead of xdg-open (RHEL4 and RHEL5)
+%if 0%{?fedora} <= 6
+%define use_gnome_open          1
+%endif
+# F7+: Perl devel separated out
+%if 0%{?fedora} >= 7
 %define perl_devel_separated	1
-# OPTION: Perl embed separated out (F8+)
+%endif
+# F8+: Perl embed separated out, generate pidgin API documentation
+%if 0%{?fedora} >= 6
 %define perl_embed_separated	1
-# OPTION: generate pidgin API documentation (F8+)
 %define api_docs		1
+%endif
 
 Name:		pidgin
 Version:	2.5.2
-Release:	1%{?dist}
+Release:	6%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -62,8 +93,17 @@ Source1:	purple-fedora-prefs.xml
 
 ## Patches 0-99: Fedora specific or upstream wont accept
 Patch0: pidgin-2.4.2-reread-resolvconf.patch
+Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
+Patch100:      pidgin-2.5.2-sametime-redirect-null.patch
+Patch101:      pidgin-2.5.2-NetworkManager-improvement.patch
+Patch102:      pidgin-2.5.2-no-password-in-dialog-if-not-remembering.patch 
+Patch103:      pidgin-2.5.2-temporarily-remember-password-during-auto-reconnect.patch
+Patch104:      pidgin-2.5.2-smilie-theme-change-crash.patch
+Patch105:      pidgin-2.5.2-url_fetch_connect_cb-double-free.patch
+Patch106:      pidgin-2.5.2-GtkIMHtmlSmileys-remove-crash.patch
+Patch107:      pidgin-2.5.2-remove-dialog-from-open-dialog-list.patch
 
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
@@ -97,23 +137,13 @@ BuildRequires:  tk-devel
 BuildRequires:  libxml2-devel
 
 # krb5 needed for Zephyr (FC1+)
-%if %{krb_integration}
 BuildRequires:	krb5-devel
-%endif
 # gtkspell integration (FC1+)
-%if %{gtkspell_integration}
 BuildRequires:	gtkspell-devel, aspell-devel
-%endif
-# Preferred Applications (FC6+)
-Requires:	xdg-utils
 # Evolution integration (FC3+)
-%if %{evolution_integration}
 BuildRequires:	evolution-data-server-devel
-%endif
 # SILC integration (FC3+)
-%if %{silc_integration}
 BuildRequires:	libsilc-devel
-%endif
 # DBus integration (FC5+)
 %if %{dbus_integration}
 BuildRequires:  dbus-devel >= 0.60
@@ -135,6 +165,12 @@ BuildRequires:	NetworkManager-glib-devel
 BuildRequires:  libSM-devel
 BuildRequires:  libXScrnSaver-devel
 %endif
+# Preferred Applications (xdg for FC6+)
+%if %{use_gnome_open}
+Requires:       libgnome
+%else
+Requires:	xdg-utils
+%endif
 # DBus GLIB Split (FC6+)
 %if %{dbus_glib_splt}
 BuildRequires:  dbus-glib-devel >= 0.70
@@ -142,7 +178,7 @@ BuildRequires:  dbus-glib-devel >= 0.70
 %if %{bonjour_support}
 BuildRequires:	avahi-glib-devel
 %endif
-# Meanwhile integration (F7+)
+# Meanwhile integration (F6+)
 %if %{meanwhile_integration}
 BuildRequires:	meanwhile-devel
 %endif
@@ -190,7 +226,6 @@ The pidgin-devel package contains the header files, developer
 documentation, and libraries required for development of Pidgin scripts
 and plugins.
 
-%if %{perl_integration}
 %package perl
 Summary:    Perl scripting support for Pidgin
 Group:      Applications/Internet
@@ -200,7 +235,6 @@ Requires:   libpurple-perl = %{version}-%{release}
 %description perl
 Perl plugin loader for Pidgin. This package will allow you to write or
 use Pidgin plugins written in the Perl programming language.
-%endif
 
 
 %package -n libpurple
@@ -241,7 +275,6 @@ The libpurple-devel package contains the header files, developer
 documentation, and libraries required for development of libpurple based
 instant messaging clients or plugins for any libpurple based client.
 
-%if %{perl_integration}
 %package -n libpurple-perl
 Summary:    Perl scripting support for libpurple
 Group:      Applications/Internet
@@ -251,7 +284,6 @@ Requires:   perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 %description -n libpurple-perl
 Perl plugin loader for libpurple. This package will allow you to write or
 use libpurple plugins written in the Perl programming language.
-%endif
 
 
 %package -n libpurple-tcl
@@ -268,6 +300,7 @@ use libpurple plugins written in the Tcl programming language.
 Summary:    A text-based user interface for Pidgin
 Group:      Applications/Internet
 Requires:   glib2 >= %{glib_ver}
+Requires:   libpurple = %{version}-%{release}
 
 %description -n finch
 A text-based user interface for using libpurple.  This can be run from a
@@ -302,34 +335,38 @@ Doxygen generated API documentation.
 %endif
 
 %prep
+echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %setup -q
 ## Patches 0-99: Fedora specific or upstream wont accept
 %patch0 -p1 -b .resolv
+%if %{force_sound_aplay}
+%patch1 -p1 -b .aplay
+%endif
 
 ## Patches 100+: To be Included in Future Upstream
+%patch100 -p1 -b sametime-redirect-null
+%patch101 -p1 -b NetworkManager-improvement
+%patch102 -p1 -b no-password-in-dialog-if-not-remembering
+%patch103 -p1 -b temporarily-remember-password-during-auto-reconnect
+%patch104 -p1 -b smilie-theme-change-crash
+%patch105 -p1 -b url_fetch_connect_cb-double-free
+%patch106 -p1 -b GtkIMHtmlSmileys-remove-crash
+%patch107 -p1 -b remove-dialog-from-open-dialog-list
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
 
+# RHEL5 and earlier did not have xdg-open, so use gnome-open instead
+if [ "%{use_gnome_open}" == "1" ]; then
+        sed -i "s/value='xdg-open'/value='gnome-open'/" prefs.xml
+fi
+
 
 %build
 SWITCHES="--with-extraversion=%{release}"
-%if %{krb_integration}
 	SWITCHES="$SWITCHES --with-krb4"
-%endif
-%if %{silc_integration}
-	SWITCHES="$SWITCHES --with-silc-includes=%{_includedir}/silc --with-silc-libs=%{_libdir}"
-%endif
-%if %{perl_integration}
 	SWITCHES="$SWITCHES --enable-perl"
-%else
-	SWITCHES="$SWITCHES --disable-perl"
-%endif
-%if %{evolution_integration}
 	SWITCHES="$SWITCHES --enable-gevolution"
-%else
-	SWITCHES="$SWITCHES --disable-gevolution"
-%endif
 %if %{dbus_integration}
 	SWITCHES="$SWITCHES --enable-dbus"
 %else
@@ -342,6 +379,12 @@ SWITCHES="--with-extraversion=%{release}"
 	SWITCHES="$SWITCHES --enable-gstreamer"
 %else
 	SWITCHES="$SWITCHES --disable-gstreamer"
+%endif
+%if ! %{bonjour_support}
+	SWITCHES="$SWITCHES --disable-avahi"
+%endif
+%if ! %{meanwhile_integration}
+	SWITCHES="$SWITCHES --disable-meanwhile"
 %endif
 
 # FC5+ automatic -fstack-protector-all switch
@@ -382,10 +425,8 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/nullclient
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/purple/
 install -m 644 prefs.xml $RPM_BUILD_ROOT%{_sysconfdir}/purple/prefs.xml
 
-%if %{perl_integration}
 find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name '*.bs' -empty -exec rm -f {} ';'
-%endif
 
 # make sure that we can write to all the files we've installed
 # so that they are properly stripped
@@ -415,6 +456,7 @@ fi
 
 %post
 touch --no-create %{_datadir}/icons/hicolor || :
+[ -x %{_bindir}/gtk-update-icon-cache ] && \
 %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
 export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
 gconftool-2 --makefile-install-rule \
@@ -435,6 +477,7 @@ fi
 
 %postun
 touch --no-create %{_datadir}/icons/hicolor || :
+[ -x %{_bindir}/gtk-update-icon-cache ] && \
 %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
 
 %postun -n libpurple -p /sbin/ldconfig
@@ -456,14 +499,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/apps/pidgin.*
 %{_sysconfdir}/gconf/schemas/purple.schemas
 
-%if %{perl_integration}
 %files perl
 %defattr(-,root,root,-)
 %{_mandir}/man3/Pidgin*
 %{perl_vendorarch}/Pidgin.pm
 %dir %{perl_vendorarch}/auto/Pidgin/
 %{perl_vendorarch}/auto/Pidgin/Pidgin.so
-%endif
 
 %files devel
 %defattr(-,root,root,-)
@@ -488,9 +529,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc libpurple/purple-notifications-example
 %endif
 %exclude %{_libdir}/purple-2/tcl.so
-%if %{perl_integration}
 %exclude %{_libdir}/purple-2/perl.so
-%endif
 
 %files -n libpurple-devel
 %defattr(-,root,root,-)
@@ -502,7 +541,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libpurple-client.so
 %endif
 
-%if %{perl_integration}
 %files -n libpurple-perl
 %defattr(-,root,root,-)
 %{_mandir}/man3/Purple*
@@ -511,7 +549,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{perl_vendorarch}/auto/Purple/
 %{perl_vendorarch}/auto/Purple/Purple.so
 %{perl_vendorarch}/auto/Purple/autosplit.ix
-%endif
 
 %files -n libpurple-tcl
 %defattr(-,root,root,-)
@@ -541,6 +578,21 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Nov 22 2008 Warren Togami <wtogami@redhat.com> 2.5.2-6
+- Automatically detect booleans to enable build features from dist tag
+- Unify RHEL4 and RHEL5 spec with Fedora to make both easier to maintain
+
+* Fri Nov 21 2008 Warren Togami <wtogami@redhat.com> 2.5.2-2
+- Upstream backports:
+  100: sametime-redirect-null crash
+  101: NetworkManager-improvement
+  102: no-password-in-dialog-if-not-remembering
+  103: temporarily-remember-password-during-auto-reconnect
+  104: smilie-theme-change-crash
+  105: url_fetch_connect_cb-double-free crash
+  106: GtkIMHtmlSmileys-remove-crash
+  107: remove-dialog-from-open-dialog-list
+
 * Mon Oct 20 2008 Stu Tomlinson <stu@nosnilmot.com> 2.5.2-1
 - 2.5.2
 - Generate doxygen API documentation (#466693)
