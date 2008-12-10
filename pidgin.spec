@@ -55,7 +55,7 @@
 %define perl_devel_separated	1
 %endif
 # F8+: Perl embed separated out, generate pidgin API documentation
-%if 0%{?fedora} >= 6
+%if 0%{?fedora} >= 8
 %define perl_embed_separated	1
 %define api_docs		1
 %endif
