@@ -1,0 +1,39 @@
+This forces resolv.conf to be re-read every time a connection is made instead of only if NetworkManager establishes a new connection.
+This prevents some error cases for roving clients, especially if they do not use NetworkManager.
+
+diff -urN pidgin-2.5.3.orig/libpurple/connection.c pidgin-2.5.3/libpurple/connection.c
+--- pidgin-2.5.3.orig/libpurple/connection.c	2008-12-20 19:38:16.000000000 -0500
++++ pidgin-2.5.3/libpurple/connection.c	2008-12-26 16:55:32.000000000 -0500
+@@ -42,6 +42,10 @@
+ 
+ #define KEEPALIVE_INTERVAL 30
+ 
++#include <netinet/in.h>
++#include <arpa/nameser.h>
++#include <resolv.h>
++
+ static GList *connections = NULL;
+ static GList *connections_connecting = NULL;
+ static PurpleConnectionUiOps *connection_ui_ops = NULL;
+@@ -161,6 +165,9 @@
+ 
+ 	purple_signal_emit(purple_connections_get_handle(), "signing-on", gc);
+ 
++	/* Re-read resolv.conf and friends in case DNS servers have changed */
++	res_init();
++
+ 	if (regist)
+ 	{
+ 		purple_debug_info("connection", "Registering.  gc = %p\n", gc);
+diff -urN pidgin-2.5.3.orig/libpurple/network.c pidgin-2.5.3/libpurple/network.c
+--- pidgin-2.5.3.orig/libpurple/network.c	2008-12-20 19:38:16.000000000 -0500
++++ pidgin-2.5.3/libpurple/network.c	2008-12-26 16:55:32.000000000 -0500
+@@ -633,8 +633,6 @@
+ 	switch(state)
+ 	{
+ 		case NM_STATE_CONNECTED:
+-			/* Call res_init in case DNS servers have changed */
+-			res_init();
+ 			if (ui_ops != NULL && ui_ops->network_connected != NULL)
+ 				ui_ops->network_connected();
+ 			break;

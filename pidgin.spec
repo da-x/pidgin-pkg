@@ -61,8 +61,8 @@
 %endif
 
 Name:		pidgin
-Version:	2.5.2
-Release:	6%{?dist}
+Version:	2.5.3
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -92,19 +92,10 @@ Source1:	purple-fedora-prefs.xml
 
 
 ## Patches 0-99: Fedora specific or upstream wont accept
-Patch0: pidgin-2.4.2-reread-resolvconf.patch
+Patch0: pidgin-NOT-UPSTREAM-2.5.3-reread-resolvconf.patch
 Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100:      pidgin-2.5.2-sametime-redirect-null.patch
-Patch101:      pidgin-2.5.2-NetworkManager-improvement.patch
-Patch102:      pidgin-2.5.2-no-password-in-dialog-if-not-remembering.patch 
-Patch103:      pidgin-2.5.2-temporarily-remember-password-during-auto-reconnect.patch
-Patch104:      pidgin-2.5.2-smilie-theme-change-crash.patch
-Patch105:      pidgin-2.5.2-url_fetch_connect_cb-double-free.patch
-Patch106:      pidgin-2.5.2-GtkIMHtmlSmileys-remove-crash.patch
-Patch107:      pidgin-2.5.2-remove-dialog-from-open-dialog-list.patch
-
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -344,14 +335,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p1 -b sametime-redirect-null
-%patch101 -p1 -b NetworkManager-improvement
-%patch102 -p1 -b no-password-in-dialog-if-not-remembering
-%patch103 -p1 -b temporarily-remember-password-during-auto-reconnect
-%patch104 -p1 -b smilie-theme-change-crash
-%patch105 -p1 -b url_fetch_connect_cb-double-free
-%patch106 -p1 -b GtkIMHtmlSmileys-remove-crash
-%patch107 -p1 -b remove-dialog-from-open-dialog-list
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -578,6 +561,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Dec 26 2008 Warren Togami <wtogami@redhat.com> 2.5.3-1
+- 2.5.3
+
 * Sat Nov 22 2008 Warren Togami <wtogami@redhat.com> 2.5.2-6
 - Automatically detect booleans to enable build features from dist tag
 - Unify RHEL4 and RHEL5 spec with Fedora to make both easier to maintain
