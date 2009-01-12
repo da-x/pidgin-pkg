@@ -61,7 +61,7 @@
 %endif
 
 Name:		pidgin
-Version:	2.5.3
+Version:	2.5.4
 Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -561,6 +561,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jan 12 2009 Stu Tomlinson <stu@nosnilmot.com> 2.5.4-1
+- 2.5.4
+
 * Fri Dec 26 2008 Warren Togami <wtogami@redhat.com> 2.5.3-1
 - 2.5.3
 
