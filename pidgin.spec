@@ -62,7 +62,7 @@
 
 Name:		pidgin
 Version:	2.5.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -89,6 +89,7 @@ ExcludeArch:    s390 s390x
 # - Browser "GNOME Default"
 # - Smiley Theme "Default"
 Source1:	purple-fedora-prefs.xml
+Source2:        one_time_password.c
 
 
 ## Patches 0-99: Fedora specific or upstream wont accept
@@ -115,6 +116,7 @@ Requires(preun): GConf2
 
 # Basic Library Requirements
 BuildRequires:  autoconf
+BuildRequires:  libtool
 BuildRequires:	startup-notification-devel
 BuildRequires:  cyrus-sasl-devel
 BuildRequires:	nss-devel
@@ -379,7 +381,13 @@ export CFLAGS="$RPM_OPT_FLAGS"
            --enable-tcl --enable-tk \
            --disable-schemas-install $SWITCHES
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} LIBTOOL=/usr/bin/libtool
+
+# one_time_password plugin, to be merged upstream soon
+cp %{SOURCE2} libpurple/plugins/
+cd libpurple/plugins/
+make one_time_password.so
+cd -
 
 %if %{api_docs}
 make docs
@@ -388,7 +396,9 @@ find doc/html -empty -delete
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install
+make DESTDIR=$RPM_BUILD_ROOT install LIBTOOL=/usr/bin/libtool
+
+install -m 0755 libpurple/plugins/one_time_password.so $RPM_BUILD_ROOT%{_libdir}/purple-2/
 
 desktop-file-install --vendor pidgin --delete-original       \
   --add-category X-Red-Hat-Base                            \
@@ -561,6 +571,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jan 27 2009 Warren Togami <wtogami@redhat.com> 2.5.4-2
+- one_time_password plugin
+- Eliminate RPATH
+
 * Mon Jan 12 2009 Stu Tomlinson <stu@nosnilmot.com> 2.5.4-1
 - 2.5.4
 
