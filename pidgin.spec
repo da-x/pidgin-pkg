@@ -61,8 +61,8 @@
 %endif
 
 Name:		pidgin
-Version:	2.5.4
-Release:	3%{?dist}
+Version:	2.5.5
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -571,6 +571,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Mar 03 2009 Stu Tomlinson <stu@nosnilmot.com> 2.5.5-1
+- 2.5.5
+
 * Thu Feb 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.5.4-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
