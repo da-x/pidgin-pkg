@@ -28,6 +28,7 @@
 %define perl_devel_separated	0
 %define perl_embed_separated	0
 %define api_docs		0
+%define krb4_removed		0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -59,10 +60,15 @@
 %define perl_embed_separated	1
 %define api_docs		1
 %endif
+# F12+: krb4 removed
+%if 0%{?fedora} >= 12
+%define krb4_removed	1
+%endif
+
 
 Name:		pidgin
 Version:	2.5.5
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -129,8 +135,10 @@ BuildRequires:  tcl-devel
 BuildRequires:  tk-devel
 BuildRequires:  libxml2-devel
 
+%if ! %{krb4_removed}
 # krb5 needed for Zephyr (FC1+)
 BuildRequires:	krb5-devel
+%endif
 # gtkspell integration (FC1+)
 BuildRequires:	gtkspell-devel, aspell-devel
 # Evolution integration (FC3+)
@@ -349,7 +357,9 @@ fi
 
 %build
 SWITCHES="--with-extraversion=%{release}"
+%if ! %{krb4_removed}
 	SWITCHES="$SWITCHES --with-krb4"
+%endif
 	SWITCHES="$SWITCHES --enable-perl"
 	SWITCHES="$SWITCHES --enable-gevolution"
 %if %{dbus_integration}
@@ -571,8 +581,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Mon Apr 20 2009 Warren Togami <wtogami@redhat.com> 2.5.5-2
-- rebuild
+* Mon Apr 20 2009 Warren Togami <wtogami@redhat.com> 2.5.5-3
+- F12+ removed krb4
 
 * Tue Mar 03 2009 Stu Tomlinson <stu@nosnilmot.com> 2.5.5-1
 - 2.5.5
