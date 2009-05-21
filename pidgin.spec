@@ -249,7 +249,7 @@ Obsoletes:  gaim-meanwhile
 Requires:   glib2 >= %{glib_ver}
 # Bug #212817 Jabber needs cyrus-sasl plugins for authentication
 Requires: cyrus-sasl-plain, cyrus-sasl-md5
-# Workaround for accidental shipping of pidgin-docs =(
+# Workaround for accidental shipping of pidgin-docs 
 %if 0%{?rhel} == 5
 Obsoletes: pidgin-docs = 2.5.2
 %endif
