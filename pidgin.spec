@@ -67,7 +67,7 @@
 
 
 Name:		pidgin
-Version:	2.5.6
+Version:	2.5.7
 Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -585,6 +585,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jun 20 2009 Warren Togami <wtogami@redhat.com> 2.5.7-1
+- 2.5.7 with Yahoo Protocol 16 support
+
 * Wed May 20 2009 Stu Tomlinson <stu@nosnilmot.com> 2.5.6-1
 - 2.5.6
 
