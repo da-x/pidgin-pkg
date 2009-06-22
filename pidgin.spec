@@ -68,7 +68,7 @@
 
 Name:		pidgin
 Version:	2.5.7
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -103,6 +103,7 @@ Patch0: pidgin-NOT-UPSTREAM-2.5.3-reread-resolvconf.patch
 Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
+Patch100: pidgin-2.5.7-glib2-compat.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -349,6 +350,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
+%patch100 -p0 -b .glibcompat
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -585,6 +587,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jun 22 2009 Warren Togami <wtogami@redhat.com> 2.5.7-2
+- glib2 compat with RHEL-4
+
 * Sat Jun 20 2009 Warren Togami <wtogami@redhat.com> 2.5.7-1
 - 2.5.7 with Yahoo Protocol 16 support
 

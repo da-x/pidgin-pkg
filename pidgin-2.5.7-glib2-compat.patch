@@ -1,0 +1,52 @@
+-----------------------------------------------------------------
+Revision: e2bd07369c221038b091b908c8e07f0ae6179cd9
+Ancestor: 73090755eac02937743e2c600c5fc83051f2eeac
+Author: nosnilmot@pidgin.im
+Date: 2009-06-21T17:30:13
+Branch: im.pidgin.pidgin
+
+Modified files:
+        libpurple/protocols/yahoo/yahoo.c
+
+ChangeLog: 
+
+g_strv_length() is only available in glib2 2.6 and newer
+
+============================================================
+--- libpurple/protocols/yahoo/yahoo.c	9f36b37701756957da8074a7c6c19e73d00c6b03
++++ libpurple/protocols/yahoo/yahoo.c	ce8711a2c689ed8580964a51ad66ca548ef6faf0
+@@ -1656,11 +1656,16 @@ static void yahoo_auth16_stage2(PurpleUt
+ 	}
+ 	else if (len > 0 && ret_data && *ret_data) {
+ 		gchar **split_data = g_strsplit(ret_data, "\r\n", -1);
+-		int totalelements = g_strv_length(split_data);
++		int totalelements = 0;
+ 		int response_no = -1;
+ 		char *crumb = NULL;
+ 		char *crypt = NULL;
+ 
++#if GLIB_CHECK_VERSION(2,6,0)
++		totalelements = g_strv_length(split_data);
++#else
++		while (split_data[++totalelements] != NULL);	
++#endif
+ 		if (totalelements >= 5) {
+ 			response_no = strtol(split_data[1], NULL, 10);
+ 			crumb = g_strdup(split_data[2] + strlen("crumb="));
+@@ -1738,10 +1743,15 @@ static void yahoo_auth16_stage1_cb(Purpl
+ 	}
+ 	else if (len > 0 && ret_data && *ret_data) {
+ 		gchar **split_data = g_strsplit(ret_data, "\r\n", -1);
+-		int totalelements = g_strv_length(split_data);
++		int totalelements = 0;
+ 		int response_no = -1;
+ 		char *token = NULL;
+ 
++#if GLIB_CHECK_VERSION(2,6,0)
++		totalelements = g_strv_length(split_data);
++#else
++		while (split_data[++totalelements] != NULL);	
++#endif
+ 		if(totalelements >= 5) {
+ 			response_no = strtol(split_data[1], NULL, 10);
+ 			token = g_strdup(split_data[2] + strlen("ymsgr="));
