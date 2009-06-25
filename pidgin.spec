@@ -68,7 +68,7 @@
 
 Name:		pidgin
 Version:	2.5.7
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -103,7 +103,10 @@ Patch0: pidgin-NOT-UPSTREAM-2.5.3-reread-resolvconf.patch
 Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.5.7-glib2-compat.patch
+Patch100: pidgin-2.5.7-100-glib2-compat.patch
+Patch101: pidgin-2.5.7-101-yahoo-exclude-msn-auth-buddy.patch
+Patch102: pidgin-2.5.7-102-yahoo-update-pager-default.patch
+Patch103: pidgin-2.5.7-103-yahoo-pidgin-crash.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -350,7 +353,10 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0 -b .glibcompat
+%patch100 -p0 -b .glib2-compat
+%patch101 -p0 -b .yahoo-exclude-msn-auth-buddy
+%patch102 -p0 -b .yahoo-update-pager-default
+%patch103 -p0 -b .yahoo-pidgin-crash
 
 # Our preferences
 cp %{SOURCE1} prefs.xml

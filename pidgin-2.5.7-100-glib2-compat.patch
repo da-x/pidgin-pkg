@@ -1,3 +1,9 @@
+http://developer.pidgin.im/viewmtn/revision/info/e2bd07369c221038b091b908c8e07f0ae6179cd9
+Author  	 nosnilmot@pidgin.im
+Branch 	im.pidgin.pidgin
+Changelog 	g_strv_length() is only available in glib2 2.6 and newer
+Date 	2009-06-21T17:30:13 
+
 -----------------------------------------------------------------
 Revision: e2bd07369c221038b091b908c8e07f0ae6179cd9
 Ancestor: 73090755eac02937743e2c600c5fc83051f2eeac

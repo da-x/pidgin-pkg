@@ -1,0 +1,25 @@
+http://developer.pidgin.im/viewmtn/revision/info/602ee3404d02198f2a1430c98ac52ae487a0729c
+Author  	 darkrain42@pidgin.im
+Branch 	im.pidgin.pidgin
+Changelog 	Update the Pager server at login to the new default if "" or old default.
+Date 	2009-06-25T02:23:40 
+
+#
+#
+# patch "libpurple/protocols/yahoo/yahoo.c"
+#  from [11185f50aa12b2ed97585f6d7769d14f0d13887e]
+#    to [dff59fca73dcd8b459863fd9ed6510acef1420eb]
+#
+============================================================
+--- libpurple/protocols/yahoo/yahoo.c	11185f50aa12b2ed97585f6d7769d14f0d13887e
++++ libpurple/protocols/yahoo/yahoo.c	dff59fca73dcd8b459863fd9ed6510acef1420eb
+@@ -3346,7 +3346,8 @@ static void yahoo_server_check(PurpleAcc
+ 
+ 	server = purple_account_get_string(account, "server", YAHOO_PAGER_HOST);
+ 
+-	if (strcmp(server, "scs.yahoo.com") == 0)
++	if (*server == '\0' || g_str_equal(server, "scs.yahoo.com") ||
++			g_str_equal(server, "scs.msg.yahoo.com"))
+ 		purple_account_set_string(account, "server", YAHOO_PAGER_HOST);
+ }
+ 

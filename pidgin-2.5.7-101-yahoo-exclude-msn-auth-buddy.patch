@@ -1,0 +1,32 @@
+http://developer.pidgin.im/viewmtn/revision/info/d43ee4f5f6097f7a107a1aa122e09d777de7c77d
+Author  	 sadrul@pidgin.im
+Branch 	im.pidgin.pidgin
+Changelog 	Turns out we need to exclude 'msn/' when authorizing a buddy.
+Date 	2009-06-24T08:15:22 
+
+#
+#
+# patch "libpurple/protocols/yahoo/yahoo.c"
+#  from [4fc684e42c8aed006f8f3ee126f9474ac14c46e7]
+#    to [e2b0aab601a15a7ca4c3c57b114d3d60fdfa9f66]
+#
+============================================================
+--- libpurple/protocols/yahoo/yahoo.c	4fc684e42c8aed006f8f3ee126f9474ac14c46e7
++++ libpurple/protocols/yahoo/yahoo.c	e2b0aab601a15a7ca4c3c57b114d3d60fdfa9f66
+@@ -1125,11 +1125,15 @@ yahoo_buddy_add_authorize_cb(gpointer da
+ 	struct yahoo_add_request *add_req = data;
+ 	struct yahoo_packet *pkt;
+ 	struct yahoo_data *yd = add_req->gc->proto_data;
++	const char *who = add_req->who;
+ 
++	if (add_req->protocol == 2)
++		who += 4;
++
+ 	pkt = yahoo_packet_new(YAHOO_SERVICE_AUTH_REQ_15, YAHOO_STATUS_AVAILABLE, 0);
+ 	yahoo_packet_hash(pkt, "ssiii",
+ 					  1, add_req->id,
+-					  5, add_req->who,
++					  5, who,
+ 					  241, add_req->protocol,
+ 					  13, 1,
+ 					  334, 0);
