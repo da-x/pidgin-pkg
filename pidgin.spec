@@ -68,7 +68,7 @@
 
 Name:		pidgin
 Version:	2.5.8
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -140,7 +140,7 @@ BuildRequires:  libxml2-devel
 BuildRequires:	krb5-devel
 %endif
 # gtkspell integration (FC1+)
-BuildRequires:	gtkspell-devel, aspell-devel
+BuildRequires:	gtkspell-devel
 # Evolution integration (FC3+)
 BuildRequires:	evolution-data-server-devel
 # SILC integration (FC3+)
