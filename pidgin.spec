@@ -29,6 +29,7 @@
 %define perl_embed_separated	0
 %define api_docs		0
 %define krb4_removed		0
+%define nss_md2_disabled	0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -59,6 +60,10 @@
 %if 0%{?fedora} >= 8
 %define perl_embed_separated	1
 %define api_docs		1
+%endif
+# F11+: New NSS (3.12.3) disables weaker MD2 algorithm
+%if 0%{?fedora} >= 11
+%define nss_md2_disabled	1
 %endif
 # F12+: krb4 removed
 %if 0%{?fedora} >= 12
@@ -103,6 +108,7 @@ Patch0: pidgin-NOT-UPSTREAM-2.5.3-reread-resolvconf.patch
 Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
+Patch100: pidgin-2.5.8-nss-md2.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -125,7 +131,11 @@ BuildRequires:  autoconf
 BuildRequires:  libtool
 BuildRequires:	startup-notification-devel
 BuildRequires:  cyrus-sasl-devel
-BuildRequires:	nss-devel
+%if %{nss_md2_disabled}
+BuildRequires:	nss-devel >= 3.12.3
+%else
+BuildRequires:  nss-devel
+%endif
 BuildRequires:	gtk2-devel
 BuildRequires:  gettext
 BuildRequires:  intltool
@@ -349,6 +359,9 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
+%if %{nss_md2_disabled}
+%patch100 -p0 -b .nssmd2
+%endif
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -585,6 +598,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jul 11 2009 Stu Tomlison <stu@nosnilmot.com> 2.5.8-2
+- Backport patch from upstream to enable NSS to recognize root CA
+  certificates that use MD2 & MD4 algorithms in their signature, as
+  used by some MSN and XMPP servers
+
 * Sun Jun 28 2009 Warren Togami <wtogami@redat.com> 2.5.8-1
 - 2.5.8 with several important bug fixes
 
