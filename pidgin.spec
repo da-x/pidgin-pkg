@@ -62,7 +62,7 @@
 %define api_docs		1
 %endif
 # F11+: New NSS (3.12.3) disables weaker MD2 algorithm
-%if 0%{?fedora} >= 11
+%if 0%{?fedora} >= 10
 %define nss_md2_disabled	1
 %endif
 # F12+: krb4 removed
