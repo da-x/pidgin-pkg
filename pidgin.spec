@@ -65,22 +65,26 @@
 %if 0%{?fedora} >= 10
 %define nss_md2_disabled	1
 %endif
+# F11+: voice and video support
+%if 0%{?fedora} >= 11
+%define vv_support	1
+%endif
 # F12+: krb4 removed
 %if 0%{?fedora} >= 12
 %define krb4_removed	1
 %endif
 
-
 Name:		pidgin
-Version:	2.5.8
-Release:	2%{?dist}
+Version:	2.6.0
+%define snapshot 20090721
+Release:	0.1.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
 # MIT - Zephyr prpl
 Group:		Applications/Internet
 URL:		http://pidgin.im/
-Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
+Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}-devel-%{snapshot}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
@@ -104,11 +108,10 @@ Source2:        one_time_password.c
 
 
 ## Patches 0-99: Fedora specific or upstream wont accept
-Patch0: pidgin-NOT-UPSTREAM-2.5.3-reread-resolvconf.patch
+Patch0: pidgin-NOT-UPSTREAM-2.6.0-reread-resolvconf.patch
 Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.5.8-nss-md2.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -200,6 +203,10 @@ BuildRequires:  perl-devel
 # Perl embed separated out (F9+)
 %if %{perl_embed_separated}
 BuildRequires:  perl(ExtUtils::Embed)
+%endif
+# Voice and video support (F11+)
+%if %{vv_support}
+BuildRequires:  farsight2-devel
 %endif
 
 %if %{api_docs}
@@ -351,7 +358,7 @@ Doxygen generated API documentation.
 
 %prep
 echo "FEDORA=%{fedora} RHEL=%{rhel}"
-%setup -q
+%setup -q -n pidgin-2.6.0devel
 ## Patches 0-99: Fedora specific or upstream wont accept
 %patch0 -p1 -b .resolv
 %if %{force_sound_aplay}
@@ -359,9 +366,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%if %{nss_md2_disabled}
-%patch100 -p0 -b .nssmd2
-%endif
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -435,8 +439,8 @@ desktop-file-install --vendor pidgin --delete-original       \
 
 # remove libtool libraries and static libraries
 rm -f `find $RPM_BUILD_ROOT -name "*.la" -o -name "*.a"`
-# remove the old perllocal.pod file
-rm -f $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
+# remove the perllocal.pod file
+find $RPM_BUILD_ROOT -name perllocal.pod |xargs rm
 # remove relnot.so plugin since it is unusable for our package
 rm -f $RPM_BUILD_ROOT%{_libdir}/pidgin/relnot.so
 # remove dummy nullclient
@@ -522,9 +526,7 @@ rm -rf $RPM_BUILD_ROOT
 %files perl
 %defattr(-,root,root,-)
 %{_mandir}/man3/Pidgin*
-%{perl_vendorarch}/Pidgin.pm
-%dir %{perl_vendorarch}/auto/Pidgin/
-%{perl_vendorarch}/auto/Pidgin/Pidgin.so
+%{_libdir}/pidgin/perl/
 
 %files devel
 %defattr(-,root,root,-)
@@ -565,10 +567,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_mandir}/man3/Purple*
 %{_libdir}/purple-2/perl.so
-%{perl_vendorarch}/Purple.pm
-%dir %{perl_vendorarch}/auto/Purple/
-%{perl_vendorarch}/auto/Purple/Purple.so
-%{perl_vendorarch}/auto/Purple/autosplit.ix
+%{_libdir}/purple-2/perl/
 
 %files -n libpurple-tcl
 %defattr(-,root,root,-)
@@ -598,6 +597,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jul 21 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.1.20090721
+- 2.6.0 snapshot with voice and video support via farsight2
+
 * Sat Jul 11 2009 Stu Tomlison <stu@nosnilmot.com> 2.5.8-2
 - Backport patch from upstream to enable NSS to recognize root CA
   certificates that use MD2 & MD4 algorithms in their signature, as
