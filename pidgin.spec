@@ -554,6 +554,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %exclude %{_libdir}/purple-2/tcl.so
 %exclude %{_libdir}/purple-2/perl.so
+%exclude %{_libdir}/purple-2/perl/
 
 %files -n libpurple-devel
 %defattr(-,root,root,-)
