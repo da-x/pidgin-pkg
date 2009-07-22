@@ -77,7 +77,7 @@
 Name:		pidgin
 Version:	2.6.0
 %define snapshot 20090721
-Release:	0.1.%{snapshot}%{?dist}
+Release:	0.3.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -112,6 +112,7 @@ Patch0: pidgin-NOT-UPSTREAM-2.6.0-reread-resolvconf.patch
 Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
+Patch100: pidgin-2.6.0devel-nocamera-crash.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -366,6 +367,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
+%patch100 -p0
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -597,6 +599,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jul 21 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.3.20090721
+- prevent crash with no camera when closing vv window
+
 * Tue Jul 21 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.1.20090721
 - 2.6.0 snapshot with voice and video support via farsight2
 
