@@ -77,7 +77,7 @@
 Name:		pidgin
 Version:	2.6.0
 %define snapshot 20090721
-Release:	0.3.%{snapshot}%{?dist}
+Release:	0.4.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -600,6 +600,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jul 22 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.4.20090721
+- rebuild
+
 * Tue Jul 21 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.3.20090721
 - prevent crash with no camera when closing vv window
 
