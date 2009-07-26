@@ -77,7 +77,7 @@
 Name:		pidgin
 Version:	2.6.0
 %define snapshot 20090721
-Release:	0.4.%{snapshot}%{?dist}
+Release:	0.5.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -600,6 +600,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.6.0-0.5.20090721
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Wed Jul 22 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.4.20090721
 - rebuild
 
