@@ -77,7 +77,7 @@
 Name:		pidgin
 Version:	2.6.0
 %define snapshot 20090721
-Release:	0.5.%{snapshot}%{?dist}
+Release:	0.6.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -519,6 +519,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/pidgin
 %{_bindir}/gaim
 %{_libdir}/pidgin/
+%exclude %{_libdir}/pidgin/perl
 %{_mandir}/man1/pidgin.*
 %{_datadir}/applications/pidgin.desktop
 %{_datadir}/pixmaps/pidgin/
@@ -538,6 +539,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f pidgin.lang -n libpurple
 %defattr(-,root,root,-)
 %{_libdir}/purple-2/
+%exclude %{_libdir}/purple-2/perl
 %{_libdir}/libpurple.so.*
 %{_datadir}/sounds/purple/
 %{_datadir}/purple
@@ -600,6 +602,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jul 27 2009 Stu Tomlinson <stu@nosnilmot.com> 2.6.0-0.6.20090721
+- Prevent main libpurple & pidgin packages depending on perl (#513902)
+
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.6.0-0.5.20090721
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
