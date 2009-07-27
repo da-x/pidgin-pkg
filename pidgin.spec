@@ -76,8 +76,8 @@
 
 Name:		pidgin
 Version:	2.6.0
-%define snapshot 20090721
-Release:	0.6.%{snapshot}%{?dist}
+%define snapshot 20090727
+Release:	0.7.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -112,7 +112,6 @@ Patch0: pidgin-NOT-UPSTREAM-2.6.0-reread-resolvconf.patch
 Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.6.0devel-nocamera-crash.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -367,7 +366,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -602,6 +600,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jul 27 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.7.20090727
+- new snapshot
+
 * Mon Jul 27 2009 Stu Tomlinson <stu@nosnilmot.com> 2.6.0-0.6.20090721
 - Prevent main libpurple & pidgin packages depending on perl (#513902)
 
