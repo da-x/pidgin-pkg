@@ -30,6 +30,8 @@
 %define api_docs		0
 %define krb4_removed		0
 %define nss_md2_disabled	0
+%define vv_support		0
+%define libidn_support		0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -61,13 +63,17 @@
 %define perl_embed_separated	1
 %define api_docs		1
 %endif
-# F11+: New NSS (3.12.3) disables weaker MD2 algorithm
+# F10+: New NSS (3.12.3) disables weaker MD2 algorithm
 %if 0%{?fedora} >= 10
 %define nss_md2_disabled	1
 %endif
 # F11+: voice and video support
 %if 0%{?fedora} >= 11
 %define vv_support	1
+%endif
+# F11+: libidn for punycode domain support
+%if 0%{?fedora} >= 11
+%define libidn_support	1
 %endif
 # F12+: krb4 removed
 %if 0%{?fedora} >= 12
@@ -77,7 +83,7 @@
 Name:		pidgin
 Version:	2.6.0
 %define snapshot 20090727
-Release:	0.7.%{snapshot}%{?dist}
+Release:	0.8.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -207,6 +213,10 @@ BuildRequires:  perl(ExtUtils::Embed)
 # Voice and video support (F11+)
 %if %{vv_support}
 BuildRequires:  farsight2-devel
+%endif
+# libidn punycode domain support (F11+)
+%if %{libidn_support}
+BuildRequires:  libidn-devel
 %endif
 
 %if %{api_docs}
@@ -401,6 +411,9 @@ SWITCHES="--with-extraversion=%{release}"
 %endif
 %if ! %{meanwhile_integration}
 	SWITCHES="$SWITCHES --disable-meanwhile"
+%endif
+%if ! %{libidn_support}
+	SWITCHES="$SWITCHES --disable-idn"
 %endif
 
 # FC5+ automatic -fstack-protector-all switch
@@ -600,7 +613,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Mon Jul 27 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.7.20090727
+* Mon Jul 27 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.8.20090727
 - new snapshot
 
 * Mon Jul 27 2009 Stu Tomlinson <stu@nosnilmot.com> 2.6.0-0.6.20090721
