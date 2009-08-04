@@ -82,8 +82,8 @@
 
 Name:		pidgin
 Version:	2.6.0
-%define snapshot 20090727
-Release:	0.8.%{snapshot}%{?dist}
+%define snapshot 20090804
+Release:	0.9.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -613,6 +613,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Aug 04 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.9.20090804
+- new snapshot
+
 * Mon Jul 27 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.8.20090727
 - new snapshot
 
