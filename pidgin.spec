@@ -82,8 +82,8 @@
 
 Name:		pidgin
 Version:	2.6.0
-%define snapshot 20090804
-Release:	0.9.%{snapshot}%{?dist}
+%define snapshot 20090806
+Release:	0.10.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -444,7 +444,6 @@ install -m 0755 libpurple/plugins/one_time_password.so $RPM_BUILD_ROOT%{_libdir}
 
 desktop-file-install --vendor pidgin --delete-original       \
   --add-category X-Red-Hat-Base                            \
-  --copy-generic-name-to-name                              \
   --dir $RPM_BUILD_ROOT%{_datadir}/applications            \
   $RPM_BUILD_ROOT%{_datadir}/applications/pidgin.desktop
 
@@ -616,6 +615,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Aug 06 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.10.20090806
+- new snapshot - theoretically better sound quality in voice chat
+
 * Tue Aug 04 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.9.20090804
 - new snapshot
 
