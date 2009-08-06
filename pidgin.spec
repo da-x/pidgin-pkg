@@ -114,8 +114,7 @@ Source2:        one_time_password.c
 
 
 ## Patches 0-99: Fedora specific or upstream wont accept
-Patch0: pidgin-NOT-UPSTREAM-2.6.0-reread-resolvconf.patch
-Patch1: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
+Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
 
@@ -370,9 +369,8 @@ Doxygen generated API documentation.
 echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %setup -q -n pidgin-2.6.0devel
 ## Patches 0-99: Fedora specific or upstream wont accept
-%patch0 -p1 -b .resolv
 %if %{force_sound_aplay}
-%patch1 -p1 -b .aplay
+%patch0 -p1 -b .aplay
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
@@ -464,6 +462,11 @@ install -m 644 prefs.xml $RPM_BUILD_ROOT%{_sysconfdir}/purple/prefs.xml
 
 find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} ';'
 find $RPM_BUILD_ROOT -type f -name '*.bs' -empty -exec rm -f {} ';'
+
+# remove non-plugin unrequired library symlinks
+rm -f $RPM_BUILD_ROOT%{_libdir}/purple-2/liboscar.so
+rm -f $RPM_BUILD_ROOT%{_libdir}/purple-2/libjabber.so
+rm -f $RPM_BUILD_ROOT%{_libdir}/purple-2/libymsg.so
 
 # make sure that we can write to all the files we've installed
 # so that they are properly stripped
