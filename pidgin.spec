@@ -82,8 +82,8 @@
 
 Name:		pidgin
 Version:	2.6.0
-%define snapshot 20090806
-Release:	0.10.%{snapshot}%{?dist}
+%define snapshot 20090812
+Release:	0.11.%{snapshot}%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -615,6 +615,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Aug 06 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.11.20090812
+- new snapshot at the request of maiku
+
 * Tue Aug 06 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.10.20090806
 - new snapshot - theoretically better sound quality in voice chat
 
