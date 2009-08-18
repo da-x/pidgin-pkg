@@ -82,15 +82,14 @@
 
 Name:		pidgin
 Version:	2.6.0
-%define snapshot 20090812
-Release:	0.11.%{snapshot}%{?dist}
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
 # MIT - Zephyr prpl
 Group:		Applications/Internet
 URL:		http://pidgin.im/
-Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}-devel-%{snapshot}.tar.bz2
+Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
@@ -367,7 +366,7 @@ Doxygen generated API documentation.
 
 %prep
 echo "FEDORA=%{fedora} RHEL=%{rhel}"
-%setup -q -n pidgin-2.6.0devel
+%setup -q 
 ## Patches 0-99: Fedora specific or upstream wont accept
 %if %{force_sound_aplay}
 %patch0 -p1 -b .aplay
@@ -615,6 +614,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Aug 18 2009 Warren Togami <wtogami@redhat.com> 2.6.0-1
+- CVE-2009-2694
+- Voice and Video support via farsight2 (Fedora 11+)
+- Numerous other bug fixes
+
 * Tue Aug 06 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.11.20090812
 - new snapshot at the request of maiku
 
