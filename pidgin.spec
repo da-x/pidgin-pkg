@@ -81,7 +81,7 @@
 %endif
 
 Name:		pidgin
-Version:	2.6.0
+Version:	2.6.1
 Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -614,6 +614,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Aug 19 2009 Warren Togami <wtogami@redhat.com> 2.6.1-1
+- 2.6.1: Fix a crash when some users send you a link in a Yahoo IM
+
 * Tue Aug 18 2009 Warren Togami <wtogami@redhat.com> 2.6.0-1
 - CVE-2009-2694
 - Voice and Video support via farsight2 (Fedora 11+)
