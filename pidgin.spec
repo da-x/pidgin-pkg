@@ -412,6 +412,9 @@ SWITCHES="--with-extraversion=%{release}"
 %if ! %{libidn_support}
 	SWITCHES="$SWITCHES --disable-idn"
 %endif
+%if ! %{vv_support}
+	SWITCHES="$SWITCHES --disable-vv"
+%endif
 
 # FC5+ automatic -fstack-protector-all switch
 export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
@@ -614,6 +617,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Sep 06 2009 Stu Tomlinson <stu@nosnilmot.com> 2.6.2-1.1
+- VV support needs to be explicitly disabled on F10
+
 * Sun Sep 06 2009 Stu Tomlinson <stu@nosnilmot.com> 2.6.2-1
 - 2.6.2 Fixes a number of crashes
 
