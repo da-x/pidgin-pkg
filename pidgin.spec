@@ -81,7 +81,7 @@
 %endif
 
 Name:		pidgin
-Version:	2.6.1
+Version:	2.6.2
 Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -614,6 +614,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Sep 06 2009 Stu Tomlinson <stu@nosnilmot.com> 2.6.2-1
+- 2.6.2 Fixes a number of crashes
+
 * Wed Aug 19 2009 Warren Togami <wtogami@redhat.com> 2.6.1-1
 - 2.6.1: Fix a crash when some users send you a link in a Yahoo IM
 
