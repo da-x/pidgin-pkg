@@ -1,0 +1,52 @@
+http://developer.pidgin.im/viewmtn/revision/info/97e003ed2bc2bafbb993693c9ae9c6d667731cc1
+If an oscar buddy on our buddy list is away and we have not yet
+fetched their HTML info, then fallback to using their plaintext
+status message when fetching the buddies status text.
+Fixes #9843
+
+#
+#
+# patch "libpurple/protocols/oscar/oscar.c"
+#  from [e8d20222205b810c91ebed0d7193d2004cc2777f]
+#    to [c0ac247833af9a49df59ca3c58ceab5ce6263366]
+#
+============================================================
+--- libpurple/protocols/oscar/oscar.c	e8d20222205b810c91ebed0d7193d2004cc2777f
++++ libpurple/protocols/oscar/oscar.c	c0ac247833af9a49df59ca3c58ceab5ce6263366
+@@ -829,19 +829,25 @@ static void oscar_user_info_append_statu
+ 	   the "message" attribute of the status contains only the plaintext
+ 	   message. */
+ 	if (userinfo) {
+-		if ((userinfo->flags & AIM_FLAG_AWAY)) {
+-			/* Away message? */
+-			if ((userinfo->flags & AIM_FLAG_AWAY) && (userinfo->away_len > 0) && (userinfo->away != NULL) && (userinfo->away_encoding != NULL)) {
+-				tmp = oscar_encoding_extract(userinfo->away_encoding);
+-				message = oscar_encoding_to_utf8(account, tmp, userinfo->away,
+-												   userinfo->away_len);
+-				g_free(tmp);
+-			}
++		if ((userinfo->flags & AIM_FLAG_AWAY)
++				&& userinfo->away_len > 0
++				&& userinfo->away != NULL
++				&& userinfo->away_encoding != NULL)
++		{
++			/* Away message */
++			tmp = oscar_encoding_extract(userinfo->away_encoding);
++			message = oscar_encoding_to_utf8(account,
++					tmp, userinfo->away, userinfo->away_len);
++			g_free(tmp);
+ 		} else {
+-			/* Available message? */
++			/*
++			 * Available message or non-HTML away message (because that's
++			 * all we have right now.
++			 */
+ 			if ((userinfo->status != NULL) && userinfo->status[0] != '\0') {
+-				message = oscar_encoding_to_utf8(account, userinfo->status_encoding,
+-											 userinfo->status, userinfo->status_len);
++				message = oscar_encoding_to_utf8(account,
++						userinfo->status_encoding, userinfo->status,
++						userinfo->status_len);
+ 			}
+ #if defined (_WIN32) || defined (__APPLE__)
+ 			if (userinfo->itmsurl && (userinfo->itmsurl[0] != '\0'))

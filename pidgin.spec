@@ -82,7 +82,7 @@
 
 Name:		pidgin
 Version:	2.6.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -116,6 +116,10 @@ Source2:        one_time_password.c
 Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
+Patch100: pidgin-2.6.2-aim-buddy-status-grab.patch
+Patch101: pidgin-2.6.2-yahoo-buddy-idle-time.patch
+Patch102: pidgin-2.6.2-yahoo-status-change-away.patch
+Patch103: pidgin-2.6.2-crash-validate-jid.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -373,6 +377,10 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
+%patch100 -p0 -b .aim-buddy-status-grab
+%patch101 -p0 -b .yahoo-buddy-idle-time
+%patch102 -p0 -b .yahoo-status-change-away
+%patch103 -p0 -b .pidgin-2.6.2-crash-validate-jid
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -617,11 +625,19 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Sep 09 2009 Warren Togami <wtogami@redhat.com> 2.6.2-2
+- Upstream backports:
+    97e003ed2bc2bafbb993693c9ae9c6d667731cc1 aim-buddy-status-grab
+    37aa00d044431100d37466517568640cb082680c yahoo-buddy-idle-time
+    40005b889ee276fbcd0a4e886a68d8a8cce45698 yahoo-status-change-away
+    cb46b045aa6e927a3814d9053c2b1c0f08d6fa62 crash-validate-jid
+
 * Sun Sep 06 2009 Stu Tomlinson <stu@nosnilmot.com> 2.6.2-1.1
 - VV support needs to be explicitly disabled on F10
 
 * Sun Sep 06 2009 Stu Tomlinson <stu@nosnilmot.com> 2.6.2-1
 - 2.6.2 Fixes a number of crashes
+- CVE-2009-2703, CVE-2009-3083, CVE-2009-3084, CVE-2009-3085
 
 * Wed Aug 19 2009 Warren Togami <wtogami@redhat.com> 2.6.1-1
 - 2.6.1: Fix a crash when some users send you a link in a Yahoo IM
