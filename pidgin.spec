@@ -81,8 +81,8 @@
 %endif
 
 Name:		pidgin
-Version:	2.6.2
-Release:	2%{?dist}
+Version:	2.6.3
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -116,7 +116,6 @@ Source2:        one_time_password.c
 Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.6.2-aim-buddy-status-grab.patch
 Patch101: pidgin-2.6.2-yahoo-buddy-idle-time.patch
 Patch102: pidgin-2.6.2-yahoo-status-change-away.patch
 Patch103: pidgin-2.6.2-crash-validate-jid.patch
@@ -377,7 +376,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0 -b .aim-buddy-status-grab
 %patch101 -p0 -b .yahoo-buddy-idle-time
 %patch102 -p0 -b .yahoo-status-change-away
 %patch103 -p0 -b .pidgin-2.6.2-crash-validate-jid
@@ -625,6 +623,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Oct 16 2009 Warren Togami <wtogami@redhat.com> 2.6.3-1
+- 2.6.3 CVE-2009-3615
+
 * Wed Sep 09 2009 Warren Togami <wtogami@redhat.com> 2.6.2-2
 - Upstream backports:
     97e003ed2bc2bafbb993693c9ae9c6d667731cc1 aim-buddy-status-grab
