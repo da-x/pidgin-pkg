@@ -2,12 +2,6 @@ http://developer.pidgin.im/ticket/10259
 http://developer.pidgin.im/viewmtn/revision/info/cb46b045aa6e927a3814d9053c2b1c0f08d6fa62
 Fix a crash when attempting to validate a JID with an invalid resource.
 
-#
-#
-# patch "ChangeLog"
-#  from [959824a520d41286c4d89d8899a8e12b684e5ad8]
-#    to [6e78b15060f29fe30ae1b695f61248014b305d49]
-# 
 # patch "libpurple/protocols/jabber/jutil.c"
 #  from [9047c2dfd575de6ec516dd8377bce70df42d5063]
 #    to [603120abe6629d5e8f9e79d5198134bb252b0875]
@@ -16,19 +10,6 @@ Fix a crash when attempting to validate a JID with an invalid resource.
 #  from [38e36ccd4fbf2682828c201fe178cd637217fc25]
 #    to [42bdbb36f39b7d894d5f6f68e1b02f4c1ce4973a]
 #
-============================================================
---- ChangeLog	959824a520d41286c4d89d8899a8e12b684e5ad8
-+++ ChangeLog	6e78b15060f29fe30ae1b695f61248014b305d49
-@@ -1,5 +1,9 @@ Pidgin and Finch: The Pimpin' Penguin IM
- Pidgin and Finch: The Pimpin' Penguin IM Clients That're Good for the Soul
- 
-+version 2.6.3 (??/??/20??):
-+	XMPP:
-+	* Fix a crash when attempting to validate an invalid JID.
-+
- version 2.6.2 (09/05/2009):
- 	libpurple:
- 	* Fix --disable-avahi to actually disable it in configure, as opposed
 ============================================================
 --- libpurple/protocols/jabber/jutil.c	9047c2dfd575de6ec516dd8377bce70df42d5063
 +++ libpurple/protocols/jabber/jutil.c	603120abe6629d5e8f9e79d5198134bb252b0875
