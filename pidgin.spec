@@ -82,7 +82,7 @@
 
 Name:		pidgin
 Version:	2.6.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -119,6 +119,7 @@ Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 Patch101: pidgin-2.6.2-yahoo-buddy-idle-time.patch
 Patch102: pidgin-2.6.2-yahoo-status-change-away.patch
 Patch103: pidgin-2.6.2-crash-validate-jid.patch
+Patch104: pidgin-2.6.3-msn_servconn_disconnect-crash.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -379,6 +380,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch101 -p0 -b .yahoo-buddy-idle-time
 %patch102 -p0 -b .yahoo-status-change-away
 %patch103 -p0 -b .pidgin-2.6.2-crash-validate-jid
+%patch104 -p0 -b .msn_servconn_disconnect-crash
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -623,6 +625,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Oct 19 2009 Warren Togami <wtogami@redhat.com> 2.6.3-2
+- Upstream backport:
+    3abad7606f4a2dfd1903df796f33924b12509a56 msn_servconn_disconnect-crash
+
 * Fri Oct 16 2009 Warren Togami <wtogami@redhat.com> 2.6.3-1
 - 2.6.3 CVE-2009-3615
 
