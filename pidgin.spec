@@ -36,6 +36,7 @@
 %define nss_md2_disabled	0
 %define vv_support		0
 %define libidn_support		0
+%define disable_silc		0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -83,10 +84,15 @@
 %if 0%{?fedora} >= 12
 %define krb4_removed	1
 %endif
+# EL6: Disable SILC protocol
+# (get rid of extra crypto lib for perpetually broken protocol that nobody uses)
+%if 0%{?rhel} == 6
+%define disable_silc	1
+%endif
 
 Name:		pidgin
 Version:	2.6.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -166,7 +172,9 @@ BuildRequires:	gtkspell-devel
 # Evolution integration (FC3+)
 BuildRequires:	evolution-data-server-devel
 # SILC integration (FC3+)
+%if ! %{disable_silc}
 BuildRequires:	libsilc-devel
+%endif
 # DBus integration (FC5+)
 %if %{dbus_integration}
 BuildRequires:  dbus-devel >= 0.60
@@ -623,6 +631,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Dec 02 2009 Warren Togami <wtogami@redhat.com> 2.6.4-2
+- disable SILC in EL6 builds
+
 * Mon Nov 30 2009 Warren Togami <wtogami@redhat.com> 2.6.4-1
 - 2.6.4
 
