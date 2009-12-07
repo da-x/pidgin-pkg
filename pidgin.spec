@@ -92,7 +92,7 @@
 
 Name:		pidgin
 Version:	2.6.4
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -631,6 +631,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Dec  7 2009 Stepan Kasal <skasal@redhat.com> - 2.6.4-3
+- rebuild against perl 5.10.1
+
 * Wed Dec 02 2009 Warren Togami <wtogami@redhat.com> 2.6.4-2
 - disable SILC in EL6 builds
 
