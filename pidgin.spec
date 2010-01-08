@@ -648,9 +648,6 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Dec  8 2009 Warren Togami <wtogami@redhat.com> - 2.6.4-4
 - temporarily disable evolution integration in F13 until it is fixed
 
-* Mon Dec  7 2009 Stepan Kasal <skasal@redhat.com> - 2.6.4-3
-- rebuild against perl 5.10.1
-
 * Wed Dec 02 2009 Warren Togami <wtogami@redhat.com> 2.6.4-2
 - disable SILC in EL6 builds
 
