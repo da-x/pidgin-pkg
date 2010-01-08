@@ -97,8 +97,8 @@
 %endif
 
 Name:		pidgin
-Version:	2.6.4
-Release:	4%{?dist}
+Version:	2.6.5
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -125,8 +125,6 @@ ExcludeArch:    s390 s390x
 # - Browser "GNOME Default"
 # - Smiley Theme "Default"
 Source1:	purple-fedora-prefs.xml
-Source2:        one_time_password.c
-
 
 ## Patches 0-99: Fedora specific or upstream wont accept
 Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
@@ -453,8 +451,7 @@ export CFLAGS="$RPM_OPT_FLAGS"
 
 make %{?_smp_mflags} LIBTOOL=/usr/bin/libtool
 
-# one_time_password plugin, to be merged upstream soon
-cp %{SOURCE2} libpurple/plugins/
+# one_time_password plugin, included upstream but not built by default
 cd libpurple/plugins/
 make one_time_password.so
 cd -
@@ -643,6 +640,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jan  7 2010 Warren Togami <wtogami@redhat.com> - 2.6.5-1
+- 2.6.5
+- CVE-2010-0013
+- Other bug fixes
+
 * Tue Dec  8 2009 Warren Togami <wtogami@redhat.com> - 2.6.4-4
 - temporarily disable evolution integration in F13 until it is fixed
 
