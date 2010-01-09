@@ -392,7 +392,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0 -b .old_gcc
+%patch100 -p1 -b .old_gcc
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
