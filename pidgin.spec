@@ -97,15 +97,16 @@
 %endif
 
 Name:		pidgin
-Version:	2.6.5
-Release:	2%{?dist}
+Version:	2.6.6
+Release:	0.1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
 # MIT - Zephyr prpl
 Group:		Applications/Internet
 URL:		http://pidgin.im/
-Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
+#Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
+Source0:	pidgin-2.6.6devel.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
@@ -130,7 +131,7 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.6.5-old-gcc.patch
+#Patch100: pidgin-2.6.5-old-gcc.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -385,14 +386,15 @@ Doxygen generated API documentation.
 
 %prep
 echo "FEDORA=%{fedora} RHEL=%{rhel}"
-%setup -q 
+#%setup -q 
+%setup -n pidgin-2.6.6devel -q 
 ## Patches 0-99: Fedora specific or upstream wont accept
 %if %{force_sound_aplay}
 %patch0 -p1 -b .aplay
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p1 -b .old_gcc
+#%patch100 -p1 -b .old_gcc
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -402,6 +404,13 @@ if [ "%{use_gnome_open}" == "1" ]; then
         sed -i "s/value='xdg-open'/value='gnome-open'/" prefs.xml
 fi
 
+# Bug #528796: Get rid of #!/usr/bin/env python
+# Upstream refuses to use ./configure --python-path= in these scripts
+# for no good reason.
+for file in finch/plugins/pietray.py libpurple/purple-remote libpurple/plugins/dbus-buddyicons-example.py \
+            libpurple/plugins/startup.py libpurple/purple-url-handler libpurple/purple-notifications-example; do
+    sed -i 's/env python/python/' $file
+done
 
 %build
 SWITCHES="--with-extraversion=%{release}"
@@ -640,6 +649,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Feb 11 2010 Warren Togami <wtogami@redhat.com> - 2.6.6-0.1
+- Bug #528796: Get rid of #!/usr/bin/env python
+
 * Fri Jan  8 2010 Warren Togami <wtogami@redhat.com> - 2.6.5-2
 - 2.6.5
 - CVE-2010-0013
