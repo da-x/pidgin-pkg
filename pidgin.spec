@@ -98,15 +98,14 @@
 
 Name:		pidgin
 Version:	2.6.6
-Release:	0.1%{?dist}
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
 # MIT - Zephyr prpl
 Group:		Applications/Internet
 URL:		http://pidgin.im/
-#Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
-Source0:	pidgin-2.6.6devel.tar.bz2
+Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
@@ -386,8 +385,7 @@ Doxygen generated API documentation.
 
 %prep
 echo "FEDORA=%{fedora} RHEL=%{rhel}"
-#%setup -q 
-%setup -n pidgin-2.6.6devel -q 
+%setup -q 
 ## Patches 0-99: Fedora specific or upstream wont accept
 %if %{force_sound_aplay}
 %patch0 -p1 -b .aplay
@@ -649,7 +647,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Thu Feb 11 2010 Warren Togami <wtogami@redhat.com> - 2.6.6-0.1
+* Tue Feb 16 2010 Warren Togami <wtogami@redhat.com> - 2.6.6-1
+- 2.6.6 with security and numerous minor bug fixes
+  CVE-2010-0277 CVE-2010-0420 CVE-2010-0423
 - Bug #528796: Get rid of #!/usr/bin/env python
 
 * Fri Jan  8 2010 Warren Togami <wtogami@redhat.com> - 2.6.5-2
