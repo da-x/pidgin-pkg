@@ -97,7 +97,7 @@
 %endif
 
 Name:		pidgin
-Version:	2.6.5
+Version:	2.6.6
 Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -130,7 +130,7 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-#Patch104: pidgin-2.6.3-msn_servconn_disconnect-crash.patch
+#Patch100: pidgin-2.6.5-old-gcc.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -392,7 +392,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-#%patch104 -p0 -b .msn_servconn_disconnect-crash
+#%patch100 -p1 -b .old_gcc
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -402,6 +402,13 @@ if [ "%{use_gnome_open}" == "1" ]; then
         sed -i "s/value='xdg-open'/value='gnome-open'/" prefs.xml
 fi
 
+# Bug #528796: Get rid of #!/usr/bin/env python
+# Upstream refuses to use ./configure --python-path= in these scripts
+# for no good reason.
+for file in finch/plugins/pietray.py libpurple/purple-remote libpurple/plugins/dbus-buddyicons-example.py \
+            libpurple/plugins/startup.py libpurple/purple-url-handler libpurple/purple-notifications-example; do
+    sed -i 's/env python/python/' $file
+done
 
 %build
 SWITCHES="--with-extraversion=%{release}"
@@ -640,10 +647,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Thu Jan  7 2010 Warren Togami <wtogami@redhat.com> - 2.6.5-1
+* Tue Feb 16 2010 Warren Togami <wtogami@redhat.com> - 2.6.6-1
+- 2.6.6 with security and numerous minor bug fixes
+  CVE-2010-0277 CVE-2010-0420 CVE-2010-0423
+- Bug #528796: Get rid of #!/usr/bin/env python
+
+* Fri Jan  8 2010 Warren Togami <wtogami@redhat.com> - 2.6.5-2
 - 2.6.5
 - CVE-2010-0013
 - Other bug fixes
+- Fix build with old gcc versions (RHEL4)
 
 * Tue Dec  8 2009 Warren Togami <wtogami@redhat.com> - 2.6.4-4
 - temporarily disable evolution integration in F13 until it is fixed
