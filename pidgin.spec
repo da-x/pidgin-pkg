@@ -98,7 +98,7 @@
 
 Name:		pidgin
 Version:	2.6.6
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -130,7 +130,8 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-#Patch100: pidgin-2.6.5-old-gcc.patch
+Patch100: pidgin-2.6.6-clientLogin-proxy-fix.patch
+Patch101: pidgin-2.6.6-clientLogin-use-https.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -392,7 +393,8 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-#%patch100 -p1 -b .old_gcc
+%patch100 -p0
+%patch101 -p0
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -647,6 +649,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Mar 04 2010 Warren Togami <wtogami@redhat.com> - 2.6.6-2
+- Upstream backports:
+    0e3079d15adeb12c1e57ceaf5bf037f9b71c8abd Fix AIM SSL clientLogin
+    b14ee507e932a395a0e1f29298af162c8614ca0f Fix AIM clientLogin with proxy
+
 * Tue Feb 16 2010 Warren Togami <wtogami@redhat.com> - 2.6.6-1
 - 2.6.6 with security and numerous minor bug fixes
   CVE-2010-0277 CVE-2010-0420 CVE-2010-0423
