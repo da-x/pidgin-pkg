@@ -38,6 +38,7 @@
 %define libidn_support		0
 %define disable_silc		0
 %define disable_evolution       0
+%define with_system_certs	0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -73,13 +74,12 @@
 %if 0%{?fedora} >= 10
 %define nss_md2_disabled	1
 %endif
-# F11+: voice and video support
+# F11+: libidn for punycode domain support, voice and video support,
+# use system SSL certificates
 %if 0%{?fedora} >= 11
 %define vv_support	1
-%endif
-# F11+: libidn for punycode domain support
-%if 0%{?fedora} >= 11
 %define libidn_support	1
+%define use_system_certs	1
 %endif
 # F12+: krb4 removed
 %if 0%{?fedora} >= 12
@@ -92,13 +92,15 @@
 %endif
 # F13+: Temporarily disable evolution integration until it becomes fixed
 # http://developer.pidgin.im/ticket/10852
+# if/when this is re-enabled, create a sub-package for pidgin-evolution
+# https://bugzilla.redhat.com/show_bug.cgi?id=5811
 %if 0%{?fedora} >= 13
 %define disable_evolution 1
 %endif
 
 Name:		pidgin
-Version:	2.6.6
-Release:	2%{?dist}
+Version:	2.7.0
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -130,8 +132,7 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.6.6-clientLogin-proxy-fix.patch
-Patch101: pidgin-2.6.6-clientLogin-use-https.patch
+Patch100: pidgin-2.7.0-msn-slp-11532.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -231,6 +232,10 @@ BuildRequires:  perl(ExtUtils::Embed)
 # Voice and video support (F11+)
 %if %{vv_support}
 BuildRequires:  farsight2-devel
+Requires:       gstreamer-plugins-good
+%if 0%{?fedora} >= 12
+Requires:       gstreamer-plugins-bad-free
+%endif
 %endif
 # libidn punycode domain support (F11+)
 %if %{libidn_support}
@@ -294,6 +299,10 @@ Obsoletes:  gaim-meanwhile
 Requires:   glib2 >= %{glib_ver}
 # Bug #212817 Jabber needs cyrus-sasl plugins for authentication
 Requires: cyrus-sasl-plain, cyrus-sasl-md5
+# Use system SSL certificates (F11+)
+%if %{use_system_certs}
+Requires:       ca-certificates
+%endif
 # Workaround for accidental shipping of pidgin-docs 
 %if 0%{?rhel} == 5
 Obsoletes: pidgin-docs = 2.5.2
@@ -394,7 +403,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 
 ## Patches 100+: To be Included in Future Upstream
 %patch100 -p0
-%patch101 -p0
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -405,8 +413,7 @@ if [ "%{use_gnome_open}" == "1" ]; then
 fi
 
 # Bug #528796: Get rid of #!/usr/bin/env python
-# Upstream refuses to use ./configure --python-path= in these scripts
-# for no good reason.
+# Upstream refuses to use ./configure --python-path= in these scripts.
 for file in finch/plugins/pietray.py libpurple/purple-remote libpurple/plugins/dbus-buddyicons-example.py \
             libpurple/plugins/startup.py libpurple/purple-url-handler libpurple/purple-notifications-example; do
     sed -i 's/env python/python/' $file
@@ -448,15 +455,20 @@ SWITCHES="--with-extraversion=%{release}"
 %if ! %{vv_support}
 	SWITCHES="$SWITCHES --disable-vv"
 %endif
+%if %{use_system_certs}
+	SWITCHES="$SWITCHES --with-system-ssl-certs=/etc/pki/tls/certs"
+%endif
 
 # FC5+ automatic -fstack-protector-all switch
 export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
 export CFLAGS="$RPM_OPT_FLAGS"
 
 # gnutls is buggy so use mozilla-nss on all distributions
+# we can't use --disable-schemas-install here as of Pidgin 2.7.0 because
+# it broke, so we disable in install instead
 %configure --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl \
            --enable-tcl --enable-tk \
-           --disable-schemas-install $SWITCHES
+           $SWITCHES
 
 make %{?_smp_mflags} LIBTOOL=/usr/bin/libtool
 
@@ -472,6 +484,7 @@ find doc/html -empty -delete
 
 %install
 rm -rf $RPM_BUILD_ROOT
+export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 make DESTDIR=$RPM_BUILD_ROOT install LIBTOOL=/usr/bin/libtool
 
 install -m 0755 libpurple/plugins/one_time_password.so $RPM_BUILD_ROOT%{_libdir}/purple-2/
@@ -649,6 +662,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu May 13 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.0-1
+- 2.7.0 with features, bug fixes and a security fix: CVE-2010-1624 (#591806)
+- Use System SSL Certificates (#576721)
+- Add additional dependencies for Voice + Video (#581343)
+- Upstream backport:
+    87ada76abf90c44e615679efc5f8128bb941bba1 Reduce MSN traffic
+
 * Thu Mar 04 2010 Warren Togami <wtogami@redhat.com> - 2.6.6-2
 - Upstream backports:
     0e3079d15adeb12c1e57ceaf5bf037f9b71c8abd Fix AIM SSL clientLogin
