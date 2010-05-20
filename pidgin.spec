@@ -100,7 +100,7 @@
 
 Name:		pidgin
 Version:	2.7.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -133,6 +133,12 @@ Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100: pidgin-2.7.0-msn-slp-11532.patch
+Patch101: pidgin-2.7.0-icqhtml.patch
+Patch102: pidgin-2.7.0-nulldref-592750.patch
+Patch103: pidgin-2.7.0-trayblink-11855.patch
+Patch104: pidgin-2.7.0-yahooraces.patch
+Patch105: pidgin-2.7.0-oscarcrash.patch
+Patch106: pidgin-2.7.0-chatfilter.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -402,7 +408,13 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0
+%patch100 -p0 -b .msnslp
+%patch101 -p0 -b .icqhtml
+%patch102 -p0 -b .nulldref
+%patch103 -p0 -b .trayblink
+%patch104 -p0 -b .yahooraces
+%patch105 -p0 -b .oscarcrash
+%patch106 -p0 -b .chatfilter
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -662,7 +674,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Thu May 13 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.0-1
+* Thu May 20 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.0-2
+- Upstream backports:
+    3c30f64efedafc379b6536852bbb3b6ef5f1f6c9 - fix for receiving HTML on ICQ
+    13fbe0815f84d5b3c001947559f5818c10275f4c - prevent null deref on disconnecting account (#592750)
+    c4a874926d07b8597db4b78a181a89cf720a8418 - fix blinking tray icon on new message (#592691)
+    cfe0e649dda34d9252d40d8f67e445336a247998 - prevent race condition on Yahoo! login
+    e3dd36706068f3b8eabd630ff71d270c145cce42 - fix crash in Oscar (#548128)
+    13fbe0815f84d5b3c001947559f5818c10275f4c - fix crash during network disconnect (#592750)
+
+* Thu May 13 2010 Stu Tomlinson <stu@nosnilmot.com> - 2.7.0-1
 - 2.7.0 with features, bug fixes and a security fix: CVE-2010-1624 (#591806)
 - Use System SSL Certificates (#576721)
 - Add additional dependencies for Voice + Video (#581343)

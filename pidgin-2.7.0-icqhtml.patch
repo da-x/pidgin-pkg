@@ -1,0 +1,67 @@
+Manually edited to make it compile
+-----------------------------------------------------------------
+Revision: 3c30f64efedafc379b6536852bbb3b6ef5f1f6c9
+Ancestor: 0e263caa5d687101e436029f2f8d09053ae06e23
+Author: ivan.komarov@soc.pidgin.im
+Date: 05/03/2010 09:49:14 PM
+Branch: im.pidgin.soc.2010.icq-tlc
+
+Modified files:
+        libpurple/protocols/oscar/oscar.c
+
+ChangeLog: 
+
+Two small fixes to improve sending/receiving HTML-formatted messages
+over ICQ.
+  * Treat all incoming messages as HTML because a) this is what the official
+    client does and b) we don't have a reliable way to check if a message is
+    HTML anyway.
+  * Wrap outgoing HTML in proper HTML tags to make ICQ6 happy.
+This was tested with ICQ 6/7, Miranda, Trillian, QIP, and iChat.
+
+============================================================
+--- libpurple/protocols/oscar/oscar.c	ec79d8d9fcba376be091b363977e8f23c748eff2
++++ libpurple/protocols/oscar/oscar.c	f60533d05cd497bf87168ca7e6f259539ce18fd8
+@@ -2486,32 +2486,6 @@ static int incomingim_chan1(OscarData *o
+ 	tmp = g_string_free(message, FALSE);
+ 
+ 	/*
+-	 * If the message is from an ICQ user and to an ICQ user then escape any HTML,
+-	 * because HTML is not sent over ICQ as a means to format a message.
+-	 * So any HTML we receive is intended to be displayed.  Also, \r\n must be
+-	 * replaced with <br>
+-	 *
+-	 * Note: There *may* be some clients which send messages as HTML formatted -
+-	 *       they need to be special-cased somehow.
+-	 *
+-	 * Update: Newer ICQ clients have started sending IMs as HTML.  We can
+-	 * distinguish HTML IMs from non-HTML IMs by looking at the features.  If
+-	 * the features are "0x 01 06" then the message is plain text.  If the
+-	 * features are "0x 01" then the message is HTML.
+-	 */
+-	if (od->icq && oscar_util_valid_name_icq(userinfo->bn)
+-			&& (args->featureslen != 1 || args->features[0] != 0x01))
+-	{
+-		/* being recevied by ICQ from ICQ - escape HTML so it is displayed as sent */
+-		gchar *tmp2 = g_markup_escape_text(tmp, -1);
+-		g_free(tmp);
+-		tmp = tmp2;
+-		tmp2 = purple_strreplace(tmp, "\r\n", "<br>");
+-		g_free(tmp);
+-		tmp = tmp2;
+-	}
+-
+-	/*
+ 	 * Convert iChat color tags to normal font tags.
+ 	 */
+ 	if (purple_markup_find_tag("body", tmp, &start, &end, &attribs))
+@@ -4787,7 +4761,8 @@ oscar_send_im(PurpleConnection *gc, cons
+ 			tmp2 = purple_markup_strip_html(tmp1);
+ 			is_html = FALSE;
+ 		} else {
+-			tmp2 = g_strdup(tmp1);
++			/* ICQ 6 wants its HTML wrapped in these tags. Oblige it. */
++			tmp2 = g_strdup_printf("<HTML><BODY>%s</BODY></HTML>", tmp1);
+ 			is_html = TRUE;
+ 		}
+ 		g_free(tmp1);
