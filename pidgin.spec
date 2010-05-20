@@ -138,7 +138,6 @@ Patch102: pidgin-2.7.0-nulldref-592750.patch
 Patch103: pidgin-2.7.0-trayblink-11855.patch
 Patch104: pidgin-2.7.0-yahooraces.patch
 Patch105: pidgin-2.7.0-oscarcrash.patch
-Patch106: pidgin-2.7.0-chatfilter.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -414,7 +413,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch103 -p0 -b .trayblink
 %patch104 -p0 -b .yahooraces
 %patch105 -p0 -b .oscarcrash
-%patch106 -p0 -b .chatfilter
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
