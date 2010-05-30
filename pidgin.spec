@@ -37,7 +37,7 @@
 %define vv_support		0
 %define libidn_support		0
 %define disable_silc		0
-%define disable_evolution       0
+%define split_evolution       0
 %define with_system_certs	0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
@@ -90,17 +90,14 @@
 %if 0%{?rhel} == 6
 %define disable_silc	1
 %endif
-# F13+: Temporarily disable evolution integration until it becomes fixed
-# http://developer.pidgin.im/ticket/10852
-# if/when this is re-enabled, create a sub-package for pidgin-evolution
-# https://bugzilla.redhat.com/show_bug.cgi?id=5811
+# F13+ Split Evolution plugin to separate package (#581144)
 %if 0%{?fedora} >= 13
-%define disable_evolution 1
+%define split_evolution 1
 %endif
 
 Name:		pidgin
-Version:	2.7.0
-Release:	2%{?dist}
+Version:	2.7.1
+Release:	1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -132,12 +129,6 @@ Source1:	purple-fedora-prefs.xml
 Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100: pidgin-2.7.0-msn-slp-11532.patch
-Patch101: pidgin-2.7.0-icqhtml.patch
-Patch102: pidgin-2.7.0-nulldref-592750.patch
-Patch103: pidgin-2.7.0-trayblink-11855.patch
-Patch104: pidgin-2.7.0-yahooraces.patch
-Patch105: pidgin-2.7.0-oscarcrash.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 Summary:	A Gtk+ based multiprotocol instant messaging client
@@ -181,9 +172,7 @@ BuildRequires:	krb5-devel
 # gtkspell integration (FC1+)
 BuildRequires:	gtkspell-devel
 # Evolution integration (FC3+)
-%if ! %{disable_evolution}
 BuildRequires:	evolution-data-server-devel
-%endif
 # SILC integration (FC3+)
 %if ! %{disable_silc}
 BuildRequires:	libsilc-devel
@@ -264,6 +253,17 @@ unique features, such as perl scripting, TCL scripting and C plugins.
 
 Pidgin is not affiliated with or endorsed by America Online, Inc.,
 Microsoft Corporation, Yahoo! Inc., or ICQ Inc.
+
+%if %{split_evolution}
+%package evolution
+Summary: Pidgin Evolution integration plugin
+Group: Applications/Internet
+Requires: %{name} = %{version}-%{release}
+
+%description evolution
+This package contains the Evolution integration plugin for Pidgin.
+
+%endif
 
 
 %package devel
@@ -407,12 +407,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-%patch100 -p0 -b .msnslp
-%patch101 -p0 -b .icqhtml
-%patch102 -p0 -b .nulldref
-%patch103 -p0 -b .trayblink
-%patch104 -p0 -b .yahooraces
-%patch105 -p0 -b .oscarcrash
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -435,11 +429,7 @@ SWITCHES="--with-extraversion=%{release}"
 	SWITCHES="$SWITCHES --with-krb4"
 %endif
 	SWITCHES="$SWITCHES --enable-perl"
-%if ! %{disable_evolution}
 	SWITCHES="$SWITCHES --enable-gevolution"
-%else
-	SWITCHES="$SWITCHES --disable-gevolution"
-%endif
 %if %{dbus_integration}
 	SWITCHES="$SWITCHES --enable-dbus"
 %else
@@ -474,11 +464,9 @@ export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
 export CFLAGS="$RPM_OPT_FLAGS"
 
 # gnutls is buggy so use mozilla-nss on all distributions
-# we can't use --disable-schemas-install here as of Pidgin 2.7.0 because
-# it broke, so we disable in install instead
 %configure --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl \
            --enable-tcl --enable-tk \
-           $SWITCHES
+           --disable-schemas-install $SWITCHES
 
 make %{?_smp_mflags} LIBTOOL=/usr/bin/libtool
 
@@ -494,7 +482,6 @@ find doc/html -empty -delete
 
 %install
 rm -rf $RPM_BUILD_ROOT
-export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
 make DESTDIR=$RPM_BUILD_ROOT install LIBTOOL=/usr/bin/libtool
 
 install -m 0755 libpurple/plugins/one_time_password.so $RPM_BUILD_ROOT%{_libdir}/purple-2/
@@ -590,11 +577,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/gaim
 %{_libdir}/pidgin/
 %exclude %{_libdir}/pidgin/perl
+%if %{split_evolution}
+%exclude %{_libdir}/pidgin/gevolution.so
+%endif
 %{_mandir}/man1/pidgin.*
 %{_datadir}/applications/pidgin.desktop
 %{_datadir}/pixmaps/pidgin/
 %{_datadir}/icons/hicolor/*/apps/pidgin.*
 %{_sysconfdir}/gconf/schemas/purple.schemas
+
+%if %{split_evolution}
+%files evolution
+%defattr(-,root,root,-)
+%{_libdir}/pidgin/gevolution.so
+%endif
 
 %files perl
 %defattr(-,root,root,-)
@@ -672,6 +668,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun May 30 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-1
+- 2.7.1
+- Adds Direct Connection support for MSN
+- Numerous bug fixes
+- Evolution support moved to pidgin-evolution for F13+ (#581144)
+
 * Thu May 20 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.0-2
 - Upstream backports:
     3c30f64efedafc379b6536852bbb3b6ef5f1f6c9 - fix for receiving HTML on ICQ
