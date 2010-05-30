@@ -97,7 +97,7 @@
 
 Name:		pidgin
 Version:	2.7.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -108,6 +108,10 @@ Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
+
+%if %{split_evolution}
+Obsoletes: pidgin <= 2.7.1-1%{?dist}
+%endif
 
 ## Fedora pidgin defaults
 # Only needs regenerating if Pidgin breaks backwards compatibility with prefs.xml
@@ -259,6 +263,7 @@ Microsoft Corporation, Yahoo! Inc., or ICQ Inc.
 Summary: Pidgin Evolution integration plugin
 Group: Applications/Internet
 Requires: %{name} = %{version}-%{release}
+Obsoletes: pidgin <= 2.7.1-1%{?dist}
 
 %description evolution
 This package contains the Evolution integration plugin for Pidgin.
@@ -668,6 +673,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun May 30 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-2
+- Add Obsoletes to pull in pidgin-evolution during update
+
 * Sun May 30 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-1
 - 2.7.1
 - Adds Direct Connection support for MSN
