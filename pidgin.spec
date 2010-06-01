@@ -97,7 +97,7 @@
 
 Name:		pidgin
 Version:	2.7.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -673,6 +673,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jun 01 2010 Marcela Maslanova <mmaslano@redhat.com> - 2.7.1-3
+- Mass rebuild with perl-5.12.0
+
 * Sun May 30 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-2
 - Add Obsoletes to pull in pidgin-evolution during update
 
