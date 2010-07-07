@@ -97,7 +97,7 @@
 
 Name:		pidgin
 Version:	2.7.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -609,6 +609,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f pidgin.lang -n libpurple
 %defattr(-,root,root,-)
+%doc COPYING
 %{_libdir}/purple-2/
 %exclude %{_libdir}/purple-2/perl
 %{_libdir}/libpurple.so.*
@@ -673,6 +674,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jul 07 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-4
+- Include license in libpurple subpackage
+
 * Tue Jun 01 2010 Marcela Maslanova <mmaslano@redhat.com> - 2.7.1-3
 - Mass rebuild with perl-5.12.0
 
