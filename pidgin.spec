@@ -1,116 +1,117 @@
 # OVERRIDE RHEL VERSION HERE, RHEL BUILDSYSTEM DOESN'T HAVE DIST TAG
-#%%define rhel 4
+#%%global rhel 4
 
 # Define Variables that must exist
-%{?!rhel:%define rhel 0}
-%{?!fedora:%define fedora 0}
+%{?!rhel:%global rhel 0}
+%{?!fedora:%global fedora 0}
 
 # Map RHEL to Fedora version
 %if 0%{?rhel} == 4
-%define fedora 3
-%define dist .el4
+%global fedora 3
+%global dist .el4
 %endif
 %if 0%{?rhel} == 5
-%define fedora 6
-%define dist .el5
+%global fedora 6
+%global dist .el5
 %endif
 %if 0%{?rhel} == 6
-%define fedora 12
-%define dist .el6
+%global fedora 12
+%global dist .el6
 %endif
 
 # Define variables to use in conditionals
-%define force_sound_aplay       0
-%define dbus_integration        0
-%define gstreamer_integration	0
-%define nm_integration		0
-%define modular_x		0
-%define dbus_glib_splt		0
-%define bonjour_support		0
-%define meanwhile_integration	0
-%define use_gnome_open          0
-%define perl_devel_separated	0
-%define perl_embed_separated	0
-%define api_docs		0
-%define krb4_removed		0
-%define nss_md2_disabled	0
-%define vv_support		0
-%define libidn_support		0
-%define disable_silc		0
-%define split_evolution       0
-%define with_system_certs	0
+%global force_sound_aplay       0
+%global dbus_integration        0
+%global gstreamer_integration   0
+%global nm_integration          0
+%global modular_x               0
+%global dbus_glib_splt          0
+%global bonjour_support         0
+%global meanwhile_integration   0
+%global use_gnome_open          0
+%global perl_devel_separated    0
+%global perl_embed_separated    0
+%global api_docs                0
+%global krb4_removed            0
+%global nss_md2_disabled        0
+%global vv_support              0
+%global libidn_support          0
+%global disable_silc            0
+%global split_evolution         0
+%global with_system_certs       0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
-%define force_sound_aplay       1
+%global force_sound_aplay       1
 %endif
 # RHEL4+ and FC5+: dbus, gstreamer, NetworkManager, modular X
 %if 0%{?fedora} >= 5
-%define dbus_integration	1
-%define gstreamer_integration	1
-%define nm_integration		1
-%define modular_x		1
+%global dbus_integration        1
+%global gstreamer_integration   1
+%global nm_integration          1
+%global modular_x               1
 %endif
 # RHEL4+ and FC6+: dbus-glib split, bonjour, meanwhile
 %if 0%{?fedora} >= 6
-%define dbus_glib_splt		1
-%define bonjour_support		1
-%define meanwhile_integration	1
+%global dbus_glib_splt          1
+%global bonjour_support         1
+%global meanwhile_integration   1
 %endif
 # RHEL4 and RHEL5: Use gnome-open instead of xdg-open (RHEL4 and RHEL5)
 %if 0%{?fedora} <= 6
-%define use_gnome_open          1
+%global use_gnome_open          1
 %endif
 # F7+: Perl devel separated out
 %if 0%{?fedora} >= 7
-%define perl_devel_separated	1
+%global perl_devel_separated    1
 %endif
 # F8+: Perl embed separated out, generate pidgin API documentation
 %if 0%{?fedora} >= 8
-%define perl_embed_separated	1
-%define api_docs		1
+%global perl_embed_separated    1
+%global api_docs                1
 %endif
 # F10+: New NSS (3.12.3) disables weaker MD2 algorithm
 %if 0%{?fedora} >= 10
-%define nss_md2_disabled	1
+%global nss_md2_disabled        1
 %endif
 # F11+: libidn for punycode domain support, voice and video support,
 # use system SSL certificates
 %if 0%{?fedora} >= 11
-%define vv_support	1
-%define libidn_support	1
-%define use_system_certs	1
+%global vv_support              1
+%global libidn_support          1
+%global use_system_certs        1
 %endif
 # F12+: krb4 removed
 %if 0%{?fedora} >= 12
-%define krb4_removed	1
+%global krb4_removed            1
 %endif
 # EL6: Disable SILC protocol
 # (get rid of extra crypto lib for perpetually broken protocol that nobody uses)
+# (the above comment is not necessarily the view held by all maintaners of this package)
 %if 0%{?rhel} == 6
-%define disable_silc	1
+%global disable_silc            1
 %endif
 # F13+ Split Evolution plugin to separate package (#581144)
 %if 0%{?fedora} >= 13
-%define split_evolution 1
+%global split_evolution         1
 %endif
 
-Name:		pidgin
-Version:	2.7.1
-Release:	3%{?dist}
+Name:           pidgin
+Version:        2.7.2
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
 # MIT - Zephyr prpl
-Group:		Applications/Internet
-URL:		http://pidgin.im/
-Source0:	http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
+Group:          Applications/Internet
+URL:            http://pidgin.im/
+Source0:        http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
 ExcludeArch:    s390 s390x
 
 %if %{split_evolution}
-Obsoletes: pidgin <= 2.7.1-1%{?dist}
+Obsoletes:      pidgin <= 2.7.1-1%{?dist}
 %endif
 
 ## Fedora pidgin defaults
@@ -127,21 +128,21 @@ Obsoletes: pidgin <= 2.7.1-1%{?dist}
 # - enable Logging (in HTML)
 # - Browser "GNOME Default"
 # - Smiley Theme "Default"
-Source1:	purple-fedora-prefs.xml
+Source1:        purple-fedora-prefs.xml
 
 ## Patches 0-99: Fedora specific or upstream wont accept
-Patch0: pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
+Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
 
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
-Summary:	A Gtk+ based multiprotocol instant messaging client
+BuildRoot:      %{_tmppath}/%{name}-%{version}-root
+Summary:        A Gtk+ based multiprotocol instant messaging client
 
 # Require Binary Compatible glib
 # returns bogus value if glib2-devel is not installed in order for parsing to succeed
 # bogus value wont make it into a real package
-%define glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
-BuildRequires:	glib2-devel
+%global glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
+BuildRequires:  glib2-devel
 Requires:       glib2 >= %{glib_ver}
 # Require exact libpurple
 Requires:       libpurple = %{version}-%{release}
@@ -153,14 +154,14 @@ Requires(preun): GConf2
 # Basic Library Requirements
 BuildRequires:  autoconf
 BuildRequires:  libtool
-BuildRequires:	startup-notification-devel
+BuildRequires:  startup-notification-devel
 BuildRequires:  cyrus-sasl-devel
 %if %{nss_md2_disabled}
-BuildRequires:	nss-devel >= 3.12.3
+BuildRequires:  nss-devel >= 3.12.3
 %else
 BuildRequires:  nss-devel
 %endif
-BuildRequires:	gtk2-devel
+BuildRequires:  gtk2-devel
 BuildRequires:  gettext
 BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
@@ -171,15 +172,15 @@ BuildRequires:  libxml2-devel
 
 %if ! %{krb4_removed}
 # krb5 needed for Zephyr (FC1+)
-BuildRequires:	krb5-devel
+BuildRequires:  krb5-devel
 %endif
 # gtkspell integration (FC1+)
-BuildRequires:	gtkspell-devel
+BuildRequires:  gtkspell-devel
 # Evolution integration (FC3+)
-BuildRequires:	evolution-data-server-devel
+BuildRequires:  evolution-data-server-devel
 # SILC integration (FC3+)
 %if ! %{disable_silc}
-BuildRequires:	libsilc-devel
+BuildRequires:  libsilc-devel
 %endif
 # DBus integration (FC5+)
 %if %{dbus_integration}
@@ -188,13 +189,13 @@ BuildRequires:  python     >= 2.4
 %endif
 # GStreamer integration (FC5+)
 %if %{gstreamer_integration}
-BuildRequires:	gstreamer-devel >= 0.10
+BuildRequires:  gstreamer-devel >= 0.10
 %endif
 # NetworkManager integration (FC5+)
 %if %{nm_integration}
 %ifnarch s390 s390x
 # No NetworkManager on s390/s390x
-BuildRequires:	NetworkManager-glib-devel
+BuildRequires:  NetworkManager-glib-devel
 %endif
 %endif
 # Modular X (FC5+)
@@ -206,18 +207,18 @@ BuildRequires:  libXScrnSaver-devel
 %if %{use_gnome_open}
 Requires:       libgnome
 %else
-Requires:	xdg-utils
+Requires:       xdg-utils
 %endif
 # DBus GLIB Split (FC6+)
 %if %{dbus_glib_splt}
 BuildRequires:  dbus-glib-devel >= 0.70
 %endif
 %if %{bonjour_support}
-BuildRequires:	avahi-glib-devel
+BuildRequires:  avahi-glib-devel
 %endif
 # Meanwhile integration (F6+)
 %if %{meanwhile_integration}
-BuildRequires:	meanwhile-devel
+BuildRequires:  meanwhile-devel
 %endif
 # Perl devel separated out (F7+)
 %if %{perl_devel_separated}
@@ -241,7 +242,7 @@ BuildRequires:  libidn-devel
 %endif
 
 %if %{api_docs}
-BuildRequires: doxygen
+BuildRequires:  doxygen
 %endif
 
 %description
@@ -260,10 +261,10 @@ Microsoft Corporation, Yahoo! Inc., or ICQ Inc.
 
 %if %{split_evolution}
 %package evolution
-Summary: Pidgin Evolution integration plugin
-Group: Applications/Internet
-Requires: %{name} = %{version}-%{release}
-Obsoletes: pidgin <= 2.7.1-1%{?dist}
+Summary:    Pidgin Evolution integration plugin
+Group:      Applications/Internet
+Requires:   %{name} = %{version}-%{release}
+Obsoletes:  pidgin <= 2.7.1-1%{?dist}
 
 %description evolution
 This package contains the Evolution integration plugin for Pidgin.
@@ -272,14 +273,14 @@ This package contains the Evolution integration plugin for Pidgin.
 
 
 %package devel
-Summary: Development headers and libraries for pidgin
-Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
-Requires: libpurple-devel = %{version}-%{release}
-Requires: pkgconfig
-Requires: gtk2-devel
-Obsoletes: gaim-devel
-Provides:  gaim-devel = %{version}-%{release}
+Summary:    Development headers and libraries for pidgin
+Group:      Development/Libraries
+Requires:   %{name} = %{version}-%{release}
+Requires:   libpurple-devel = %{version}-%{release}
+Requires:   pkgconfig
+Requires:   gtk2-devel
+Obsoletes:  gaim-devel
+Provides:   gaim-devel = %{version}-%{release}
 
 
 %description devel
@@ -302,20 +303,20 @@ use Pidgin plugins written in the Perl programming language.
 Summary:    libpurple library for IM clients like Pidgin and Finch
 Group:      Applications/Internet
 # Ensure elimination of gaim.i386 on x86_64
-Obsoletes: gaim < 999:1
+Obsoletes:  gaim < 999:1
 %if %{meanwhile_integration}
 Obsoletes:  gaim-meanwhile
 %endif
 Requires:   glib2 >= %{glib_ver}
 # Bug #212817 Jabber needs cyrus-sasl plugins for authentication
-Requires: cyrus-sasl-plain, cyrus-sasl-md5
+Requires:   cyrus-sasl-plain, cyrus-sasl-md5
 # Use system SSL certificates (F11+)
 %if %{use_system_certs}
-Requires:       ca-certificates
+Requires:   ca-certificates
 %endif
-# Workaround for accidental shipping of pidgin-docs 
+# Workaround for accidental shipping of pidgin-docs
 %if 0%{?rhel} == 5
-Obsoletes: pidgin-docs = 2.5.2
+Obsoletes:  pidgin-docs = 2.5.2
 %endif
 
 %description -n libpurple
@@ -405,7 +406,7 @@ Doxygen generated API documentation.
 
 %prep
 echo "FEDORA=%{fedora} RHEL=%{rhel}"
-%setup -q 
+%setup -q
 ## Patches 0-99: Fedora specific or upstream wont accept
 %if %{force_sound_aplay}
 %patch0 -p1 -b .aplay
@@ -418,7 +419,7 @@ cp %{SOURCE1} prefs.xml
 
 # RHEL5 and earlier did not have xdg-open, so use gnome-open instead
 if [ "%{use_gnome_open}" == "1" ]; then
-        sed -i "s/value='xdg-open'/value='gnome-open'/" prefs.xml
+    sed -i "s/value='xdg-open'/value='gnome-open'/" prefs.xml
 fi
 
 # Bug #528796: Get rid of #!/usr/bin/env python
@@ -431,37 +432,37 @@ done
 %build
 SWITCHES="--with-extraversion=%{release}"
 %if ! %{krb4_removed}
-	SWITCHES="$SWITCHES --with-krb4"
+    SWITCHES="$SWITCHES --with-krb4"
 %endif
-	SWITCHES="$SWITCHES --enable-perl"
-	SWITCHES="$SWITCHES --enable-gevolution"
+    SWITCHES="$SWITCHES --enable-perl"
+    SWITCHES="$SWITCHES --enable-gevolution"
 %if %{dbus_integration}
-	SWITCHES="$SWITCHES --enable-dbus"
+    SWITCHES="$SWITCHES --enable-dbus"
 %else
-	SWITCHES="$SWITCHES --disable-dbus"
+    SWITCHES="$SWITCHES --disable-dbus"
 %endif
 %if %{nm_integration}
-	SWITCHES="$SWITCHES --enable-nm"
+    SWITCHES="$SWITCHES --enable-nm"
 %endif
 %if %{gstreamer_integration}
-	SWITCHES="$SWITCHES --enable-gstreamer"
+    SWITCHES="$SWITCHES --enable-gstreamer"
 %else
-	SWITCHES="$SWITCHES --disable-gstreamer"
+    SWITCHES="$SWITCHES --disable-gstreamer"
 %endif
 %if ! %{bonjour_support}
-	SWITCHES="$SWITCHES --disable-avahi"
+    SWITCHES="$SWITCHES --disable-avahi"
 %endif
 %if ! %{meanwhile_integration}
-	SWITCHES="$SWITCHES --disable-meanwhile"
+    SWITCHES="$SWITCHES --disable-meanwhile"
 %endif
 %if ! %{libidn_support}
-	SWITCHES="$SWITCHES --disable-idn"
+    SWITCHES="$SWITCHES --disable-idn"
 %endif
 %if ! %{vv_support}
-	SWITCHES="$SWITCHES --disable-vv"
+    SWITCHES="$SWITCHES --disable-vv"
 %endif
 %if %{use_system_certs}
-	SWITCHES="$SWITCHES --with-system-ssl-certs=/etc/pki/tls/certs"
+    SWITCHES="$SWITCHES --with-system-ssl-certs=/etc/pki/tls/certs"
 %endif
 
 # FC5+ automatic -fstack-protector-all switch
@@ -491,15 +492,17 @@ make DESTDIR=$RPM_BUILD_ROOT install LIBTOOL=/usr/bin/libtool
 
 install -m 0755 libpurple/plugins/one_time_password.so $RPM_BUILD_ROOT%{_libdir}/purple-2/
 
-desktop-file-install --vendor pidgin --delete-original       \
-  --add-category X-Red-Hat-Base                            \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications            \
-  $RPM_BUILD_ROOT%{_datadir}/applications/pidgin.desktop
+desktop-file-install --vendor pidgin --delete-original              \
+                     --add-category X-Red-Hat-Base                  \
+                     --dir $RPM_BUILD_ROOT%{_datadir}/applications  \
+                     $RPM_BUILD_ROOT%{_datadir}/applications/pidgin.desktop
 
 # remove libtool libraries and static libraries
-rm -f `find $RPM_BUILD_ROOT -name "*.la" -o -name "*.a"`
-# remove the perllocal.pod file
-find $RPM_BUILD_ROOT -name perllocal.pod |xargs rm
+find $RPM_BUILD_ROOT \( -name "*.la" -o -name "*.a" \) -exec rm -f {} ';'
+# remove the perllocal.pod file and other unrequired perl bits
+find $RPM_BUILD_ROOT -type f -name perllocal.pod -exec rm -f {} ';'
+find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} ';'
+find $RPM_BUILD_ROOT -type f -name '*.bs' -empty -exec rm -f {} ';'
 # remove relnot.so plugin since it is unusable for our package
 rm -f $RPM_BUILD_ROOT%{_libdir}/pidgin/relnot.so
 # remove dummy nullclient
@@ -507,9 +510,6 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/nullclient
 # install Fedora pidgin default prefs.xml
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/purple/
 install -m 644 prefs.xml $RPM_BUILD_ROOT%{_sysconfdir}/purple/prefs.xml
-
-find $RPM_BUILD_ROOT -type f -name .packlist -exec rm -f {} ';'
-find $RPM_BUILD_ROOT -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 # remove non-plugin unrequired library symlinks
 rm -f $RPM_BUILD_ROOT%{_libdir}/purple-2/liboscar.so
@@ -538,7 +538,7 @@ ln -sf ../../doc/pidgin-docs-%{version}/html/ \
 if [ "$1" -gt 1 ]; then
     export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
     gconftool-2 --makefile-uninstall-rule \
-                %{_sysconfdir}/gconf/schemas/purple.schemas >/dev/null || :
+        %{_sysconfdir}/gconf/schemas/purple.schemas >/dev/null || :
     killall -HUP gconfd-2 &> /dev/null || :
 fi
 
@@ -548,7 +548,7 @@ touch --no-create %{_datadir}/icons/hicolor || :
 %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
 export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
 gconftool-2 --makefile-install-rule \
-            %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
+    %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
 killall -HUP gconfd-2 &> /dev/null || :
 
 %post -n libpurple -p /sbin/ldconfig
@@ -559,7 +559,7 @@ killall -HUP gconfd-2 &> /dev/null || :
 if [ "$1" -eq 0 ]; then
     export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
     gconftool-2 --makefile-uninstall-rule \
-                %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
+        %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
     killall -HUP gconfd-2 &> /dev/null || :
 fi
 
@@ -609,12 +609,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f pidgin.lang -n libpurple
 %defattr(-,root,root,-)
+%doc COPYING
 %{_libdir}/purple-2/
 %exclude %{_libdir}/purple-2/perl
 %{_libdir}/libpurple.so.*
 %{_datadir}/sounds/purple/
 %{_datadir}/purple
-%{_sysconfdir}/purple/
+%dir %{_sysconfdir}/purple
+%config(noreplace) %{_sysconfdir}/purple/prefs.xml
 %if %{dbus_integration}
 %{_bindir}/purple-client-example
 %{_bindir}/purple-remote
@@ -622,7 +624,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/purple-send-async
 %{_bindir}/purple-url-handler
 %{_libdir}/libpurple-client.so.*
-#%{_datadir}/dbus-1/services/pidgin.service
+#%%{_datadir}/dbus-1/services/pidgin.service
 %doc libpurple/purple-notifications-example
 %endif
 %exclude %{_libdir}/purple-2/tcl.so
@@ -673,8 +675,21 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Mon Jun 28 2010 Matthew Barnes <mbarnes@redhat.com> 2.7.1-3
-- Rebuild against newer libedataserver.
+* Wed Jul 21 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.2-1
+- 2.7.2 with a security fix (CVE-2010-2528) and a couple of bug fixes (#601650)
+
+* Thu Jul 15 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-5
+- Rebuild against newer libedataserver
+- spec file cleanup:
+    replace %%define with %%global
+    replace tabs with spaces for consistency
+    mark prefs.xml as a config file
+
+* Wed Jul 07 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-4
+- Include license in libpurple subpackage
+
+* Tue Jun 01 2010 Marcela Maslanova <mmaslano@redhat.com> - 2.7.1-3
+- Mass rebuild with perl-5.12.0
 
 * Sun May 30 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-2
 - Add Obsoletes to pull in pidgin-evolution during update
