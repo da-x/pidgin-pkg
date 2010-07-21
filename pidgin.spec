@@ -97,8 +97,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.7.1
-Release:        5%{?dist}
+Version:        2.7.2
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -675,6 +675,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jul 21 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.2-1
+- 2.7.2 with a security fix (CVE-2010-2528) and a couple of bug fixes (#601650)
+
 * Thu Jul 15 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.1-5
 - Rebuild against newer libedataserver
 - spec file cleanup:
