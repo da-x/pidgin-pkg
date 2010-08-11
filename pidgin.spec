@@ -38,7 +38,7 @@
 %global libidn_support          0
 %global disable_silc            0
 %global split_evolution         0
-%global with_system_certs       0
+%global use_system_certs        0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -97,7 +97,7 @@
 %endif
 
 Name:           pidgin
-Version:        2.7.2
+Version:        2.7.3
 Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -675,6 +675,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Aug 11 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.3-1
+- 2.7.3
+
 * Wed Jul 21 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.2-1
 - 2.7.2 with a security fix (CVE-2010-2528) and a couple of bug fixes (#601650)
 
