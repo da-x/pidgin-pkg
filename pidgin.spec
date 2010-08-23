@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -145,7 +145,7 @@ Summary:        A Gtk+ based multiprotocol instant messaging client
 BuildRequires:  glib2-devel
 Requires:       glib2 >= %{glib_ver}
 # Require exact libpurple
-Requires:       libpurple = %{version}-%{release}
+Requires:       libpurple%{?_isa} = %{version}-%{release}
 
 Requires(pre):  GConf2
 Requires(post): GConf2
@@ -675,6 +675,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.3-2
+- use _isa in explicit Requires on libpurple to prevent yum from trying to 
+  jump architectures to resolve dependency
+
 * Wed Aug 11 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.3-1
 - 2.7.3
 
