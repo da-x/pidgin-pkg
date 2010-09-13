@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -108,7 +108,6 @@ URL:            http://pidgin.im/
 Source0:        http://downloads.sourceforge.net/pidgin/pidgin-%{version}.tar.bz2
 Obsoletes:      gaim < 999:1
 Provides:       gaim = 999:1
-ExcludeArch:    s390 s390x
 
 %if %{split_evolution}
 Obsoletes:      pidgin <= 2.7.1-1%{?dist}
@@ -193,10 +192,7 @@ BuildRequires:  gstreamer-devel >= 0.10
 %endif
 # NetworkManager integration (FC5+)
 %if %{nm_integration}
-%ifnarch s390 s390x
-# No NetworkManager on s390/s390x
 BuildRequires:  NetworkManager-glib-devel
-%endif
 %endif
 # Modular X (FC5+)
 %if %{modular_x}
@@ -675,6 +671,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Sep 13 2010 Dan Horák <dan[at]danny.cz> 2.7.3-3
+- drop the s390(x) ifarchs
+
 * Mon Aug 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> 2.7.3-2
 - use _isa in explicit Requires on libpurple to prevent yum from trying to 
   jump architectures to resolve dependency
