@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -671,6 +671,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Sep 16 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.3-4
+- Rebuild against newer libedataserver
+
 * Mon Sep 13 2010 Dan Horák <dan[at]danny.cz> 2.7.3-3
 - drop the s390(x) ifarchs
 
