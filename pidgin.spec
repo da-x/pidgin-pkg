@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -671,6 +671,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Oct 12 2010 Milan Crha <mcrha@redhat.com> - 2.7.3-6
+- Rebuild against newer evolution-data-server
+
 * Wed Sep 29 2010 jkeating - 2.7.3-5
 - Rebuilt for gcc bug 634757
 
