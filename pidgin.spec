@@ -97,8 +97,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.7.3
-Release:        6%{?dist}
+Version:        2.7.4
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -671,6 +671,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Oct 22 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.4-1
+- 2.7.4, includes security fix for CVE-2010-3711
+
 * Tue Oct 12 2010 Milan Crha <mcrha@redhat.com> - 2.7.3-6
 - Rebuild against newer evolution-data-server
 
