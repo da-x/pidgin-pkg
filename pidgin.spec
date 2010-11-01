@@ -97,7 +97,7 @@
 %endif
 
 Name:           pidgin
-Version:        2.7.4
+Version:        2.7.5
 Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -671,6 +671,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Nov 01 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.5-1
+- 2.7.5
+
 * Fri Oct 22 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.4-1
 - 2.7.4, includes security fix for CVE-2010-3711
 
