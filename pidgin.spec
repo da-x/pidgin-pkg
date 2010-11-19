@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -128,6 +128,11 @@ Obsoletes:      pidgin <= 2.7.1-1%{?dist}
 # - Browser "GNOME Default"
 # - Smiley Theme "Default"
 Source1:        purple-fedora-prefs.xml
+
+# Additional intermediate certificates needed for MSN due to broken server
+# configs (included upstream in 2.7.6+)
+Source2:        Microsoft_Internet_Authority_2010.pem
+Source3:        Microsoft_Secure_Server_Authority_2010.pem
 
 ## Patches 0-99: Fedora specific or upstream wont accept
 Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
@@ -488,6 +493,11 @@ make DESTDIR=$RPM_BUILD_ROOT install LIBTOOL=/usr/bin/libtool
 
 install -m 0755 libpurple/plugins/one_time_password.so $RPM_BUILD_ROOT%{_libdir}/purple-2/
 
+# Additional intermediate certificates needed for MSN due to broken server
+# configs (included upstream in 2.7.6+)
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/purple/ca-certs/
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/purple/ca-certs/
+
 desktop-file-install --vendor pidgin --delete-original              \
                      --add-category X-Red-Hat-Base                  \
                      --dir $RPM_BUILD_ROOT%{_datadir}/applications  \
@@ -671,6 +681,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Nov 19 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.5-2
+- Add additional intermediate CA certificates to fix MSN
+
 * Mon Nov 01 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.5-1
 - 2.7.5
 
