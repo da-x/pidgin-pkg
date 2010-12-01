@@ -97,8 +97,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.7.5
-Release:        2%{?dist}
+Version:        2.7.7
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -129,15 +129,12 @@ Obsoletes:      pidgin <= 2.7.1-1%{?dist}
 # - Smiley Theme "Default"
 Source1:        purple-fedora-prefs.xml
 
-# Additional intermediate certificates needed for MSN due to broken server
-# configs (included upstream in 2.7.6+)
-Source2:        Microsoft_Internet_Authority_2010.pem
-Source3:        Microsoft_Secure_Server_Authority_2010.pem
-
 ## Patches 0-99: Fedora specific or upstream wont accept
 Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
+Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
+Patch101:       pidgin-2.7.7-msn-hide-view-locations.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -414,6 +411,11 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
+# not strictly going to be included upstream, but enabling MSNP16
+# introduces regressions retrieving buddy icons & custom emoticons
+# from the official client (and possibly file transfers)
+%patch100 -p0 -b .msnp16
+%patch101 -p0 -b .msnp16
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -492,11 +494,6 @@ rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install LIBTOOL=/usr/bin/libtool
 
 install -m 0755 libpurple/plugins/one_time_password.so $RPM_BUILD_ROOT%{_libdir}/purple-2/
-
-# Additional intermediate certificates needed for MSN due to broken server
-# configs (included upstream in 2.7.6+)
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/purple/ca-certs/
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/purple/ca-certs/
 
 desktop-file-install --vendor pidgin --delete-original              \
                      --add-category X-Red-Hat-Base                  \
@@ -681,6 +678,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Nov 29 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.7-1
+- 2.7.7
+- Disable MSNP16 due to regressions interacting with official client
+
 * Fri Nov 19 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.5-2
 - Add additional intermediate CA certificates to fix MSN
 
