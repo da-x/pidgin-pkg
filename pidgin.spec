@@ -97,7 +97,7 @@
 %endif
 
 Name:           pidgin
-Version:        2.7.7
+Version:        2.7.9
 Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
@@ -134,7 +134,6 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
-Patch101:       pidgin-2.7.7-msn-hide-view-locations.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -415,7 +414,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 # introduces regressions retrieving buddy icons & custom emoticons
 # from the official client (and possibly file transfers)
 %patch100 -p0 -b .msnp16
-%patch101 -p0 -b .msnp16
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -678,6 +676,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Dec 27 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.9-1
+- 2.7.9, includes security/DoS fix in the MSN protocol (#665856)
+
 * Mon Nov 29 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.7-1
 - 2.7.7
 - Disable MSNP16 due to regressions interacting with official client
