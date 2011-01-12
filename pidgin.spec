@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -676,6 +676,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jan 12 2011 Milan Crha <mcrha@redhat.com> 2.7.9-2
+- Rebuild against newer evolution-data-server
+
 * Mon Dec 27 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.9-1
 - 2.7.9, includes security/DoS fix in the MSN protocol (#665856)
 
