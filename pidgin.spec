@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -676,6 +676,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Feb 01 2011 Milan Crha <mcrha@redhat.com> 2.7.9-3
+- Rebuild against newer evolution-data-server
+
 * Wed Jan 12 2011 Milan Crha <mcrha@redhat.com> 2.7.9-2
 - Rebuild against newer evolution-data-server
 
