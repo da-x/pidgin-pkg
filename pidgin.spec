@@ -679,6 +679,15 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Feb 22 2011 Stu Tomlinson <stu@nosnilmot.com> 2.7.10-1
 - 2.7.10
 
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.7.9-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Tue Feb 01 2011 Milan Crha <mcrha@redhat.com> 2.7.9-3
+- Rebuild against newer evolution-data-server
+
+* Wed Jan 12 2011 Milan Crha <mcrha@redhat.com> 2.7.9-2
+- Rebuild against newer evolution-data-server
+
 * Mon Dec 27 2010 Stu Tomlinson <stu@nosnilmot.com> 2.7.9-1
 - 2.7.9, includes security/DoS fix in the MSN protocol (#665856)
 
