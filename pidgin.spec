@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -131,6 +131,8 @@ Source1:        purple-fedora-prefs.xml
 
 ## Patches 0-99: Fedora specific or upstream wont accept
 Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
+
+Patch1: nm09-pidgin.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
@@ -408,6 +410,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %if %{force_sound_aplay}
 %patch0 -p1 -b .aplay
 %endif
+%patch1 -p1 -b .nm09
 
 ## Patches 100+: To be Included in Future Upstream
 # not strictly going to be included upstream, but enabling MSNP16
@@ -676,6 +679,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Mar 10 2011 Dan Williams <dcbw@redhat.com> 2.7.10-2
+- Update for NetworkManager 0.9
+
 * Tue Feb 22 2011 Stu Tomlinson <stu@nosnilmot.com> 2.7.10-1
 - 2.7.10
 
