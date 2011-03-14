@@ -132,10 +132,9 @@ Source1:        purple-fedora-prefs.xml
 ## Patches 0-99: Fedora specific or upstream wont accept
 Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
-Patch1: nm09-pidgin.patch
-
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
+Patch101: nm09-pidgin.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -410,13 +409,15 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %if %{force_sound_aplay}
 %patch0 -p1 -b .aplay
 %endif
-%patch1 -p1 -b .nm09
 
 ## Patches 100+: To be Included in Future Upstream
 # not strictly going to be included upstream, but enabling MSNP16
 # introduces regressions retrieving buddy icons & custom emoticons
 # from the official client (and possibly file transfers)
 %patch100 -p0 -b .msnp16
+
+# http://developer.pidgin.im/ticket/13505
+%patch101 -p1 -b .nm09
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
