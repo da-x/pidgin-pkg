@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.11
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -680,6 +680,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Mar 25 2011 Dan Williams <dcbw@redhat.com> 2.7.11-2
+- Rebuild for NetworkManager 0.9
+
 * Fri Mar 11 2011 Stu Tomlinson <stu@nosnilmot.com> 2.7.11-1
 - 2.7.11, includes security/DoS fixes in Yahoo protocol
   CVE-2011-1091 (#683031)
