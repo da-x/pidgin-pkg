@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.11
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -135,6 +135,7 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
 Patch101: nm09-pidgin.patch
+Patch102: nm09-more.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -418,6 +419,8 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 
 # http://developer.pidgin.im/ticket/13505
 %patch101 -p1 -b .nm09
+# http://developer.pidgin.im/ticket/13859
+%patch102 -p1 -b .nm09more
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -680,6 +683,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Apr 26 2011 Dan Williams <dcbw@redhat.com> 2.7.11-3
+- A few more NetworkManager 0.9 fixes
+
 * Fri Mar 25 2011 Dan Williams <dcbw@redhat.com> 2.7.11-2
 - Rebuild for NetworkManager 0.9
 
