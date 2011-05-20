@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.7.11
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -683,6 +683,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri May 20 2011 Kalev Lember <kalev@smartlink.ee> 2.7.11-4
+- Rebuilt for libcamel soname bump
+
 * Tue Apr 26 2011 Dan Williams <dcbw@redhat.com> 2.7.11-3
 - A few more NetworkManager 0.9 fixes
 
