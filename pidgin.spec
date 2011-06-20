@@ -98,7 +98,7 @@
 
 Name:           pidgin
 Version:        2.8.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -683,6 +683,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jun 20 2011 Milan Crha <mcrha@redhat.com> 2.8.0-3
+- Rebuild against new evolution-data-server
+
 * Fri Jun 17 2011 Marcela Mašláňová <mmaslano@redhat.com> - 2.8.0-2
 - Perl mass rebuild
 
