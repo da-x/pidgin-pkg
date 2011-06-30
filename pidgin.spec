@@ -97,8 +97,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.8.0
-Release:        3%{?dist}
+Version:        2.9.0
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -683,6 +683,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jun 30 2011 Stu Tomlinson <stu@nosnilmot.com> 2.8.0-3
+- 2.9.0, includes security/DoS fix to work around gdk-pixbuf issue
+  CVE-2011-2485
+
 * Mon Jun 20 2011 Milan Crha <mcrha@redhat.com> 2.8.0-3
 - Rebuild against new evolution-data-server
 
