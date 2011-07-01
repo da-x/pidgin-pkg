@@ -135,7 +135,6 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
 Patch101:       nm09-more.patch
-Patch102:       pidgin-2.8.0-gevolution-compilefix.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -419,8 +418,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 
 # http://developer.pidgin.im/ticket/13859
 %patch101 -p1 -b .nm09more
-# http://developer.pidgin.im/viewmtn/revision/info/aebefd6d98382ce0f7b42b41e4bf2611044d4182
-%patch102 -p0 -b .gevocompile
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
