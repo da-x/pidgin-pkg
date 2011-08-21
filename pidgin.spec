@@ -102,13 +102,8 @@
 %endif
 
 Name:           pidgin
-<<<<<<< HEAD
-Version:        2.9.0
-Release:        3%{?dist}
-=======
 Version:        2.10.0
 Release:        1%{?dist}
->>>>>>> master
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
