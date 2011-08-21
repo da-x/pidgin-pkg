@@ -39,6 +39,7 @@
 %global disable_silc            0
 %global split_evolution         0
 %global use_system_certs        0
+%global use_system_libgadu      0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -95,10 +96,19 @@
 %if 0%{?fedora} >= 13
 %global split_evolution         1
 %endif
+# F16+ Use system libgadu (#713888)
+%if 0%{?fedora} >= 16
+%global use_system_libgadu      1
+%endif
 
 Name:           pidgin
+<<<<<<< HEAD
 Version:        2.9.0
 Release:        3%{?dist}
+=======
+Version:        2.10.0
+Release:        1%{?dist}
+>>>>>>> master
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -237,6 +247,10 @@ Requires:       gstreamer-plugins-bad-free
 # libidn punycode domain support (F11+)
 %if %{libidn_support}
 BuildRequires:  libidn-devel
+%endif
+# use system libgadu (F13+)
+%if %{use_system_libgadu}
+BuildRequires:  libgadu-devel
 %endif
 
 %if %{api_docs}
@@ -680,7 +694,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Tue Aug 16 2011 Milan Crha <mcrha@redhat.com> - 2.9.0-3
+* Sun Aug 21 2011 Stu Tomlinson <stu@nosnilmot.com> 2.10.0-1
+- 2.10.0
+- Link against system libgadu instead of using internal copy (#713888)
+
+* Tue Aug 16 2011 Milan Crha <mcrha@redhat.com> 2.9.0-3
 - Rebuild against newer evolution-data-server
 
 * Thu Jul 21 2011 Petr Sabata <contyk@redhat.com> - 2.9.0-2
