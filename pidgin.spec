@@ -103,7 +103,7 @@
 
 Name:           pidgin
 Version:        2.10.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -689,6 +689,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Aug 29 2011 Milan Crha <mcrha@redhat.com> 2.10.0-2
+- Rebuild against newer evolution-data-server
+
 * Sun Aug 21 2011 Stu Tomlinson <stu@nosnilmot.com> 2.10.0-1
 - 2.10.0
 - Link against system libgadu instead of using internal copy (#713888)
