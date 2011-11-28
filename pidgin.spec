@@ -103,7 +103,7 @@
 
 Name:           pidgin
 Version:        2.10.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -689,6 +689,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Nov 28 2011 Milan Crha <mcrha@redhat.com> 2.10.0-5
+- Rebuild against newer evolution-data-server
+
 * Sun Oct 30 2011 Bruno Wolff III <bruno@wolff.to> 2.10.0-4
 - Rebuild against newer evolution-data-server
 
