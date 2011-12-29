@@ -102,8 +102,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.0
-Release:        5%{?dist}
+Version:        2.10.1
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -140,6 +140,7 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
 Patch101:       nm09-more.patch
+Patch102:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -427,6 +428,8 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 
 # http://developer.pidgin.im/ticket/13859
 %patch101 -p1 -b .nm09more
+# http://pidgin.im/pipermail/devel/2011-November/010477.html
+%patch102 -p0 -R -b .ftcrash
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -689,6 +692,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Dec 29 2011 Stu Tomlinson <stu@nosnilmot.com> 2.10.1-1
+- 2.10.1, includes security fixes for CVE-2011-3594, CVE-2011-4601,
+  CVE-2011-4602, CVE-2011-4603
+
 * Mon Nov 28 2011 Milan Crha <mcrha@redhat.com> 2.10.0-5
 - Rebuild against newer evolution-data-server
 
