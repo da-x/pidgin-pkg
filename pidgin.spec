@@ -103,7 +103,7 @@
 
 Name:           pidgin
 Version:        2.10.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -692,6 +692,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.10.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Thu Dec 29 2011 Stu Tomlinson <stu@nosnilmot.com> 2.10.1-1
 - 2.10.1, includes security fixes for CVE-2011-3594, CVE-2011-4601,
   CVE-2011-4602, CVE-2011-4603
