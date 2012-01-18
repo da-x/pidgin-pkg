@@ -18,6 +18,10 @@
 %global fedora 12
 %global dist .el6
 %endif
+%if 0%{?rhel} == 7
+%global fedora 16
+%global dist .el7
+%endif
 
 # Define variables to use in conditionals
 %global force_sound_aplay       0
@@ -103,7 +107,7 @@
 
 Name:           pidgin
 Version:        2.10.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -692,6 +696,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jan 18 2012 Matthew Barnes <mbarnes@redhat.com> - 2.10.1-3
+- Map RHEL 7 to Fedora 16 (for now).
+
 * Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.10.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
