@@ -107,7 +107,7 @@
 
 Name:           pidgin
 Version:        2.10.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -145,6 +145,7 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
 Patch101:       nm09-more.patch
 Patch102:       pidgin-2.10.1-fix-msn-ft-crashes.patch
+Patch103:       port-to-farstream.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -238,7 +239,11 @@ BuildRequires:  perl(ExtUtils::Embed)
 %endif
 # Voice and video support (F11+)
 %if %{vv_support}
+%if 0%{?fedora} >= 17
+BuildRequires:  farstream-devel
+%else
 BuildRequires:  farsight2-devel
+%endif
 Requires:       gstreamer-plugins-good
 %if 0%{?fedora} >= 12
 Requires:       gstreamer-plugins-bad-free
@@ -435,6 +440,10 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 # http://pidgin.im/pipermail/devel/2011-November/010477.html
 %patch102 -p0 -R -b .ftcrash
 
+%if 0%{?fedora} >= 17
+%patch103 -p1 -b .farstream
+%endif
+
 # Our preferences
 cp %{SOURCE1} prefs.xml
 
@@ -499,7 +508,7 @@ make %{?_smp_mflags} LIBTOOL=/usr/bin/libtool
 
 # one_time_password plugin, included upstream but not built by default
 cd libpurple/plugins/
-make one_time_password.so
+make one_time_password.so LIBTOOL=/usr/bin/libtool
 cd -
 
 %if %{api_docs}
@@ -696,6 +705,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Mar  9 2012 Tom Callaway <spot@fedoraproject.org> - 2.10.1-4
+- fedora 17+ uses farstream now instead of farsight2
+
 * Wed Jan 18 2012 Matthew Barnes <mbarnes@redhat.com> - 2.10.1-3
 - Map RHEL 7 to Fedora 16 (for now).
 
