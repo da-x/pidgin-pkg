@@ -444,10 +444,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch103 -p1 -b .farstream
 %endif
 
-%if 0%{?fedora} >= 17
-%patch103 -p1 -b .farstream
-%endif
-
 # Our preferences
 cp %{SOURCE1} prefs.xml
 
