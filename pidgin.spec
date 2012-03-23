@@ -106,8 +106,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.1
-Release:        4%{?dist}
+Version:        2.10.2
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -142,9 +142,9 @@ Source1:        purple-fedora-prefs.xml
 Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
-Patch101:       nm09-more.patch
-Patch102:       pidgin-2.10.1-fix-msn-ft-crashes.patch
+#Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
+#Patch101:       nm09-more.patch
+#Patch102:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 Patch103:       port-to-farstream.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
@@ -433,12 +433,12 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 # not strictly going to be included upstream, but enabling MSNP16
 # introduces regressions retrieving buddy icons & custom emoticons
 # from the official client (and possibly file transfers)
-%patch100 -p0 -b .msnp16
+#%patch100 -p0 -b .msnp16
 
 # http://developer.pidgin.im/ticket/13859
-%patch101 -p1 -b .nm09more
+#%patch101 -p1 -b .nm09more
 # http://pidgin.im/pipermail/devel/2011-November/010477.html
-%patch102 -p0 -R -b .ftcrash
+#%patch102 -p0 -R -b .ftcrash
 
 %if 0%{?fedora} >= 17
 %patch103 -p1 -b .farstream
@@ -705,6 +705,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Mar 23 2012 Jon Ciesla <limburgher@gmail.com> - 2.10.2-1
+- Update to 2.10.2, BZ 803293, 803299.
+- Dropping MSN patches.  Protocol patch not needed, won't connect
+- to 16 by default.  Crash patch was upstreamed.
+- Dropped nm09 patch, upstreamed.
+
 * Fri Mar  9 2012 Tom Callaway <spot@fedoraproject.org> - 2.10.1-4
 - fedora 17+ uses farstream now instead of farsight2
 
