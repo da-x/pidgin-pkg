@@ -107,7 +107,7 @@
 
 Name:           pidgin
 Version:        2.10.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -705,6 +705,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed May 02 2012 Milan Crha <mcrha@redhat.com> - 2.10.2-2
+- Rebuild against newer evolution-data-server
+
 * Fri Mar 23 2012 Jon Ciesla <limburgher@gmail.com> - 2.10.2-1
 - Update to 2.10.2, BZ 803293, 803299.
 - Dropping MSN patches.  Protocol patch not needed, won't connect
