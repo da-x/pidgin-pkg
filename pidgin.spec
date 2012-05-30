@@ -106,8 +106,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.2
-Release:        2%{?dist}
+Version:        2.10.4
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -705,6 +705,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed May 30 2012 Jon Ciesla <limburgher@gmail.com> - 2.10.4-1
+- Update to 2.10.4, CVE-2012-2214, CVE-2012-2318, BZ 806839, 819454.
+
 * Wed May 02 2012 Milan Crha <mcrha@redhat.com> - 2.10.2-2
 - Rebuild against newer evolution-data-server
 
