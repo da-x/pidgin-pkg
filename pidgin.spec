@@ -107,7 +107,7 @@
 
 Name:           pidgin
 Version:        2.10.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -705,6 +705,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jun 11 2012 Petr Pisar <ppisar@redhat.com> - 2.10.4-2
+- Perl 5.16 rebuild
+
 * Wed May 30 2012 Jon Ciesla <limburgher@gmail.com> - 2.10.4-1
 - Update to 2.10.4, CVE-2012-2214, CVE-2012-2318, BZ 806839, 819454.
 - Port to farstream patch upstreamed.
