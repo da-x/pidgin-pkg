@@ -106,8 +106,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.2
-Release:        1%{?dist}
+Version:        2.10.4
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -145,7 +145,7 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 #Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
 #Patch101:       nm09-more.patch
 #Patch102:       pidgin-2.10.1-fix-msn-ft-crashes.patch
-Patch103:       port-to-farstream.patch
+#Patch103:       port-to-farstream.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -441,7 +441,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 #%patch102 -p0 -R -b .ftcrash
 
 %if 0%{?fedora} >= 17
-%patch103 -p1 -b .farstream
+#%patch103 -p1 -b .farstream
 %endif
 
 # Our preferences
@@ -705,6 +705,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jun 11 2012 Petr Pisar <ppisar@redhat.com> - 2.10.4-2
+- Perl 5.16 rebuild
+
+* Wed May 30 2012 Jon Ciesla <limburgher@gmail.com> - 2.10.4-1
+- Update to 2.10.4, CVE-2012-2214, CVE-2012-2318, BZ 806839, 819454.
+- Port to farstream patch upstreamed.
+
+* Wed May 02 2012 Milan Crha <mcrha@redhat.com> - 2.10.2-2
+- Rebuild against newer evolution-data-server
+
 * Fri Mar 23 2012 Jon Ciesla <limburgher@gmail.com> - 2.10.2-1
 - Update to 2.10.2, BZ 803293, 803299.
 - Dropping MSN patches.  Protocol patch not needed, won't connect
