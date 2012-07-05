@@ -1,0 +1,12 @@
+diff -up pidgin-2.10.5/pidgin/plugins/gevolution/gevolution.h.libeds pidgin-2.10.5/pidgin/plugins/gevolution/gevolution.h
+--- pidgin-2.10.5/pidgin/plugins/gevolution/gevolution.h.libeds	2012-07-01 00:54:48.000000000 +0100
++++ pidgin-2.10.5/pidgin/plugins/gevolution/gevolution.h	2012-07-05 18:23:59.265889641 +0100
+@@ -25,7 +25,7 @@
+ # include "config.h"
+ #endif
+ 
+-#include <libebook/e-book.h>
++#include <libebook/libebook.h>
+ 
+ enum
+ {
