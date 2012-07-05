@@ -112,7 +112,7 @@
 
 Name:           pidgin
 Version:        2.10.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -148,6 +148,7 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
+Patch101:       pidgin-2.10.5-eds.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -439,6 +440,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 
 # http://pidgin.im/pipermail/devel/2011-November/010477.html
 %patch100 -p0 -R -b .ftcrash
+%patch101 -p1 -b .libeds
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -720,6 +722,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jul 05 2012 Stu Tomlinson <stu@nosnilmot.com> 2.10.5-2
+- Add patch to build with latest e-d-s
+
 * Thu Jul 05 2012 Stu Tomlinson <stu@nosnilmot.com> 2.10.5-1
 - Update to 2.10.5, CVE-2012-3374
 - Allow building only libraries (#831364)
