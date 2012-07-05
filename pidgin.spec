@@ -44,6 +44,7 @@
 %global split_evolution         0
 %global use_system_certs        0
 %global use_system_libgadu      0
+%global build_only_libs         0
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -93,7 +94,7 @@
 # EL6: Disable SILC protocol
 # (get rid of extra crypto lib for perpetually broken protocol that nobody uses)
 # (the above comment is not necessarily the view held by all maintaners of this package)
-%if 0%{?rhel} == 6
+%if 0%{?rhel} >= 6
 %global disable_silc            1
 %endif
 # F13+ Split Evolution plugin to separate package (#581144)
@@ -104,10 +105,14 @@
 %if 0%{?fedora} >= 16
 %global use_system_libgadu      1
 %endif
+%if 0%{?rhel} >= 7
+%global build_only_libs         1
+%global api_docs                0
+%endif
 
 Name:           pidgin
-Version:        2.10.4
-Release:        2%{?dist}
+Version:        2.10.5
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -142,10 +147,7 @@ Source1:        purple-fedora-prefs.xml
 Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
-#Patch100:       pidgin-2.7.7-msn-disable-msnp16.patch
-#Patch101:       nm09-more.patch
-#Patch102:       pidgin-2.10.1-fix-msn-ft-crashes.patch
-#Patch103:       port-to-farstream.patch
+Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -166,18 +168,26 @@ Requires(preun): GConf2
 # Basic Library Requirements
 BuildRequires:  autoconf
 BuildRequires:  libtool
-BuildRequires:  startup-notification-devel
 BuildRequires:  cyrus-sasl-devel
 %if %{nss_md2_disabled}
 BuildRequires:  nss-devel >= 3.12.3
 %else
 BuildRequires:  nss-devel
 %endif
+
+%if ! %{build_only_libs}
+BuildRequires:  startup-notification-devel
 BuildRequires:  gtk2-devel
-BuildRequires:  gettext
-BuildRequires:  intltool
 BuildRequires:  desktop-file-utils
 BuildRequires:  ncurses-devel
+# gtkspell integration (FC1+)
+BuildRequires:  gtkspell-devel
+# Evolution integration (FC3+)
+BuildRequires:  evolution-data-server-devel
+%endif
+
+BuildRequires:  gettext
+BuildRequires:  intltool
 BuildRequires:  tcl-devel
 BuildRequires:  tk-devel
 BuildRequires:  libxml2-devel
@@ -186,10 +196,6 @@ BuildRequires:  libxml2-devel
 # krb5 needed for Zephyr (FC1+)
 BuildRequires:  krb5-devel
 %endif
-# gtkspell integration (FC1+)
-BuildRequires:  gtkspell-devel
-# Evolution integration (FC3+)
-BuildRequires:  evolution-data-server-devel
 # SILC integration (FC3+)
 %if ! %{disable_silc}
 BuildRequires:  libsilc-devel
@@ -430,19 +436,9 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %endif
 
 ## Patches 100+: To be Included in Future Upstream
-# not strictly going to be included upstream, but enabling MSNP16
-# introduces regressions retrieving buddy icons & custom emoticons
-# from the official client (and possibly file transfers)
-#%patch100 -p0 -b .msnp16
 
-# http://developer.pidgin.im/ticket/13859
-#%patch101 -p1 -b .nm09more
 # http://pidgin.im/pipermail/devel/2011-November/010477.html
-#%patch102 -p0 -R -b .ftcrash
-
-%if 0%{?fedora} >= 17
-#%patch103 -p1 -b .farstream
-%endif
+%patch100 -p0 -R -b .ftcrash
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -494,6 +490,9 @@ SWITCHES="--with-extraversion=%{release}"
 %if %{use_system_certs}
     SWITCHES="$SWITCHES --with-system-ssl-certs=/etc/pki/tls/certs"
 %endif
+%if %{build_only_libs}
+    SWITCHES="$SWITCHES --disable-consoleui --disable-gtkui"
+%endif
 
 # FC5+ automatic -fstack-protector-all switch
 export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
@@ -522,10 +521,12 @@ make DESTDIR=$RPM_BUILD_ROOT install LIBTOOL=/usr/bin/libtool
 
 install -m 0755 libpurple/plugins/one_time_password.so $RPM_BUILD_ROOT%{_libdir}/purple-2/
 
+%if ! %{build_only_libs}
 desktop-file-install --vendor pidgin --delete-original              \
                      --add-category X-Red-Hat-Base                  \
                      --dir $RPM_BUILD_ROOT%{_datadir}/applications  \
                      $RPM_BUILD_ROOT%{_datadir}/applications/pidgin.desktop
+%endif
 
 # remove libtool libraries and static libraries
 find $RPM_BUILD_ROOT \( -name "*.la" -o -name "*.a" \) -exec rm -f {} ';'
@@ -552,8 +553,10 @@ chmod -R u+w $RPM_BUILD_ROOT/*
 
 %find_lang pidgin
 
+%if ! %{build_only_libs}
 # symlink /usr/bin/gaim to new pidgin name
 ln -sf pidgin $RPM_BUILD_ROOT%{_bindir}/gaim
+%endif
 
 %if %{api_docs}
 rm -rf html
@@ -564,6 +567,11 @@ ln -sf ../../doc/pidgin-docs-%{version}/html/ \
     $RPM_BUILD_ROOT%{_datadir}/gtk-doc/html/pidgin
 %endif
 
+%if %{build_only_libs}
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/gconf/schemas/purple.schemas
+%endif
+
+%if ! %{build_only_libs}
 %pre
 if [ "$1" -gt 1 ]; then
     export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
@@ -581,10 +589,12 @@ gconftool-2 --makefile-install-rule \
     %{_sysconfdir}/gconf/schemas/purple.schemas > /dev/null || :
 killall -HUP gconfd-2 &> /dev/null || :
 
+%post -n finch -p /sbin/ldconfig
+%endif
+
 %post -n libpurple -p /sbin/ldconfig
 
-%post -n finch -p /sbin/ldconfig
-
+%if ! %{build_only_libs}
 %preun
 if [ "$1" -eq 0 ]; then
     export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
@@ -598,13 +608,15 @@ touch --no-create %{_datadir}/icons/hicolor || :
 [ -x %{_bindir}/gtk-update-icon-cache ] && \
 %{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
 
-%postun -n libpurple -p /sbin/ldconfig
-
 %postun -n finch -p /sbin/ldconfig
+%endif
+
+%postun -n libpurple -p /sbin/ldconfig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%if ! %{build_only_libs}
 %files
 %defattr(-,root,root,-)
 %doc NEWS COPYING AUTHORS README ChangeLog doc/PERL-HOWTO.dox
@@ -636,6 +648,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_includedir}/pidgin/
 %{_libdir}/pkgconfig/pidgin.pc
+%endif
 
 %files -f pidgin.lang -n libpurple
 %defattr(-,root,root,-)
@@ -681,6 +694,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/purple-2/tcl.so
 
+%if ! %{build_only_libs}
 %files -n finch
 %defattr(-,root,root,-)
 %{_bindir}/finch
@@ -696,6 +710,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgnt.so
 %{_libdir}/pkgconfig/gnt.pc
 %{_libdir}/pkgconfig/finch.pc
+%endif
 
 %if %{api_docs}
 %files -n pidgin-docs
@@ -705,6 +720,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jul 05 2012 Stu Tomlinson <stu@nosnilmot.com> 2.10.5-1
+- Update to 2.10.5, CVE-2012-3374
+- Allow building only libraries (#831364)
+- Revive FT crash prevention patch
+
 * Mon Jun 11 2012 Petr Pisar <ppisar@redhat.com> - 2.10.4-2
 - Perl 5.16 rebuild
 
