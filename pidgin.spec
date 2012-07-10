@@ -41,6 +41,7 @@
 %global vv_support              0
 %global libidn_support          0
 %global disable_silc            0
+%global disable_evolution       0
 %global split_evolution         0
 %global use_system_certs        0
 %global use_system_libgadu      0
@@ -109,6 +110,12 @@
 %global build_only_libs         1
 %global api_docs                0
 %endif
+# F18+ Disable evolution integration (temporarily?)
+# due to evolution-data-server 3.6 API changes
+%if 0%{?fedora} >= 18
+%global disable_evolution       1
+%global split_evolution         0
+%endif
 
 Name:           pidgin
 Version:        2.10.5
@@ -148,7 +155,6 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
-Patch101:       pidgin-2.10.5-eds.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -183,8 +189,10 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  ncurses-devel
 # gtkspell integration (FC1+)
 BuildRequires:  gtkspell-devel
-# Evolution integration (FC3+)
+# Evolution integration (FC3+, < F18)
+%if ! %{disable_evolution}
 BuildRequires:  evolution-data-server-devel
+%endif
 %endif
 
 BuildRequires:  gettext
@@ -440,7 +448,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 
 # http://pidgin.im/pipermail/devel/2011-November/010477.html
 %patch100 -p0 -R -b .ftcrash
-%patch101 -p1 -b .libeds
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -463,7 +470,11 @@ SWITCHES="--with-extraversion=%{release}"
     SWITCHES="$SWITCHES --with-krb4"
 %endif
     SWITCHES="$SWITCHES --enable-perl"
+%if ! %{disable_evolution}
     SWITCHES="$SWITCHES --enable-gevolution"
+%else
+	SWITCHES="$SWITCHES --disable-gevolution"
+%endif
 %if %{dbus_integration}
     SWITCHES="$SWITCHES --enable-dbus"
 %else
@@ -722,8 +733,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Thu Jul 05 2012 Stu Tomlinson <stu@nosnilmot.com> 2.10.5-2
-- Add patch to build with latest e-d-s
+* Fri Jul 06 2012 Stu Tomlinson <stu@nosnilmot.com> 2.10.5-2
+- Disable evolution integration on F18+ due to API changes in
+  evolution-data-server 3.6
 
 * Thu Jul 05 2012 Stu Tomlinson <stu@nosnilmot.com> 2.10.5-1
 - Update to 2.10.5, CVE-2012-3374
