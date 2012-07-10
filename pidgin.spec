@@ -473,7 +473,7 @@ SWITCHES="--with-extraversion=%{release}"
 %if ! %{disable_evolution}
     SWITCHES="$SWITCHES --enable-gevolution"
 %else
-	SWITCHES="$SWITCHES --disable-gevolution"
+    SWITCHES="$SWITCHES --disable-gevolution"
 %endif
 %if %{dbus_integration}
     SWITCHES="$SWITCHES --enable-dbus"
