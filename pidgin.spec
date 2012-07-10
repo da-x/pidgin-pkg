@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -733,6 +733,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Jul 10 2012 Petr Pisar <ppisar@redhat.com> - 2.10.5-3
+- Perl 5.16 rebuild
+
 * Fri Jul 06 2012 Stu Tomlinson <stu@nosnilmot.com> 2.10.5-2
 - Disable evolution integration on F18+ due to API changes in
   evolution-data-server 3.6
