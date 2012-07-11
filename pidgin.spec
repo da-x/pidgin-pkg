@@ -118,8 +118,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.5
-Release:        3%{?dist}
+Version:        2.10.6
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -733,6 +733,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jul 11 2012 Jan Synáček <jsynacek@redhat.com> - 2.10.6-1
+- Update to 2.10.6, BZ 838311
+
 * Tue Jul 10 2012 Petr Pisar <ppisar@redhat.com> - 2.10.5-3
 - Perl 5.16 rebuild
 
