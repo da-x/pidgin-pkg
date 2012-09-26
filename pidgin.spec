@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.6
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -132,6 +132,8 @@ Provides:       gaim = 999:1
 
 %if %{split_evolution}
 Obsoletes:      pidgin <= 2.7.1-1%{?dist}
+%else %if %{disable_evolution}
+Obsoletes:		pidgin-evolution <= 2.10.6%{?dist}
 %endif
 
 ## Fedora pidgin defaults
@@ -733,6 +735,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Sep 26 2012 Jan Synáček <jsynacek@redhat.com> - 2.10.6-4
+- Correctly obsolete pidgin-evolution if evolution integration is disabled,
+  BZ 860285
+
 * Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.10.6-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
