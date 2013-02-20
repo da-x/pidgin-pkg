@@ -118,8 +118,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.6
-Release:        5%{?dist}
+Version:        2.10.7
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -735,6 +735,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Feb 20 2013 Jan Synáček <jsynacek@redhat.com> - 2.10.7-1
+- Update to 2.10.7, BZ 911088
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.10.6-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
