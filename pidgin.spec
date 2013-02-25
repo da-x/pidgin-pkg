@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -157,6 +157,7 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
+Patch101:       pidgin-2.10.7-link-libirc-to-libsasl2.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -450,6 +451,8 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 
 # http://pidgin.im/pipermail/devel/2011-November/010477.html
 %patch100 -p0 -R -b .ftcrash
+# https://developer.pidgin.im/ticket/15517
+%patch101 -p1 -b .irc-sasl
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -512,6 +515,9 @@ SWITCHES="--with-extraversion=%{release}"
 # FC5+ automatic -fstack-protector-all switch
 export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
 export CFLAGS="$RPM_OPT_FLAGS"
+
+# remove after irc-sasl patch has been merged upstream
+autoreconf --force --install
 
 # gnutls is buggy so use mozilla-nss on all distributions
 %configure --enable-gnutls=no --enable-nss=yes --enable-cyrus-sasl \
@@ -735,6 +741,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Feb 25 2013 Jan Synáček <jsynacek@redhat.com> - 2.10.7-2
+- Fix IRC support, BZ 914794
+
 * Wed Feb 20 2013 Jan Synáček <jsynacek@redhat.com> - 2.10.7-1
 - Update to 2.10.7, BZ 911088
 
