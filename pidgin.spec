@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -345,6 +345,10 @@ Obsoletes:  gaim-meanwhile
 Requires:   glib2 >= %{glib_ver}
 # Bug #212817 Jabber needs cyrus-sasl plugins for authentication
 Requires:   cyrus-sasl-plain, cyrus-sasl-md5
+# Bug #979052 - Can't connect to xmpp server since upgrade from f18 to f19
+%if 0%{?fedora} >= 19
+Requires:   cyrus-sasl-scram
+%endif
 # Use system SSL certificates (F11+)
 %if %{use_system_certs}
 Requires:   ca-certificates
@@ -741,6 +745,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jul 01 2013 Jan Synáček <jsynacek@redhat.com> - 2.10.7-3
+- Require cyrus-sasl-scram, BZ 979052
+
 * Mon Feb 25 2013 Jan Synáček <jsynacek@redhat.com> - 2.10.7-2
 - Fix IRC support, BZ 914794
 
