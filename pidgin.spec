@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.7
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -745,6 +745,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 2.10.7-4
+- Perl 5.18 rebuild
+
 * Mon Jul 01 2013 Jan Synáček <jsynacek@redhat.com> - 2.10.7-3
 - Require cyrus-sasl-scram, BZ 979052
 
