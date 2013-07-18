@@ -19,7 +19,7 @@
 %global dist .el6
 %endif
 %if 0%{?rhel} == 7
-%global fedora 16
+%global fedora 19
 %global dist .el7
 %endif
 
