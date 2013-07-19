@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.7
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -278,6 +278,14 @@ BuildRequires:  libgadu-devel
 
 %if %{api_docs}
 BuildRequires:  doxygen
+%endif
+
+# Need rpm 4.9+ to be able to do this filtering in arch packages with binaries
+%if 0%{?fedora} >= 15
+# Filter out plugins from provides
+%global __provides_exclude_from ^%{_libdir}/purple
+# Use define to delay evaluation
+%define __requires_exclude ^%(cat %{_builddir}/%{?buildsubdir}/plugins.list)|perl\\(Purple\\)
 %endif
 
 %description
@@ -517,7 +525,8 @@ SWITCHES="--with-extraversion=%{release}"
 %endif
 
 # FC5+ automatic -fstack-protector-all switch
-export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector/-fstack-protector-all}
+# F20+ uses -fstack-protector-strong
+export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector /-fstack-protector-all }
 export CFLAGS="$RPM_OPT_FLAGS"
 
 # remove after irc-sasl patch has been merged upstream
@@ -595,6 +604,9 @@ ln -sf ../../doc/pidgin-docs-%{version}/html/ \
 %if %{build_only_libs}
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/gconf/schemas/purple.schemas
 %endif
+
+# Create list of plugins for __requires_exclude
+find %{buildroot}/%{_libdir}/purple-2 -name \*.so\* -printf '%f|' | sed -e 's/|$//' > plugins.list
 
 %if ! %{build_only_libs}
 %pre
@@ -745,6 +757,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jul 18 2013 Orion Poplawski <orion@cora.nwra.com> - 2.10.7-5
+- Fix setting -fstack-protector on F20+, use -fstack-protector-strong there
+- Filter out provides from plugins
+
 * Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 2.10.7-4
 - Perl 5.18 rebuild
 
