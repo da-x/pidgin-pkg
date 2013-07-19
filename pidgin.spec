@@ -757,7 +757,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Fri Jul 18 2013 Orion Poplawski <orion@cora.nwra.com> - 2.10.7-5
+* Fri Jul 19 2013 Orion Poplawski <orion@cora.nwra.com> - 2.10.7-5
 - Fix setting -fstack-protector on F20+, use -fstack-protector-strong there
 - Filter out provides from plugins
 
@@ -1023,10 +1023,10 @@ rm -rf $RPM_BUILD_ROOT
 - Voice and Video support via farsight2 (Fedora 11+)
 - Numerous other bug fixes
 
-* Tue Aug 06 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.11.20090812
+* Thu Aug 06 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.11.20090812
 - new snapshot at the request of maiku
 
-* Tue Aug 06 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.10.20090806
+* Thu Aug 06 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.10.20090806
 - new snapshot - theoretically better sound quality in voice chat
 
 * Tue Aug 04 2009 Warren Togami <wtogami@redhat.com> 2.6.0-0.9.20090804
@@ -1222,7 +1222,7 @@ rm -rf $RPM_BUILD_ROOT
 - Add missing Requires to -devel packages
 - Add missing BuildRequires for libxml2-devel
 
-* Fri May 31 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-2
+* Fri Jun 1 2007 Stu Tomlinson <stu@nosnilmot.com> - 2.0.1-2
 - Call g_thread_init early (#241883)
 - Fix purple-remote syntax error (#241905)
 
@@ -1656,7 +1656,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Jun 22 2004 Warren Togami <wtogami@redhat.com> 0.78-8
 - rebuilt
 
-* Mon Jun 08 2004 Warren Togami <wtogami@redhat.com> 0.78-7
+* Mon Jun 07 2004 Warren Togami <wtogami@redhat.com> 0.78-7
 - CVS backport 125: MSN disconnect on non-fatal error fix
                126: Paste html with img crash fix
                127: Misplaced free fix
@@ -1692,7 +1692,7 @@ rm -rf $RPM_BUILD_ROOT
 * Sun Apr 25 2004 Warren Togami <wtogami@redhat.com> 0.77-1
 - 0.77, remove cvs backports
 
-* Fri Apr 15 2004 Warren Togami <wtogami@redhat.com> 0.76-6
+* Thu Apr 15 2004 Warren Togami <wtogami@redhat.com> 0.76-6
 - CVS backports:
   111 Prevent Crash during password change if blank fields
   112 Prevent Crash if remote sends invalid characters
@@ -1700,7 +1700,7 @@ rm -rf $RPM_BUILD_ROOT
 - Tray Icon enabled by default
 - Relabel internal version with V-R
 
-* Fri Apr 14 2004 Warren Togami <wtogami@redhat.com> 0.76-5
+* Wed Apr 14 2004 Warren Togami <wtogami@redhat.com> 0.76-5
 - CVS backports: 
   102 Fix ^F keybinding when gtkrc is set to emacs mode
   103 Add Missing File: evolution-1.5.x buildability
@@ -1750,7 +1750,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Dec 04 2003 Christopher Blizzard <blizzard@redhat.com> 1:0.74-9
 - Bump release to rebuild for fc2.
 
-* Wed Nov 25 2003 Christopher Blizzard <blizzard@redhat.com> 1:0.74-0
+* Wed Nov 26 2003 Christopher Blizzard <blizzard@redhat.com> 1:0.74-0
 - Upgrade to 0.74
 - Include libao-devel and startup-notification-devel to the
   buildreq list
