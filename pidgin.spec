@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.7
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -757,6 +757,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Aug 01 2013 Petr Pisar <ppisar@redhat.com> - 2.10.7-6
+- Perl 5.18 rebuild
+
 * Fri Jul 19 2013 Orion Poplawski <orion@cora.nwra.com> - 2.10.7-5
 - Fix setting -fstack-protector on F20+, use -fstack-protector-strong there
 - Filter out provides from plugins
