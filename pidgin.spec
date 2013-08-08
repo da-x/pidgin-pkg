@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.7
-Release:        7%{?dist}
+Release:        8%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -597,7 +597,7 @@ rm -rf html
 rm -f doc/html/installdox
 mv doc/html/ html/
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/gtk-doc/html/
-ln -sf ../../doc/pidgin-docs-%{version}/html/ \
+ln -sf ../../doc/pidgin-docs/html/ \
     $RPM_BUILD_ROOT%{_datadir}/gtk-doc/html/pidgin
 %endif
 
@@ -757,6 +757,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Aug  8 2013 Jan Synáček <jsynacek@redhat.com> - 2.10.7-8
+- Remove versioned docdirs, BZ 994039
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.10.7-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
