@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.7
-Release:        8%{?dist}
+Release:        9%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -241,7 +241,7 @@ Requires:       xdg-utils
 BuildRequires:  dbus-glib-devel >= 0.70
 %endif
 %if %{bonjour_support}
-BuildRequires:  avahi-glib-devel
+BuildRequires:  pkgconfig(avahi-client) pkgconfig(avahi-glib)
 %endif
 # Meanwhile integration (F6+)
 %if %{meanwhile_integration}
@@ -757,6 +757,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Sep 26 2013 Rex Dieter <rdieter@fedoraproject.org> 2.10.7-9
+- add explicit avahi build deps
+
 * Thu Aug  8 2013 Jan Synáček <jsynacek@redhat.com> - 2.10.7-8
 - Remove versioned docdirs, BZ 994039
 
