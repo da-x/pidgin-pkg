@@ -271,7 +271,6 @@ Requires:       gstreamer-plugins-bad-free
 %if %{libidn_support}
 BuildRequires:  libidn-devel
 %endif
-# use system libgadu (F13+)
 %if %{use_system_libgadu}
 BuildRequires:  libgadu-devel
 %endif
