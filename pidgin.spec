@@ -118,8 +118,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.7
-Release:        9%{?dist}
+Version:        2.10.9
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -157,7 +157,7 @@ Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
-Patch101:       pidgin-2.10.7-link-libirc-to-libsasl2.patch
+#Patch101:       pidgin-2.10.7-link-libirc-to-libsasl2.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -463,7 +463,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 # http://pidgin.im/pipermail/devel/2011-November/010477.html
 %patch100 -p0 -R -b .ftcrash
 # https://developer.pidgin.im/ticket/15517
-%patch101 -p1 -b .irc-sasl
+#%patch101 -p1 -b .irc-sasl
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -526,7 +526,8 @@ SWITCHES="--with-extraversion=%{release}"
 # FC5+ automatic -fstack-protector-all switch
 # F20+ uses -fstack-protector-strong
 export RPM_OPT_FLAGS=${RPM_OPT_FLAGS//-fstack-protector /-fstack-protector-all }
-export CFLAGS="$RPM_OPT_FLAGS"
+#Work around broken Werror=format-security macro on F21/Rawhide by adding -Wformat in front of it.
+export CFLAGS="-O2 -g -pipe -Wall -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -fstack-protector -fstack-protector-all"
 
 # remove after irc-sasl patch has been merged upstream
 autoreconf --force --install
@@ -756,6 +757,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Feb 03 2014 Dan Mashal <dan.mashal@fedoraproject.org> 2.10.9-1
+- Update to 2.10.9
+
 * Thu Sep 26 2013 Rex Dieter <rdieter@fedoraproject.org> 2.10.7-9
 - add explicit avahi build deps
 
