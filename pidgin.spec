@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -757,6 +757,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue May 20 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.10.9-2
+- Rebuilt for tcl/tk8.6
+
 * Mon Feb 03 2014 Dan Mashal <dan.mashal@fedoraproject.org> 2.10.9-1
 - Update to 2.10.9
 
