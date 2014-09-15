@@ -119,7 +119,7 @@
 
 Name:           pidgin
 Version:        2.10.9
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -154,6 +154,7 @@ Source1:        purple-fedora-prefs.xml
 
 ## Patches 0-99: Fedora specific or upstream wont accept
 Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
+Patch1:         pidgin-2.10.9-valgrind.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
@@ -278,6 +279,9 @@ BuildRequires:  libgadu-devel
 %if %{api_docs}
 BuildRequires:  doxygen
 %endif
+
+# Use distribution's valgrind.h
+BuildRequires:  valgrind-devel
 
 # Need rpm 4.9+ to be able to do this filtering in arch packages with binaries
 %if 0%{?fedora} >= 15
@@ -457,6 +461,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %if %{force_sound_aplay}
 %patch0 -p1 -b .aplay
 %endif
+%patch1 -p1
 
 ## Patches 100+: To be Included in Future Upstream
 
@@ -479,6 +484,10 @@ for file in finch/plugins/pietray.py libpurple/purple-remote libpurple/plugins/d
             libpurple/plugins/startup.py libpurple/purple-url-handler libpurple/purple-notifications-example; do
     sed -i 's/env python/python/' $file
 done
+
+# Bug #1141477
+rm -f libpurple/valgrind.h
+sed -ie 's/include "valgrind.h"/include <valgrind\/valgrind.h>/' libpurple/plugin.c
 
 %build
 SWITCHES="--with-extraversion=%{release}"
@@ -757,6 +766,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Sep 15 2014 Jan Synacek <jsynacek@redhat.com> - 2.10.9-6
+- Use system valgrind.h, BZ 1141477
+
 * Thu Aug 28 2014 Jitka Plesnikova <jplesnik@redhat.com> - 2.10.9-5
 - Perl 5.20 rebuild
 
