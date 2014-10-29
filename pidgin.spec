@@ -118,8 +118,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.9
-Release:        6%{?dist}
+Version:        2.10.10
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -766,6 +766,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Oct 29 2014 Jan Synáček <jsynacek@redhat.com> - 2.10.10-1
+- Update to 2.10.10, includes security fixes for CVE-2014-3694,
+  CVE-2014-3695, CVE-2014-3696, CVE-2014-3697 and CVE-2014-3698
+
 * Mon Sep 15 2014 Jan Synacek <jsynacek@redhat.com> - 2.10.9-6
 - Use system valgrind.h, BZ 1141477
 
