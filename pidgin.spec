@@ -117,9 +117,14 @@
 %global split_evolution         0
 %endif
 
+# valgrind available only on selected arches
+%ifarch %{ix86} x86_64 ppc ppc64 ppc64le s390x armv7hl aarch64
+%global has_valgrind 1
+%endif
+
 Name:           pidgin
 Version:        2.10.10
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -281,7 +286,9 @@ BuildRequires:  doxygen
 %endif
 
 # Use distribution's valgrind.h
+%if 0%{?has_valgrind}
 BuildRequires:  valgrind-devel
+%endif
 
 # Need rpm 4.9+ to be able to do this filtering in arch packages with binaries
 %if 0%{?fedora} >= 15
@@ -486,8 +493,10 @@ for file in finch/plugins/pietray.py libpurple/purple-remote libpurple/plugins/d
 done
 
 # Bug #1141477
+%if 0%{?has_valgrind}
 rm -f libpurple/valgrind.h
 sed -ie 's/include "valgrind.h"/include <valgrind\/valgrind.h>/' libpurple/plugin.c
+%endif
 
 %build
 SWITCHES="--with-extraversion=%{release}"
@@ -766,6 +775,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Oct 31 2014 Dan Horák <dan[at]danny.cz> - 2.10.10-2
+- valgrind available only on selected arches
+
 * Wed Oct 29 2014 Jan Synáček <jsynacek@redhat.com> - 2.10.10-1
 - Update to 2.10.10, includes security fixes for CVE-2014-3694,
   CVE-2014-3695, CVE-2014-3696, CVE-2014-3697 and CVE-2014-3698
