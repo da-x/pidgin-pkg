@@ -1,0 +1,22 @@
+# HG changeset patch
+# User Elliott Sales de Andrade <qulogic@pidgin.im>
+# Date 1415770313 18000
+# Node ID f6a91e6c77a44e6303eb47085516edacaed24ece
+# Parent  6f5e35bda0c9f28537b4fc9c4075936acad92055
+msn: Update Application ID to re-enable buddy list.
+
+Thanks to TReKiE on IRC for the new ID.
+
+diff --git a/libpurple/protocols/msn/contact.h b/libpurple/protocols/msn/contact.h
+--- a/libpurple/protocols/msn/contact.h
++++ b/libpurple/protocols/msn/contact.h
+@@ -60,7 +60,8 @@
+ #include "session.h"
+ #include "soap.h"
+ 
+-#define MSN_APPLICATION_ID "CFE80F9D-180F-4399-82AB-413F33A1FA11"
++/* Thanks to TReKiE on the #pidgin channel for this new ID. */
++#define MSN_APPLICATION_ID "484AAC02-7F59-41B7-9601-772045DCC569"
+ 
+ #define MSN_CONTACT_SERVER	"local-bay.contacts.msn.com"
+ 
