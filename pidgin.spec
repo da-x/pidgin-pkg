@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.10.10
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -778,6 +778,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Nov 20 2014 Jan Synáček <jsynacek@redhat.com> - 2.10.10-4
+- Fix: Bump MSN ApplicationID again (#1165066)
+
 * Tue Nov 18 2014 Jan Synáček <jsynacek@redhat.com> - 2.10.10-3
 - Fix: Pidgin 2.10.10 can't connect to MSN (#1165066)
 
