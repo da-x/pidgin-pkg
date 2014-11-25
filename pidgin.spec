@@ -123,8 +123,8 @@
 %endif
 
 Name:           pidgin
-Version:        2.10.10
-Release:        4%{?dist}
+Version:        2.10.11
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -164,8 +164,6 @@ Patch1:         pidgin-2.10.9-valgrind.patch
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 #Patch101:       pidgin-2.10.7-link-libirc-to-libsasl2.patch
-# already included upstream
-Patch102:       pidgin-2.10.10-msn-connection-fix.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -478,7 +476,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch100 -p0 -R -b .ftcrash
 # https://developer.pidgin.im/ticket/15517
 #%patch101 -p1 -b .irc-sasl
-%patch102 -p1 -b .msn-connection
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -689,6 +686,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/pidgin.desktop
 %{_datadir}/pixmaps/pidgin/
 %{_datadir}/icons/hicolor/*/apps/pidgin.*
+%{_datadir}/appdata/pidgin.appdata.xml
 %{_sysconfdir}/gconf/schemas/purple.schemas
 
 %if %{split_evolution}
@@ -778,6 +776,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Nov 25 2014 Jan Synáček <jsynacek@redhat.com> - 2.10.11-1
+- Update to 2.10.11 (#1157503)
+
 * Thu Nov 20 2014 Jan Synáček <jsynacek@redhat.com> - 2.10.10-4
 - Fix: Bump MSN ApplicationID again (#1165066)
 
