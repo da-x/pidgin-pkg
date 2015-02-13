@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -221,7 +221,7 @@ BuildRequires:  libsilc-devel
 # DBus integration (FC5+)
 %if %{dbus_integration}
 BuildRequires:  dbus-devel >= 0.60
-BuildRequires:  python     >= 2.4
+BuildRequires:  python3
 %endif
 # GStreamer integration (FC5+)
 %if %{gstreamer_integration}
@@ -489,7 +489,7 @@ fi
 # Upstream refuses to use ./configure --python-path= in these scripts.
 for file in finch/plugins/pietray.py libpurple/purple-remote libpurple/plugins/dbus-buddyicons-example.py \
             libpurple/plugins/startup.py libpurple/purple-url-handler libpurple/purple-notifications-example; do
-    sed -i 's/env python/python/' $file
+    sed -i 's/env python/python3/' $file
 done
 
 # Bug #1141477
@@ -776,6 +776,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Feb 13 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-2
+- Switch to Python 3 (#1192115)
+
 * Tue Nov 25 2014 Jan Synáček <jsynacek@redhat.com> - 2.10.11-1
 - Update to 2.10.11 (#1157503)
 
