@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -776,6 +776,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Feb 21 2015 Till Maas <opensource@till.name> - 2.10.11-3
+- Rebuilt for Fedora 23 Change
+  https://fedoraproject.org/wiki/Changes/Harden_all_packages_with_position-independent_code
+
 * Fri Feb 13 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-2
 - Switch to Python 3 (#1192115)
 
