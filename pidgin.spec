@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -166,6 +166,8 @@ Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 #Patch101:       pidgin-2.10.7-link-libirc-to-libsasl2.patch
 # upstream ticket https://developer.pidgin.im/ticket/16593
 Patch102:         pidgin-2.10.11-do-not-disable-wall.patch
+# https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
+Patch103:       pidgin-2.10.11-add-dtmf-support.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -480,6 +482,8 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 #%patch101 -p1 -b .irc-sasl
 # https://developer.pidgin.im/ticket/16593
 %patch102 -p1
+# https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
+%patch103 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -774,6 +778,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Mar  9 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-5
+- Add In-call DTMF support (#1199771)
+
 * Tue Mar  3 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.10.11-4
 - Removed CFLAGS hacks
 - Fixed building with gcc-5 (by do-not-disable-wall patch)
