@@ -47,6 +47,7 @@
 %global use_system_libgadu      0
 %global build_only_libs         0
 %global gstreamer_version       0.10
+%global farstream_version       0.1
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -120,6 +121,7 @@
 # F2+ Build against GStreamer 1.x
 %if 0%{?fedora} >= 22
 %global gstreamer_version       1.0
+%global farstream_version       0.2
 %global gst1                    1
 %endif
 # valgrind available only on selected arches
@@ -275,7 +277,7 @@ BuildRequires:  perl(ExtUtils::Embed)
 # Voice and video support (F11+)
 %if %{vv_support}
 %if 0%{?fedora} >= 17
-BuildRequires:  farstream-devel
+BuildRequires:  pkgconfig(farstream-%{farstream_version})
 %else
 BuildRequires:  farsight2-devel
 %endif
@@ -787,6 +789,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Mar 12 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-7
+- Update BuildRequires for farstream
+
 * Thu Mar 12 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-6
 - Build against GStreamer 1.x (#962028)
 
