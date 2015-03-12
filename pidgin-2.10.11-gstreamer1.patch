@@ -1,25 +1,26 @@
-From 74884d9875ded373c5088f30390edd2ee3030e3a Mon Sep 17 00:00:00 2001
+From 7ecf837441edc3c5de774e26c64f1499d2059193 Mon Sep 17 00:00:00 2001
 From: David Woodhouse <David.Woodhouse@intel.com>
 Date: Wed, 11 Mar 2015 11:39:19 +0000
-Subject: [PATCH 01/10] Support GStreamer 1.x and resync with trunk
+Subject: [PATCH] Support GStreamer 1.x and resync with trunk
 
 ---
- configure.ac                  | 148 +++++++++++++++++------
+ configure.ac                  | 153 ++++++++++++++++++------
  finch/Makefile.am             |   1 +
  libpurple/Makefile.am         |   2 +
+ libpurple/data/purple.pc.in   |   1 +
  libpurple/example/Makefile.am |   1 +
  libpurple/media/backend-fs2.c | 272 ++++++++++++++++++++++++++++++------------
  libpurple/mediamanager.c      |  76 +++++++++---
  pidgin/Makefile.am            |   1 +
  pidgin/gtkmedia.c             |   5 +
  pidgin/plugins/vvconfig.c     |  24 +++-
- 9 files changed, 401 insertions(+), 129 deletions(-)
+ 10 files changed, 407 insertions(+), 129 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index e2b5290..30431b0 100644
+index e2b5290..e5be8bd 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -741,42 +741,110 @@ AM_GCONF_SOURCE_2
+@@ -741,42 +741,115 @@ AM_GCONF_SOURCE_2
  dnl #######################################################################
  dnl # Check for GStreamer
  dnl #######################################################################
@@ -114,6 +115,11 @@ index e2b5290..30431b0 100644
 +	AC_MSG_ERROR([WebKitGTK+ 2.0 cannot be mixed with GStreamer 1.0.
 +Please switch to WebKitGTK+ 3.0 or GStreamer 0.10.])
 +fi
++if test "x$with_gstreamer" == "x0.10" -o "x$with_gstreamer" == "x1.0"; then
++	AC_SUBST(GSTREAMER_VER, [$with_gstreamer])
++else
++	AC_SUBST(GSTREAMER_VER, "")
++fi
 +
 +dnl #######################################################################
 +dnl # Check for GStreamer Video
@@ -151,7 +157,7 @@ index e2b5290..30431b0 100644
  			AC_SUBST(GSTINTERFACES_CFLAGS)
  			AC_SUBST(GSTINTERFACES_LIBS)
  		], [
-@@ -791,32 +859,43 @@ dnl #######################################################################
+@@ -791,32 +864,43 @@ dnl #######################################################################
  dnl # Check for Farstream
  dnl #######################################################################
  AC_ARG_ENABLE(farstream,
@@ -207,7 +213,7 @@ index e2b5290..30431b0 100644
  		AC_DEFINE(USE_VV, 1, [Use voice and video])
  	else
  		enable_vv="no"
-@@ -829,7 +908,7 @@ Or use --disable-vv if you do not need voice/video support.
+@@ -829,7 +913,7 @@ Or use --disable-vv if you do not need voice/video support.
  		fi
  	fi
  fi
@@ -216,7 +222,7 @@ index e2b5290..30431b0 100644
  
  dnl #######################################################################
  dnl # Check for Internationalized Domain Name support
-@@ -2605,6 +2684,7 @@ echo Protocols to build dynamically : $DYNAMIC_PRPLS
+@@ -2605,6 +2689,7 @@ echo Protocols to build dynamically : $DYNAMIC_PRPLS
  echo Protocols to link statically.. : $STATIC_PRPLS
  echo
  echo Build with GStreamer support.. : $enable_gst
@@ -256,6 +262,18 @@ index e8b6d2d..2e99c86 100644
  	$(GSTINTERFACES_CFLAGS) \
  	$(IDN_CFLAGS) \
  	$(NETWORKMANAGER_CFLAGS)
+diff --git a/libpurple/data/purple.pc.in b/libpurple/data/purple.pc.in
+index c776f6f..4685080 100644
+--- a/libpurple/data/purple.pc.in
++++ b/libpurple/data/purple.pc.in
+@@ -5,6 +5,7 @@ includedir=@includedir@
+ datarootdir=@datarootdir@
+ datadir=@datadir@
+ sysconfdir=@sysconfdir@
++gstreamer=@GSTREAMER_VER@
+ 
+ plugindir=${libdir}/purple-@PURPLE_MAJOR_VERSION@
+ 
 diff --git a/libpurple/example/Makefile.am b/libpurple/example/Makefile.am
 index 5834209..f5e8bb9 100644
 --- a/libpurple/example/Makefile.am
