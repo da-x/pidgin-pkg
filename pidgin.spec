@@ -193,6 +193,7 @@ Requires:       libpurple%{?_isa} = %{version}-%{release}
 Requires(pre):  GConf2
 Requires(post): GConf2
 Requires(preun): GConf2
+BuildRequires: GConf2
 
 # Basic Library Requirements
 BuildRequires:  autoconf
