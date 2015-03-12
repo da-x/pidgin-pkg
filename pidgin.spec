@@ -46,6 +46,7 @@
 %global use_system_certs        0
 %global use_system_libgadu      0
 %global build_only_libs         0
+%global gstreamer_version       0.10
 
 # RHEL4: Use ALSA aplay to output sounds because it lacks gstreamer
 %if 0%{?fedora} < 5
@@ -116,7 +117,11 @@
 %global disable_evolution       1
 %global split_evolution         0
 %endif
-
+# F2+ Build against GStreamer 1.x
+%if 0%{?fedora} >= 22
+%global gstreamer_version       1.0
+%global gst1                    1
+%endif
 # valgrind available only on selected arches
 %ifarch %{ix86} x86_64 ppc ppc64 ppc64le s390x armv7hl aarch64
 %global has_valgrind 1
@@ -124,7 +129,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -168,6 +173,8 @@ Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 Patch102:         pidgin-2.10.11-do-not-disable-wall.patch
 # https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
 Patch103:       pidgin-2.10.11-add-dtmf-support.patch
+# https://pidgin.im/pipermail/devel/2015-March/023645.html
+Patch104:       pidgin-2.10.11-gstreamer1.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -229,7 +236,7 @@ BuildRequires:  python3
 %endif
 # GStreamer integration (FC5+)
 %if %{gstreamer_integration}
-BuildRequires:  gstreamer-devel >= 0.10
+BuildRequires:  pkgconfig(gstreamer-%{gstreamer_version})
 %endif
 # NetworkManager integration (FC5+)
 %if %{nm_integration}
@@ -272,9 +279,9 @@ BuildRequires:  farstream-devel
 %else
 BuildRequires:  farsight2-devel
 %endif
-Requires:       gstreamer-plugins-good
+Requires:       gstreamer%{?gst1}-plugins-good
 %if 0%{?fedora} >= 12
-Requires:       gstreamer-plugins-bad-free
+Requires:       gstreamer%{?gst1}-plugins-bad-free
 %endif
 %endif
 # libidn punycode domain support (F11+)
@@ -484,6 +491,8 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch102 -p1
 # https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
 %patch103 -p1
+# https://pidgin.im/pipermail/devel/2015-March/023645.html
+%patch104 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -526,9 +535,9 @@ SWITCHES="--with-extraversion=%{release}"
     SWITCHES="$SWITCHES --enable-nm"
 %endif
 %if %{gstreamer_integration}
-    SWITCHES="$SWITCHES --enable-gstreamer"
+    SWITCHES="$SWITCHES --with-gstreamer=%{gstreamer_version}"
 %else
-    SWITCHES="$SWITCHES --disable-gstreamer"
+    SWITCHES="$SWITCHES --without-gstreamer"
 %endif
 %if ! %{bonjour_support}
     SWITCHES="$SWITCHES --disable-avahi"
@@ -778,6 +787,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Mar 12 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-6
+- Build against GStreamer 1.x (#962028)
+
 * Mon Mar  9 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-5
 - Add In-call DTMF support (#1199771)
 
