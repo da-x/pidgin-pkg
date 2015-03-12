@@ -792,6 +792,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Mar 12 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-7
 - Update BuildRequires for farstream
+- Add GConf2 to BuildRequires
 
 * Thu Mar 12 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-6
 - Build against GStreamer 1.x (#962028)
