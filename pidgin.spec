@@ -131,7 +131,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        8%{?dist}
+Release:        9%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -175,8 +175,12 @@ Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 Patch102:         pidgin-2.10.11-do-not-disable-wall.patch
 # https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
 Patch103:       pidgin-2.10.11-add-dtmf-support.patch
-# https://pidgin.im/pipermail/devel/2015-March/023645.html
+# http://hg.pidgin.im/pidgin/main/rev/2415067473ba
 Patch104:       pidgin-2.10.11-gstreamer1.patch
+# http://hg.pidgin.im/pidgin/main/rev/fcecf7f838e2
+Patch105:       pidgin-2.10.11-rtp-tcp.patch
+# http://hg.pidgin.im/pidgin/main/rev/a0906e7a6bae
+Patch106:       pidgin-2.10.11-rtp-encryption.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -494,8 +498,12 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch102 -p1
 # https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
 %patch103 -p1
-# https://pidgin.im/pipermail/devel/2015-March/023645.html
+# http://hg.pidgin.im/pidgin/main/rev/2415067473ba
 %patch104 -p1
+# http://hg.pidgin.im/pidgin/main/rev/fcecf7f838e2
+%patch105 -p1
+# http://hg.pidgin.im/pidgin/main/rev/a0906e7a6bae
+%patch106 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -790,6 +798,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Mar 13 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-9
+- Add TCP and media encryption support
+
 * Thu Mar 12 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-8
 - Update to final upstream version of GStreamer 1.0 patch
 
