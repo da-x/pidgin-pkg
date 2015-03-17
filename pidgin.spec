@@ -131,7 +131,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        9%{?dist}
+Release:        10%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -173,14 +173,36 @@ Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 #Patch101:       pidgin-2.10.7-link-libirc-to-libsasl2.patch
 # upstream ticket https://developer.pidgin.im/ticket/16593
 Patch102:         pidgin-2.10.11-do-not-disable-wall.patch
-# https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
-Patch103:       pidgin-2.10.11-add-dtmf-support.patch
+
+# http://hg.pidgin.im/pidgin/main/rev/2b41ba1fde8a
+Patch103:       pidgin-2.10.11-send-video-enum.patch
+# http://hg.pidgin.im/pidgin/main/rev/b52be4fef1de
+Patch104:       pidgin-2.10.11-gst-references.patch
+# http://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
+Patch105:       pidgin-2.10.11-add-dtmf-support.patch
 # http://hg.pidgin.im/pidgin/main/rev/2415067473ba
-Patch104:       pidgin-2.10.11-gstreamer1.patch
+Patch106:       pidgin-2.10.11-gstreamer1.patch
 # http://hg.pidgin.im/pidgin/main/rev/fcecf7f838e2
-Patch105:       pidgin-2.10.11-rtp-tcp.patch
+Patch107:       pidgin-2.10.11-rtp-tcp.patch
 # http://hg.pidgin.im/pidgin/main/rev/a0906e7a6bae
-Patch106:       pidgin-2.10.11-rtp-encryption.patch
+Patch108:       pidgin-2.10.11-rtp-encryption.patch
+# http://hg.pidgin.im/pidgin/main/rev/5f5abd63c305
+Patch109:      pidgin-2.10.11-rtcp-mux.patch
+# http://hg.pidgin.im/pidgin/main/rev/88b09a22b7c4
+Patch110:      pidgin-2.10.11-signal-pair-established.patch
+# http://hg.pidgin.im/pidgin/main/rev/a52798da5cfa
+Patch111:      pidgin-2.10.11-farstream027.patch
+# http://hg.pidgin.im/pidgin/main/rev/a071658c3725
+Patch112:      pidgin-2.10.11-xfer-rw-file.patch
+# http://hg.pidgin.im/pidgin/main/rev/8e4fa54f1662
+Patch113:      pidgin-2.10.11-unlink-source.patch
+# http://hg.pidgin.im/pidgin/main/rev/7767aaeade64
+Patch114:      pidgin-2.10.11-init-media-optional.patch
+# http://hg.pidgin.im/pidgin/main/rev/d729a9b21265
+Patch115:      pidgin-2.10.11-private-media.patch
+# http://hg.pidgin.im/pidgin/main/rev/4fe1034f3dce
+Patch116:      pidgin-2.10.11-application-media.patch
+
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -496,14 +518,34 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 #%patch101 -p1 -b .irc-sasl
 # https://developer.pidgin.im/ticket/16593
 %patch102 -p1
-# https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
+# http://hg.pidgin.im/pidgin/main/rev/2b41ba1fde8a
 %patch103 -p1
-# http://hg.pidgin.im/pidgin/main/rev/2415067473ba
+# http://hg.pidgin.im/pidgin/main/rev/b52be4fef1de
 %patch104 -p1
-# http://hg.pidgin.im/pidgin/main/rev/fcecf7f838e2
+# https://hg.pidgin.im/pidgin/main/rev/6b4576edf2a6
 %patch105 -p1
-# http://hg.pidgin.im/pidgin/main/rev/a0906e7a6bae
+# http://hg.pidgin.im/pidgin/main/rev/2415067473ba
 %patch106 -p1
+# http://hg.pidgin.im/pidgin/main/rev/fcecf7f838e2
+%patch107 -p1
+# http://hg.pidgin.im/pidgin/main/rev/a0906e7a6bae
+%patch108 -p1
+# http://hg.pidgin.im/pidgin/main/rev/5f5abd63c305
+%patch109 -p1
+# http://hg.pidgin.im/pidgin/main/rev/88b09a22b7c4
+%patch110 -p1
+# http://hg.pidgin.im/pidgin/main/rev/a52798da5cfa
+%patch111 -p1
+# http://hg.pidgin.im/pidgin/main/rev/a071658c3725
+%patch112 -p1
+# http://hg.pidgin.im/pidgin/main/rev/8e4fa54f1662
+%patch113 -p1
+# http://hg.pidgin.im/pidgin/main/rev/7767aaeade64
+%patch114 -p1
+# http://hg.pidgin.im/pidgin/main/rev/d729a9b21265
+%patch115 -p1
+# http://hg.pidgin.im/pidgin/main/rev/4fe1034f3dce
+%patch116 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -798,6 +840,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue Mar 17 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-10
+- Import all Lync-collab patches now that they are upstream.
+
 * Fri Mar 13 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-9
 - Add TCP and media encryption support
 
