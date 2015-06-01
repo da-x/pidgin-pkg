@@ -131,7 +131,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        10%{?dist}
+Release:        11%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -167,6 +167,7 @@ Source1:        purple-fedora-prefs.xml
 ## Patches 0-99: Fedora specific or upstream wont accept
 Patch0:         pidgin-NOT-UPSTREAM-2.5.2-rhel4-sound-migration.patch
 Patch1:         pidgin-2.10.9-valgrind.patch
+Patch2:         pidgin-2.10.11-purple-remote-python3.patch
 
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
@@ -509,6 +510,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch0 -p1 -b .aplay
 %endif
 %patch1 -p1
+%patch2 -p1
 
 ## Patches 100+: To be Included in Future Upstream
 
@@ -840,6 +842,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Jun  1 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-11
+- Fix purple-remote when running in python3 (#1226468)
+
 * Tue Mar 17 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-10
 - Import all Lync-collab patches now that they are upstream.
 
