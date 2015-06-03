@@ -131,7 +131,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        11%{?dist}
+Release:        12%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -842,6 +842,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Jun  3 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-12
+- Refix purple-remote when running in python3 (#1226468)
+
 * Mon Jun  1 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-11
 - Fix purple-remote when running in python3 (#1226468)
 
