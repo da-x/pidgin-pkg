@@ -416,6 +416,9 @@ Requires:   ca-certificates
 %if 0%{?rhel} == 5
 Obsoletes:  pidgin-docs = 2.5.2
 %endif
+%if %{dbus_integration}
+Requires:   python3-dbus
+%endif
 
 %description -n libpurple
 libpurple contains the core IM support for IM clients such as Pidgin
@@ -844,6 +847,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Jun  3 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-12
 - Refix purple-remote when running in python3 (#1226468)
+- Add python3-dbus to Requires (needed by purple-remote from libpurple)
 
 * Mon Jun  1 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-11
 - Fix purple-remote when running in python3 (#1226468)
