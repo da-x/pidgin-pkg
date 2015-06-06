@@ -131,7 +131,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        12%{?dist}
+Release:        13%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -845,6 +845,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jun 06 2015 Jitka Plesnikova <jplesnik@redhat.com> - 2.10.11-13
+- Perl 5.22 rebuild
+
 * Wed Jun  3 2015 Jan Synáček <jsynacek@redhat.com> - 2.10.11-12
 - Refix purple-remote when running in python3 (#1226468)
 - Add python3-dbus to Requires (needed by purple-remote from libpurple)
