@@ -131,7 +131,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        13%{?dist}
+Release:        14%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -845,6 +845,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.10.11-14
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Sat Jun 06 2015 Jitka Plesnikova <jplesnik@redhat.com> - 2.10.11-13
 - Perl 5.22 rebuild
 
