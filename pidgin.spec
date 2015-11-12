@@ -131,7 +131,7 @@
 
 Name:           pidgin
 Version:        2.10.11
-Release:        14%{?dist}
+Release:        15%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - silc & novell prpls
@@ -203,7 +203,10 @@ Patch114:      pidgin-2.10.11-init-media-optional.patch
 Patch115:      pidgin-2.10.11-private-media.patch
 # http://hg.pidgin.im/pidgin/main/rev/4fe1034f3dce
 Patch116:      pidgin-2.10.11-application-media.patch
-
+# http://hg.pidgin.im/pidgin/main/rev/79fe6b95f105
+Patch117:      pidgin-2.10.11-fix-appsrc-race.patch
+# http://hg.pidgin.im/pidgin/main/rev/cbc4db14444c
+Patch118:      pidgin-2.10.11-no-drain-appsink.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -551,6 +554,10 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch115 -p1
 # http://hg.pidgin.im/pidgin/main/rev/4fe1034f3dce
 %patch116 -p1
+# http://hg.pidgin.im/pidgin/main/rev/79fe6b95f105
+%patch117 -p1
+# http://hg.pidgin.im/pidgin/main/rev/cbc4db14444c
+%patch118 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -845,6 +852,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Nov 12 2015 David Woodhouse <dwmw2@infradead.org> - 2.10.11-15
+- Add two upstream appdata fixes
+
 * Thu Jun 18 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.10.11-14
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
