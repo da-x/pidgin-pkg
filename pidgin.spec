@@ -40,7 +40,6 @@
 %global nss_md2_disabled        0
 %global vv_support              0
 %global libidn_support          0
-%global disable_silc            0
 %global disable_evolution       0
 %global split_evolution         0
 %global use_system_certs        0
@@ -94,12 +93,6 @@
 %if 0%{?fedora} >= 12
 %global krb4_removed            1
 %endif
-# EL6: Disable SILC protocol
-# (get rid of extra crypto lib for perpetually broken protocol that nobody uses)
-# (the above comment is not necessarily the view held by all maintaners of this package)
-%if 0%{?rhel} >= 6
-%global disable_silc            1
-%endif
 # F13+ Split Evolution plugin to separate package (#581144)
 %if 0%{?fedora} >= 13
 %global split_evolution         1
@@ -131,10 +124,10 @@
 
 Name:           pidgin
 Version:        2.10.12
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
-# GPLv2 - silc & novell prpls
+# GPLv2 - novell prpls
 # MIT - Zephyr prpl
 Group:          Applications/Internet
 URL:            http://pidgin.im/
@@ -223,10 +216,6 @@ BuildRequires:  libxml2-devel
 %if ! %{krb4_removed}
 # krb5 needed for Zephyr (FC1+)
 BuildRequires:  krb5-devel
-%endif
-# SILC integration (FC3+)
-%if ! %{disable_silc}
-BuildRequires:  libsilc-devel
 %endif
 # DBus integration (FC5+)
 %if %{dbus_integration}
@@ -784,6 +773,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon May  9 2016 Jan Synáček <jsynacek@redhat.com> - 2.10.12-3
+- Disable SILC support
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.10.12-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
