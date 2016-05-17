@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.10.12
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -773,6 +773,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Tue May 17 2016 Jitka Plesnikova <jplesnik@redhat.com> - 2.10.12-4
+- Perl 5.24 rebuild
+
 * Mon May  9 2016 Jan Synáček <jsynacek@redhat.com> - 2.10.12-3
 - Disable SILC support
 
