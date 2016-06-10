@@ -1,0 +1,105 @@
+# HG changeset patch
+# User Jakub Adam <jakub.adam@ktknet.cz>
+# Date 1462264553 -7200
+# Branch release-2.x.y
+# Node ID 3ac4724fc358b48d4f06df992663f455a3f875eb
+# Parent  ae26e3eace575b00067e84c3c4936e8df5ea00b1
+mediamanager: fix output window destruction
+
+The code removing GStreamer elements hasn't been updated for a while and
+no longer exactly matches the structure of the video pipeline.
+
+This update makes the function more generic and depending less on
+the assumptions about which and how many elements are connected, so that
+it won't need further modifications each time something is added or
+removed form the video output branch of the pipeline.
+
+It also fixes failed assert in gst_element_release_request_pad()
+sometimes appearing in the logs, which is caused by the fact that 'peer'
+pad belongs to a different element than the code expected.
+
+Backport of Pidgin 3 commit 4f5cdd4bf209.
+
+diff --git a/libpurple/mediamanager.c b/libpurple/mediamanager.c
+--- a/libpurple/mediamanager.c
++++ b/libpurple/mediamanager.c
+@@ -1563,32 +1563,53 @@
+ 		return FALSE;
+ 
+ 	if (output_window->sink != NULL) {
+-		GstPad *pad = gst_element_get_static_pad(
+-				output_window->sink, "sink");
+-		GstPad *peer = gst_pad_get_peer(pad);
+-		GstElement *colorspace = GST_ELEMENT_PARENT(peer), *queue;
+-		gst_object_unref(pad);
+-		gst_object_unref(peer);
+-		pad = gst_element_get_static_pad(colorspace, "sink");
+-		peer = gst_pad_get_peer(pad);
+-		queue = GST_ELEMENT_PARENT(peer);
+-		gst_object_unref(pad);
+-		gst_object_unref(peer);
+-		pad = gst_element_get_static_pad(queue, "sink");
+-		peer = gst_pad_get_peer(pad);
+-		gst_object_unref(pad);
+-		if (peer != NULL)
+-			gst_element_release_request_pad(GST_ELEMENT_PARENT(peer), peer);
+-		gst_element_set_locked_state(queue, TRUE);
+-		gst_element_set_state(queue, GST_STATE_NULL);
+-		gst_bin_remove(GST_BIN(GST_ELEMENT_PARENT(queue)), queue);
+-		gst_element_set_locked_state(colorspace, TRUE);
+-		gst_element_set_state(colorspace, GST_STATE_NULL);
+-		gst_bin_remove(GST_BIN(GST_ELEMENT_PARENT(colorspace)), colorspace);
+-		gst_element_set_locked_state(output_window->sink, TRUE);
+-		gst_element_set_state(output_window->sink, GST_STATE_NULL);
+-		gst_bin_remove(GST_BIN(GST_ELEMENT_PARENT(output_window->sink)),
+-				output_window->sink);
++		GstElement *element = output_window->sink;
++		GstPad *teepad = NULL;
++		GSList *to_remove = NULL;
++
++		/* Find the tee element this output is connected to. */
++		while (!teepad) {
++			GstPad *pad;
++			GstPad *peer;
++			GstElementFactory *factory;
++			const gchar *factory_name;
++
++			to_remove = g_slist_append(to_remove, element);
++
++			pad = gst_element_get_static_pad(element, "sink");
++			peer = gst_pad_get_peer(pad);
++			if (!peer) {
++				/* Output is disconnected from the pipeline. */
++				gst_object_unref(pad);
++				break;
++			}
++
++			factory = gst_element_get_factory(GST_PAD_PARENT(peer));
++			factory_name = gst_plugin_feature_get_name(factory);
++			if (purple_strequal(factory_name, "tee")) {
++				teepad = peer;
++			}
++
++			element = GST_PAD_PARENT(peer);
++
++			gst_object_unref(pad);
++			gst_object_unref(peer);
++		}
++
++		if (teepad) {
++			gst_element_release_request_pad(GST_PAD_PARENT(teepad),
++					teepad);
++		}
++
++		while (to_remove) {
++			GstElement *element = to_remove->data;
++
++			gst_element_set_locked_state(element, TRUE);
++			gst_element_set_state(element, GST_STATE_NULL);
++			gst_bin_remove(GST_BIN(GST_ELEMENT_PARENT(element)),
++					element);
++			to_remove = g_slist_delete_link(to_remove, to_remove);
++		}
+ 	}
+ 
+ 	g_free(output_window->session_id);

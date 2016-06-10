@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.10.12
-Release:        4%{?dist}
+Release:        5%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -166,6 +166,18 @@ Patch2:         pidgin-2.10.11-purple-remote-python3.patch
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 # upstream ticket https://developer.pidgin.im/ticket/16593
 Patch102:         pidgin-2.10.11-do-not-disable-wall.patch
+
+# Upstream media fixes... from 2.x.y already
+Patch200:         0001-media-don-t-keep-last-sample-reference-on-sinks.patch
+Patch201:         0001-media-switch-source-bin-fakesink-to-PAUSED-synchrono.patch
+# ... from https://bitbucket.org/pidgin/main/pull-requests/52
+Patch202:         pidgin-ae26e3eace575b00067e84c3c4936e8df5ea00b1.diff
+Patch203:         pidgin-3ac4724fc358b48d4f06df992663f455a3f875eb.diff
+# ... from https://bitbucket.org/pidgin/main/pull-requests/55
+Patch204:         pidgin-1e3a33f69fabe9fa78da7612b1b75a65f7f908e4.diff
+# And pending in https://github.com/tieto/pidgin
+Patch205:         0001-mediamanager-fix-invalid-memory-read.patch
+Patch206:         0001-mediamanager-fix-invalid-access-to-freed-PurpleMedia.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -479,6 +491,14 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch100 -p0 -R -b .ftcrash
 # https://developer.pidgin.im/ticket/16593
 %patch102 -p1
+# Media fixes
+%patch200 -p1
+%patch201 -p1
+%patch202 -p1
+%patch203 -p1
+%patch204 -p1
+%patch205 -p1
+%patch206 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -773,6 +793,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Fri Jun 10 2016 David Woodhouse <dwmw2@infradead.org> - 2.10.12-5
+- Include media fixes from upstream (and soon to be upstream)
+
 * Tue May 17 2016 Jitka Plesnikova <jplesnik@redhat.com> - 2.10.12-4
 - Perl 5.24 rebuild
 

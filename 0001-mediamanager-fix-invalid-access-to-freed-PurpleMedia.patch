@@ -1,0 +1,76 @@
+From 5056e5362697add8e833f435fe0001cdf54306ba Mon Sep 17 00:00:00 2001
+From: Jakub Adam <jakub.adam@ktknet.cz>
+Date: Fri, 10 Jun 2016 18:22:28 +0200
+Subject: [PATCH] mediamanager: fix invalid access to freed
+ PurpleMediaAppDataInfo
+
+appsrc_destroyed() and appsink_destroyed() may have read from/written to
+appdata info after it had been freed. Reported by Valgrind.
+---
+ libpurple/mediamanager.c | 33 +++++++++++++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
+
+diff --git a/libpurple/mediamanager.c b/libpurple/mediamanager.c
+index 46d2020..5cc6ba3 100644
+--- a/libpurple/mediamanager.c
++++ b/libpurple/mediamanager.c
+@@ -564,9 +564,24 @@ purple_media_manager_get_private_media_by_account(PurpleMediaManager *manager,
+ static void
+ free_appdata_info_locked (PurpleMediaAppDataInfo *info)
+ {
++	GstAppSrcCallbacks null_src_cb = { NULL, NULL, NULL, { NULL } };
++	GstAppSinkCallbacks null_sink_cb = { NULL, NULL, NULL , { NULL } };
++
+ 	if (info->notify)
+ 		info->notify (info->user_data);
+ 
++	info->media = NULL;
++	if (info->appsrc) {
++		/* Will call appsrc_destroyed. */
++		gst_app_src_set_callbacks (info->appsrc, &null_src_cb,
++				NULL, NULL);
++	}
++	if (info->appsink) {
++		/* Will call appsink_destroyed. */
++		gst_app_sink_set_callbacks (info->appsink, &null_sink_cb,
++				NULL, NULL);
++	}
++
+ 	/* Make sure no other thread is using the structure */
+ 	g_free (info->session_id);
+ 	g_free (info->participant);
+@@ -861,7 +876,14 @@ appsrc_seek_data (GstAppSrc *appsrc, guint64 offset, gpointer user_data)
+ static void
+ appsrc_destroyed (PurpleMediaAppDataInfo *info)
+ {
+-	PurpleMediaManager *manager = purple_media_manager_get ();
++	PurpleMediaManager *manager;
++
++	if (!info->media) {
++		/* PurpleMediaAppDataInfo is being freed. Return at once. */
++		return;
++	}
++
++	manager = purple_media_manager_get ();
+ 
+ 	g_mutex_lock (&manager->priv->appdata_mutex);
+ 	info->appsrc = NULL;
+@@ -1019,7 +1041,14 @@ appsink_new_sample (GstAppSink *appsink, gpointer user_data)
+ static void
+ appsink_destroyed (PurpleMediaAppDataInfo *info)
+ {
+-	PurpleMediaManager *manager = purple_media_manager_get ();
++	PurpleMediaManager *manager;
++
++	if (!info->media) {
++		/* PurpleMediaAppDataInfo is being freed. Return at once. */
++		return;
++	}
++
++	manager = purple_media_manager_get ();
+ 
+ 	g_mutex_lock (&manager->priv->appdata_mutex);
+ 	info->appsink = NULL;
+-- 
+2.7.4
+

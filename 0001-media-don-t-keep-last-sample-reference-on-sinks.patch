@@ -1,0 +1,127 @@
+From 662176e841c4c7413c980913950b5343b6bd88bd Mon Sep 17 00:00:00 2001
+From: Jakub Adam <jakub.adam@ktknet.cz>
+Date: Wed, 27 Apr 2016 09:19:58 +0200
+Subject: [PATCH] media: don't keep last sample reference on sinks
+
+Holding a reference to a GstBuffer somewhere in a pipeline for possibly
+indefinite period may cause trouble when the buffer has been allocated
+by a 3rd party library or when it points directly into memory region of
+a hardware device.
+
+A specific example is V4L2 source element, which won't allow webcam
+image resolution be reconfigured unless all previously allocated buffers
+have been freed.
+
+Backport of Pidgin 3 commit 13807c514810.
+---
+ libpurple/mediamanager.c  |  5 ++++-
+ pidgin/gtkmedia.c         | 23 +++++++++++++++++++++++
+ pidgin/plugins/vvconfig.c | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 55 insertions(+), 1 deletion(-)
+
+diff --git a/libpurple/mediamanager.c b/libpurple/mediamanager.c
+index 0013f31..a5702b5 100644
+--- a/libpurple/mediamanager.c
++++ b/libpurple/mediamanager.c
+@@ -1171,7 +1171,10 @@ purple_media_manager_get_element(PurpleMediaManager *manager,
+ 			 * giving a not-linked error upon destruction
+ 			 */
+ 			fakesink = gst_element_factory_make("fakesink", NULL);
+-			g_object_set(fakesink, "sync", FALSE, NULL);
++			g_object_set(fakesink,
++				"sync", FALSE,
++				"enable-last-sample", FALSE,
++				NULL);
+ 			gst_bin_add(GST_BIN(bin), fakesink);
+ 			gst_element_link(tee, fakesink);
+ 
+diff --git a/pidgin/gtkmedia.c b/pidgin/gtkmedia.c
+index 58f8be0..2c1fdea 100644
+--- a/pidgin/gtkmedia.c
++++ b/pidgin/gtkmedia.c
+@@ -1208,6 +1208,26 @@ pidgin_media_new_cb(PurpleMediaManager *manager, PurpleMedia *media,
+ 	return TRUE;
+ }
+ 
++static void
++videosink_disable_last_sample(GstElement *sink)
++{
++	GObjectClass *klass = G_OBJECT_GET_CLASS(sink);
++
++	if (g_object_class_find_property(klass, "enable-last-sample")) {
++		g_object_set(sink, "enable-last-sample", FALSE, NULL);
++	}
++}
++
++static void
++autovideosink_child_added_cb (GstChildProxy *child_proxy, GObject *object,
++#if GST_CHECK_VERSION(1,0,0)
++		gchar *name,
++#endif
++		gpointer user_data)
++{
++	videosink_disable_last_sample(GST_ELEMENT(object));
++}
++
+ static GstElement *
+ create_default_video_src(PurpleMedia *media,
+ 		const gchar *session_id, const gchar *participant)
+@@ -1260,6 +1280,9 @@ create_default_video_sink(PurpleMedia *media,
+ 	if (sink == NULL)
+ 		purple_debug_error("gtkmedia", "Unable to find a suitable "
+ 				"element for the default video sink.\n");
++	if (sink != NULL)
++		g_signal_connect(sink, "child-added",
++				G_CALLBACK(autovideosink_child_added_cb), NULL);
+ 	return sink;
+ }
+ 
+diff --git a/pidgin/plugins/vvconfig.c b/pidgin/plugins/vvconfig.c
+index 968355f..55dc789 100644
+--- a/pidgin/plugins/vvconfig.c
++++ b/pidgin/plugins/vvconfig.c
+@@ -371,6 +371,26 @@ create_video_src(PurpleMedia *media,
+ 	return ret;
+ }
+ 
++static void
++videosink_disable_last_sample(GstElement *sink)
++{
++	GObjectClass *klass = G_OBJECT_GET_CLASS(sink);
++
++	if (g_object_class_find_property(klass, "enable-last-sample")) {
++		g_object_set(sink, "enable-last-sample", FALSE, NULL);
++	}
++}
++
++static void
++autovideosink_child_added_cb(GstChildProxy *child_proxy, GObject *object,
++#if GST_CHECK_VERSION(1,0,0)
++		gchar *name,
++#endif
++		gpointer user_data)
++{
++	videosink_disable_last_sample(GST_ELEMENT(object));
++}
++
+ static GstElement *
+ create_video_sink(PurpleMedia *media,
+ 		const gchar *session_id, const gchar *participant)
+@@ -388,6 +408,14 @@ create_video_sink(PurpleMedia *media,
+ 	ret = gst_element_factory_make(plugin, NULL);
+ 	if (device[0] != '\0')
+ 		g_object_set(G_OBJECT(ret), "device", device, NULL);
++
++	if (g_strcmp0(plugin, "autovideosink") == 0) {
++		g_signal_connect(ret, "child-added",
++			G_CALLBACK(autovideosink_child_added_cb), NULL);
++	} else {
++		videosink_disable_last_sample(ret);
++	}
++
+ 	return ret;
+ }
+ 
+-- 
+2.7.4
+

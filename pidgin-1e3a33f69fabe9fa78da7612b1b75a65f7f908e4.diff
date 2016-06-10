@@ -1,0 +1,43 @@
+# HG changeset patch
+# User Jakub Adam <jakub.adam@ktknet.cz>
+# Date 1463403178 -7200
+# Node ID 1e3a33f69fabe9fa78da7612b1b75a65f7f908e4
+# Parent  7d9ac7dbfdac155137d3037ad1d54ff209cbc25a
+media: don't let Farstream use VA-API elements
+
+Video Acceleration API isn't well supported in Farstream and produces
+errors during video calls, however a high Rank of vaapi GStreamer
+elements causes them to be picked as preferred video encoders and
+decoders when available in the system.
+
+For now, set the rank of all elements from vaapi plugin to NONE, so that
+they are ignored.
+
+diff --git a/libpurple/media/backend-fs2.c b/libpurple/media/backend-fs2.c
+--- a/libpurple/media/backend-fs2.c
++++ b/libpurple/media/backend-fs2.c
+@@ -489,6 +489,8 @@
+ purple_media_backend_fs2_class_init(PurpleMediaBackendFs2Class *klass)
+ {
+ 	GObjectClass *gobject_class = (GObjectClass*)klass;
++	GList *features;
++	GList *it;
+ 
+ 	gobject_class->dispose = purple_media_backend_fs2_dispose;
+ 	gobject_class->finalize = purple_media_backend_fs2_finalize;
+@@ -500,6 +502,15 @@
+ 	g_object_class_override_property(gobject_class, PROP_MEDIA, "media");
+ 
+ 	g_type_class_add_private(klass, sizeof(PurpleMediaBackendFs2Private));
++
++	/* VA-API elements aren't well supported in Farstream. Ignore them. */
++	features = gst_registry_get_feature_list_by_plugin(gst_registry_get(),
++			"vaapi");
++	for (it = features; it; it = it->next) {
++		gst_plugin_feature_set_rank((GstPluginFeature *)it->data,
++				GST_RANK_NONE);
++	}
++	gst_plugin_feature_list_free(features);
+ }
+ 
+ static void

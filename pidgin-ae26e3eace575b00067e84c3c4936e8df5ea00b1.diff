@@ -1,0 +1,59 @@
+# HG changeset patch
+# User Jakub Adam <jakub.adam@ktknet.cz>
+# Date 1461224421 -7200
+# Branch release-2.x.y
+# Node ID ae26e3eace575b00067e84c3c4936e8df5ea00b1
+# Parent  5e5e84e8a79890e580158ac2eae073d7394e93b7
+media: add videoscale before video sink
+
+Fixes issue with ximagesink displaying only a corner cut-out of larger
+webcam video.
+
+In addition, a patch for ximagesink is needed, ETA GStreamer 1.9.0:
+
+https://cgit.freedesktop.org/gstreamer/gst-plugins-base/commit/?id=59d7f9c62ee95dfbb5b450476f73a717e03b7b8c
+
+Backport of Pidgin 3 commit dfadb1bef243.
+
+diff --git a/libpurple/mediamanager.c b/libpurple/mediamanager.c
+--- a/libpurple/mediamanager.c
++++ b/libpurple/mediamanager.c
+@@ -1449,7 +1449,7 @@
+ 				(participant == ow->participant)) &&
+ 				!strcmp(session_id, ow->session_id)) {
+ 			GstBus *bus;
+-			GstElement *queue, *convert;
++			GstElement *queue, *convert, *scale;
+ 			GstElement *tee = purple_media_get_tee(media,
+ 					session_id, participant);
+ 
+@@ -1462,6 +1462,7 @@
+ #else
+ 			convert = gst_element_factory_make("ffmpegcolorspace", NULL);
+ #endif
++			scale = gst_element_factory_make("videoscale", NULL);
+ 			ow->sink = purple_media_manager_get_element(
+ 					manager, PURPLE_MEDIA_RECV_VIDEO,
+ 					ow->media, ow->session_id,
+@@ -1482,7 +1483,7 @@
+ 			}
+ 
+ 			gst_bin_add_many(GST_BIN(GST_ELEMENT_PARENT(tee)),
+-					queue, convert, ow->sink, NULL);
++					queue, convert, scale, ow->sink, NULL);
+ 
+ 			bus = gst_pipeline_get_bus(GST_PIPELINE(
+ 					manager->priv->pipeline));
+@@ -1491,9 +1492,11 @@
+ 			gst_object_unref(bus);
+ 
+ 			gst_element_set_state(ow->sink, GST_STATE_PLAYING);
++			gst_element_set_state(scale, GST_STATE_PLAYING);
+ 			gst_element_set_state(convert, GST_STATE_PLAYING);
+ 			gst_element_set_state(queue, GST_STATE_PLAYING);
+-			gst_element_link(convert, ow->sink);
++			gst_element_link(scale, ow->sink);
++			gst_element_link(convert, scale);
+ 			gst_element_link(queue, convert);
+ 			gst_element_link(tee, queue);
+ 		}
