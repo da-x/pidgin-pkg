@@ -255,6 +255,7 @@ BuildRequires:  meanwhile-devel
 # Perl devel separated out (F7+)
 %if %{perl_devel_separated}
 BuildRequires:  perl-devel
+BuildRequires:  perl-generators
 %endif
 # Perl embed separated out (F9+)
 %if %{perl_embed_separated}
