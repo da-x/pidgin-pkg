@@ -6,21 +6,11 @@
 %{?!fedora:%global fedora 0}
 
 # Map RHEL to Fedora version
-%if 0%{?rhel} == 4
-%global fedora 3
-%global dist .el4
-%endif
-%if 0%{?rhel} == 5
-%global fedora 6
-%global dist .el5
-%endif
 %if 0%{?rhel} == 6
 %global fedora 12
-%global dist .el6
 %endif
 %if 0%{?rhel} == 7
 %global fedora 19
-%global dist .el7
 %endif
 
 # Define variables to use in conditionals
@@ -101,8 +91,11 @@
 %if 0%{?fedora} >= 16
 %global use_system_libgadu      1
 %endif
+# RHEL does not have libgadu
+%if 0%{?rhel}
+%global use_system_libgadu      0
+%endif
 %if 0%{?rhel} >= 7
-%global build_only_libs         1
 %global api_docs                0
 %endif
 # F18+ Disable evolution integration (temporarily?)
