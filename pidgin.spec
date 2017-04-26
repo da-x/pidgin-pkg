@@ -117,7 +117,7 @@
 
 Name:           pidgin
 Version:        2.12.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -159,6 +159,8 @@ Patch2:         pidgin-2.10.11-purple-remote-python3.patch
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 # upstream ticket https://developer.pidgin.im/ticket/16593
 Patch102:         pidgin-2.10.11-do-not-disable-wall.patch
+# upstream ticket https://developer.pidgin.im/ticket/17200
+Patch103:         pidgin-jabber-Avoid-a-use-after-free-in-an-error-path.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
@@ -473,6 +475,8 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch100 -p0 -R -b .ftcrash
 # https://developer.pidgin.im/ticket/16593
 %patch102 -p1
+# https://developer.pidgin.im/ticket/17200
+%patch103 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -766,6 +770,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Apr 26 2017 Debarshi Ray <rishi@fedoraproject.org> - 2.12.0-2
+- Avoid a use-after-free in an error path (#1445915)
+
 * Mon Mar 13 2017 Jan Synáček <jsynacek@redhat.com> - 2.12.0-1
 - Update to 2.12.0 (#1431113 #1431225)
 
