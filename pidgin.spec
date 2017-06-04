@@ -117,7 +117,7 @@
 
 Name:           pidgin
 Version:        2.12.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -770,6 +770,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Jun 04 2017 Jitka Plesnikova <jplesnik@redhat.com> - 2.12.0-3
+- Perl 5.26 rebuild
+
 * Wed Apr 26 2017 Debarshi Ray <rishi@fedoraproject.org> - 2.12.0-2
 - Avoid a use-after-free in an error path (#1445915)
 
