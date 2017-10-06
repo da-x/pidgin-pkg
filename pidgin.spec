@@ -296,10 +296,9 @@ BuildRequires:  valgrind-devel
 %description
 Pidgin allows you to talk to anyone using a variety of messaging
 protocols including AIM, MSN, Yahoo!, Jabber, Bonjour, Gadu-Gadu,
-ICQ, IRC, Novell Groupwise, QQ, Lotus Sametime, SILC, Simple and
-Zephyr.  These protocols are implemented using a modular, easy to
-use design.  To use a protocol, just add an account using the
-account editor.
+ICQ, IRC, Novell Groupwise, QQ, Lotus Sametime, Simple and Zephyr.
+These protocols are implemented using a modular, easy to use design.
+To use a protocol, just add an account using the account editor.
 
 Pidgin supports many common features of other clients, as well as many
 unique features, such as perl scripting, TCL scripting and C plugins.
@@ -380,7 +379,7 @@ and Finch.
 
 libpurple supports a variety of messaging protocols including AIM, MSN,
 Yahoo!, Jabber, Bonjour, Gadu-Gadu, ICQ, IRC, Novell Groupwise, QQ,
-Lotus Sametime, SILC, Simple and Zephyr.
+Lotus Sametime, Simple and Zephyr.
 
 
 %package -n libpurple-devel
