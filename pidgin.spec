@@ -12,6 +12,9 @@
 %if 0%{?rhel} == 7
 %global fedora 19
 %endif
+%if 0%{?rhel} > 7
+%global fedora 27
+%endif
 
 # Define variables to use in conditionals
 %global force_sound_aplay       0
@@ -91,8 +94,8 @@
 %if 0%{?fedora} >= 16
 %global use_system_libgadu      1
 %endif
-# RHEL does not have libgadu
-%if 0%{?rhel}
+# older RHEL does not have libgadu
+%if 0%{?rhel} && 0%{?rhel} <= 7
 %global use_system_libgadu      0
 %endif
 %if 0%{?rhel} >= 7
@@ -117,7 +120,7 @@
 
 Name:           pidgin
 Version:        2.12.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -769,6 +772,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Thu Dec 21 2017 Merlin Mathesius <mmathesi@redhat.com> - 2.12.0-6
+- Cleanup spec file conditionals
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.12.0-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
