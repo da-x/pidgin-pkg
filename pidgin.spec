@@ -120,7 +120,7 @@
 
 Name:           pidgin
 Version:        2.12.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -772,6 +772,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Jan 20 2018 Björn Esser <besser82@fedoraproject.org> - 2.12.0-7
+- Rebuilt for switch to libxcrypt
+
 * Thu Dec 21 2017 Merlin Mathesius <mmathesi@redhat.com> - 2.12.0-6
 - Cleanup spec file conditionals
 
