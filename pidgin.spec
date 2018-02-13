@@ -165,7 +165,6 @@ Patch102:         pidgin-2.10.11-do-not-disable-wall.patch
 # upstream ticket https://developer.pidgin.im/ticket/17200
 Patch103:         pidgin-jabber-Avoid-a-use-after-free-in-an-error-path.patch
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 Summary:        A Gtk+ based multiprotocol instant messaging client
 
 # Require Binary Compatible glib
