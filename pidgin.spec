@@ -664,9 +664,6 @@ touch --no-create %{_datadir}/icons/hicolor || :
 
 %postun -n libpurple -p /sbin/ldconfig
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
 %if ! %{build_only_libs}
 %files
 %defattr(-,root,root,-)
