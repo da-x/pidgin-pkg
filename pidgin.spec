@@ -113,14 +113,18 @@
 %global farstream_version       0.2
 %global gst1                    1
 %endif
+# F29 doesn't support nm-glib anymore.
+%if 0%{?fedora} >= 29 || 0%{?rhel} >= 8
+%global nm_integration          0
+%endif
 # valgrind available only on selected arches
 %ifarch %{ix86} x86_64 ppc ppc64 ppc64le s390x armv7hl aarch64
 %global has_valgrind 1
 %endif
 
 Name:           pidgin
-Version:        2.12.0
-Release:        8%{?dist}
+Version:        2.13.0
+Release:        1%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -161,9 +165,7 @@ Patch2:         pidgin-2.10.11-purple-remote-python3.patch
 ## Patches 100+: To be Included in Future Upstream
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 # upstream ticket https://developer.pidgin.im/ticket/16593
-Patch102:         pidgin-2.10.11-do-not-disable-wall.patch
-# upstream ticket https://developer.pidgin.im/ticket/17200
-Patch103:         pidgin-jabber-Avoid-a-use-after-free-in-an-error-path.patch
+Patch102:       pidgin-2.10.11-do-not-disable-wall.patch
 
 Summary:        A Gtk+ based multiprotocol instant messaging client
 
@@ -476,8 +478,6 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch100 -p0 -R -b .ftcrash
 # https://developer.pidgin.im/ticket/16593
 %patch102 -p1
-# https://developer.pidgin.im/ticket/17200
-%patch103 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
@@ -518,6 +518,8 @@ SWITCHES="--with-extraversion=%{release}"
 %endif
 %if %{nm_integration}
     SWITCHES="$SWITCHES --enable-nm"
+%else
+    SWITCHES="$SWITCHES --disable-nm"
 %endif
 %if %{gstreamer_integration}
     SWITCHES="$SWITCHES --with-gstreamer=%{gstreamer_version}"
@@ -768,6 +770,10 @@ touch --no-create %{_datadir}/icons/hicolor || :
 %endif
 
 %changelog
+* Mon Apr 16 2018 Björn Esser <besser82@fedoraproject.org> - 2.13.0-1
+- Update to 2.13.0 (#1553811)
+- Drop nm-glib on Fedora 29+ (#1530657)
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.12.0-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
