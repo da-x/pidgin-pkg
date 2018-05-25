@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.13.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -770,6 +770,9 @@ touch --no-create %{_datadir}/icons/hicolor || :
 %endif
 
 %changelog
+* Fri May 25 2018 Adam Jackson <ajax@redhat.com> - 2.13.0-2
+- Rebuild for new libidn
+
 * Mon Apr 16 2018 Björn Esser <besser82@fedoraproject.org> - 2.13.0-1
 - Update to 2.13.0 (#1553811)
 - Drop nm-glib on Fedora 29+ (#1530657)
