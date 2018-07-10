@@ -668,7 +668,6 @@ touch --no-create %{_datadir}/icons/hicolor || :
 
 %if ! %{build_only_libs}
 %files
-%defattr(-,root,root,-)
 %doc NEWS COPYING AUTHORS README ChangeLog doc/PERL-HOWTO.dox
 %{_bindir}/pidgin
 %{_bindir}/gaim
@@ -686,23 +685,19 @@ touch --no-create %{_datadir}/icons/hicolor || :
 
 %if %{split_evolution}
 %files evolution
-%defattr(-,root,root,-)
 %{_libdir}/pidgin/gevolution.so
 %endif
 
 %files perl
-%defattr(-,root,root,-)
 %{_mandir}/man3/Pidgin*
 %{_libdir}/pidgin/perl/
 
 %files devel
-%defattr(-,root,root,-)
 %{_includedir}/pidgin/
 %{_libdir}/pkgconfig/pidgin.pc
 %endif
 
 %files -f pidgin.lang -n libpurple
-%defattr(-,root,root,-)
 %doc COPYING
 %{_libdir}/purple-2/
 %exclude %{_libdir}/purple-2/perl
@@ -725,7 +720,6 @@ touch --no-create %{_datadir}/icons/hicolor || :
 %exclude %{_libdir}/purple-2/perl/
 
 %files -n libpurple-devel
-%defattr(-,root,root,-)
 %{_datadir}/aclocal/purple.m4
 %{_libdir}/libpurple.so
 %{_includedir}/libpurple/
@@ -735,18 +729,15 @@ touch --no-create %{_datadir}/icons/hicolor || :
 %endif
 
 %files -n libpurple-perl
-%defattr(-,root,root,-)
 %{_mandir}/man3/Purple*
 %{_libdir}/purple-2/perl.so
 %{_libdir}/purple-2/perl/
 
 %files -n libpurple-tcl
-%defattr(-,root,root,-)
 %{_libdir}/purple-2/tcl.so
 
 %if ! %{build_only_libs}
 %files -n finch
-%defattr(-,root,root,-)
 %{_bindir}/finch
 %{_libdir}/finch/
 %{_libdir}/gnt/
@@ -754,7 +745,6 @@ touch --no-create %{_datadir}/icons/hicolor || :
 %{_mandir}/man1/finch.*
 
 %files -n finch-devel
-%defattr(-,root,root,-)
 %{_includedir}/finch/
 %{_includedir}/gnt/
 %{_libdir}/libgnt.so
@@ -764,7 +754,6 @@ touch --no-create %{_datadir}/icons/hicolor || :
 
 %if %{api_docs}
 %files -n pidgin-docs
-%defattr(-,root,root,-)
 %doc html
 %{_datadir}/gtk-doc/html/*
 %endif
