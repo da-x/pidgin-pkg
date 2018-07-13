@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.13.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -759,6 +759,9 @@ touch --no-create %{_datadir}/icons/hicolor || :
 %endif
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.13.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Fri Jun 29 2018 Jitka Plesnikova <jplesnik@redhat.com> - 2.13.0-3
 - Perl 5.28 rebuild
 
