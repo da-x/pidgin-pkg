@@ -1,0 +1,30 @@
+From 795d1fff7bcb511c3089de9bd8e38a38a90f07ee Mon Sep 17 00:00:00 2001
+From: Dan Aloni <alonid@gmail.com>
+Date: Fri, 27 Jul 2018 10:24:17 +0300
+Subject: [PATCH] Always accept certificates from talk.google.com
+
+---
+ libpurple/certificate.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/libpurple/certificate.c b/libpurple/certificate.c
+index f240b26ca1f8..181fe0890310 100644
+--- a/libpurple/certificate.c
++++ b/libpurple/certificate.c
+@@ -1418,6 +1418,13 @@ static void
+ x509_tls_cached_user_auth(PurpleCertificateVerificationRequest *vrq,
+ 			  const gchar *reason)
+ {
++	if (!strcmp(vrq->subject_name, "talk.google.com")) {
++		x509_tls_cached_user_auth_accept_cb(
++			x509_tls_cached_ua_ctx_new(vrq, reason),
++			0);
++		return;
++	}
++
+ 	gchar *primary;
+ 
+ 	/* Make messages */
+-- 
+2.17.1
+

@@ -124,7 +124,7 @@
 
 Name:           pidgin
 Version:        2.13.0
-Release:        4%{?dist}
+Release:        4.patched%{?dist}
 License:        GPLv2+ and GPLv2 and MIT
 # GPLv2+ - libpurple, gnt, finch, pidgin, most prpls
 # GPLv2 - novell prpls
@@ -166,6 +166,8 @@ Patch2:         pidgin-2.10.11-purple-remote-python3.patch
 Patch100:       pidgin-2.10.1-fix-msn-ft-crashes.patch
 # upstream ticket https://developer.pidgin.im/ticket/16593
 Patch102:       pidgin-2.10.11-do-not-disable-wall.patch
+
+Patch200:       ./0001-Always-accept-certificates-from-talk.google.com.patch
 
 Summary:        A Gtk+ based multiprotocol instant messaging client
 
@@ -478,6 +480,7 @@ echo "FEDORA=%{fedora} RHEL=%{rhel}"
 %patch100 -p0 -R -b .ftcrash
 # https://developer.pidgin.im/ticket/16593
 %patch102 -p1
+%patch200 -p1
 
 # Our preferences
 cp %{SOURCE1} prefs.xml
